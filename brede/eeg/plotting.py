@@ -79,7 +79,10 @@ class TopoPlot(object):
             axes = plt.axes()
         self.axes = axes
         self.center = np.array((0, 0))
-        self.data = pd.Series(data)
+        if data is not None:
+            self.data = pd.Series(data)
+        else:
+            self.data = None
 
     def draw_electrodes(self):
         """Draw electrodes."""
@@ -109,13 +112,7 @@ class TopoPlot(object):
         pass
 
     def draw_data(self, method='linear', number_of_contours=10):
-        """Draw countours from provided data.
-
-        Examples
-        --------
-        >>> data = pd.Series({'O1': 1, 'O2': 2, 'P3': -2, 'P4': -4})
-
-        """
+        """Draw countours from provided data. """
         if self.data is not None:
             # Coordinates for points to interpolate to
             xi, yi = np.mgrid[-1:1:100j, -1:1:100j]
@@ -146,6 +143,14 @@ class TopoPlot(object):
             Interpolation method
         number_of_contours : int
             Number of contours in the colored plot.
+
+        Examples
+        --------
+        >>> import matplotlib.pyplot as plt
+        >>> data = {'O1': 1, 'O2': 2, 'P3': -2, 'P4': -4}
+        >>> topo_plot = TopoPlot(data)
+        >>> topo_plot.draw()
+        >>> plt.show()
 
         """
         self.draw_head()
@@ -189,7 +194,7 @@ def topoplot(data=None, axes=None, method='linear', number_of_contours=10):
 
 
 def main():
-    """Command-line interface to topographic plot."""
+    """Hande command-line interface to topographic plot."""
     from docopt import docopt
 
     args = docopt(__doc__)
