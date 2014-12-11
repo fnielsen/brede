@@ -1,6 +1,16 @@
 #!/usr/bin/env python
 """
-Topographic plot.
+Plot EEG data.
+
+Usage:
+  plotting.py topoplot [options] [<file>]
+
+Options:
+  -h --help         Show this screen.
+  --version         Show version.
+  --sample-index=N  Row index (indexed from one).
+  --transpose       Transpose data.
+
 
 References
 ----------
@@ -16,6 +26,10 @@ from math import cos, pi, sin
 import matplotlib.pyplot as plt
 
 import numpy as np
+
+import pandas as pd
+
+from scipy.interpolate import griddata
 
 
 ELECTRODES = {
@@ -65,8 +79,9 @@ class TopoPlot(object):
             axes = plt.axes()
         self.axes = axes
         self.center = np.array((0, 0))
+        self.data = pd.Series(data)
 
-    def electrodes(self):
+    def draw_electrodes(self):
         """Draw electrodes."""
         for electrode, position in ELECTRODES.items():
             circle = plt.Circle(self.center + position,
@@ -78,30 +93,82 @@ class TopoPlot(object):
                            horizontalalignment='center',
                            size=6)
 
-    def head(self):
+    def draw_head(self):
         """Draw outer head."""
         circle = plt.Circle(self.center, radius=1, fill=False)
         self.axes.add_patch(circle)
 
-    def inner_head(self):
+    def draw_inner_head(self):
         """Draw inner head."""
         circle = plt.Circle(self.center, radius=0.8, fill=False)
         self.axes.add_patch(circle)
 
-    def nose(self):
+    def draw_nose(self):
         """Draw nose."""
+        # TODO
         pass
 
-    def draw(self):
-        """Draw all."""
-        self.head()
-        self.inner_head()
-        self.electrodes()
+    def draw_data(self, method='linear', number_of_contours=10):
+        """Draw countours from provided data.
+
+        Examples
+        --------
+        >>> data = pd.Series({'O1': 1, 'O2': 2, 'P3': -2, 'P4': -4})
+
+        """
+        if self.data is not None:
+            # Coordinates for points to interpolate to
+            xi, yi = np.mgrid[-1:1:100j, -1:1:100j]
+
+            # Electrode positions for data to interpolate from
+            points = [(ELECTRODES[electrode]) for electrode in self.data.index]
+
+            # Interpolate
+            zi = griddata(points, self.data.values, (xi, yi), method=method)
+
+            # Defaults
+            if number_of_contours is None:
+                number_of_contours = 10
+
+            # Draw
+            plt.contourf(xi, yi, zi, number_of_contours)
+
+            # TODO: center
+
+    def draw(self, method='linear', number_of_contours=None):
+        """Draw all components in topoplot including the data.
+
+        Parameters
+        ----------
+        data : pandas.Series, optional
+            Series with values and indexed by electrode names.
+        methods : str, optional
+            Interpolation method
+        number_of_contours : int
+            Number of contours in the colored plot.
+
+        """
+        self.draw_head()
+        self.draw_inner_head()
+        self.draw_electrodes()
+        self.draw_data(method=method, number_of_contours=number_of_contours)
         self.axes.axis((-1.2, 1.2, -1.2, 1.2))
 
 
-def topoplot(data=None, axes=None):
-    """Plot topogrampic map of the scalp in 2-D circular view.
+def topoplot(data=None, axes=None, method='linear', number_of_contours=10):
+    """Plot topographic map of the scalp in 2-D circular view.
+
+    Draw the colored scalp map based on data in a Pandas Series where
+    the values are indexed according to electrode name.
+
+    Parameters
+    ----------
+    data : pandas.Series, optional
+        Series with values and indexed by electrode names.
+    methods : str, optional
+        Interpolation method
+    number_of_contours : int
+        Number of contours in the colored plot.
 
     References
     ----------
@@ -111,19 +178,39 @@ def topoplot(data=None, axes=None):
 
     Examples
     --------
-    >>> import pandas as pd
-    >>> data = {'C3': 1, 'C4': 0.5}
+    >>> import matplotlib.pyplot as plt
+    >>> data = {'O1': 1, 'O2': 2, 'P3': -2, 'P4': -4}
     >>> topoplot(data)
+    >>> plt.show()
 
     """
     topo_plot = TopoPlot(data=data, axes=axes)
-    topo_plot.draw()
-    plt.show()
+    topo_plot.draw(method=method, number_of_contours=number_of_contours)
 
 
 def main():
-    """Topographic plot."""
-    topoplot()
+    """Command-line interface to topographic plot."""
+    from docopt import docopt
+
+    args = docopt(__doc__)
+    if args['topoplot']:
+        if args['<file>'] is None:
+            topoplot()
+        else:
+            filename = args['<file>']
+            if filename.lower().endswith('.csv'):
+                df = pd.read_csv(filename, index_col=0)
+                if args['--transpose']:
+                    df = df.T
+                if args['--sample-index'] is None:
+                    series = (df ** 2).mean()
+                else:
+                    sample_index = int(args['--sample-index'])
+                    series = df.iloc[sample_index - 1, :]
+            else:
+                exit('Only csv files handled')
+            topoplot(series)
+    plt.show()
 
 
 if __name__ == '__main__':
