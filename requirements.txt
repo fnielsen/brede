@@ -1,3 +1,4 @@
+EEGtools
 matplotlib
 numpy
 pandas
