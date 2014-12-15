@@ -75,12 +75,12 @@ class TopoPlot(object):
 
     def __init__(self, data=None, axes=None):
         """Setup defaults.
-        
+
         Parameters
         ----------
         data : Pandas.Series or dict
             Pandas Series with values indexed by electrodes.
-        axes : matplotlib.axes.AxesSubplot object 
+        axes : matplotlib.axes.AxesSubplot object
             Axis object to render on.
 
         """
@@ -119,11 +119,10 @@ class TopoPlot(object):
 
     def draw_nose(self):
         """Draw nose."""
-        nose = plt.Line2D([sin(-0.1), 0, sin(0.1)], 
-                          [cos(-0.1), 1.1, cos(0.1)], 
+        nose = plt.Line2D([sin(-0.1), 0, sin(0.1)],
+                          [cos(-0.1), 1.1, cos(0.1)],
                           color=(0, 0, 0))
         self.axes.add_line(nose)
-            
 
     def draw_data(self, method='linear', number_of_contours=10):
         """Draw countours from provided data. """
