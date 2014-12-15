@@ -35,8 +35,8 @@ from scipy.interpolate import griddata
 ELECTRODES = {
     'AF3': (-0.25, 0.62),
     'AF4': (0.25, 0.62),
-    'AF7': (0.8 * cos(0.7 * pi), 0.8 * sin(0.7 * pi)), 
-    'AF8': (0.8 * cos(0.3 * pi), 0.8 * sin(0.3 * pi)), 
+    'AF7': (0.8 * cos(0.7 * pi), 0.8 * sin(0.7 * pi)),
+    'AF8': (0.8 * cos(0.3 * pi), 0.8 * sin(0.3 * pi)),
     'AFz': (0, 0.6),
     'C1': (-0.2, 0),
     'C2': (0.2, 0),
@@ -44,13 +44,13 @@ ELECTRODES = {
     'C4': (0.4, 0),
     'C5': (-0.6, 0),
     'C6': (0.6, 0),
-    'CP1': (0.2 * cos(1.25 * pi), 0.2 * sin(1.25 * pi)), 
-    'CP2': (0.2 * cos(1.75 * pi), 0.2 * sin(1.75 * pi)), 
-    'CP3': (0.4 * cos(1.17 * pi), 0.4 * sin(1.17 * pi)), 
-    'CP4': (0.4 * cos(1.83 * pi), 0.4 * sin(1.83 * pi)), 
-    'CP5': (0.6 * cos(1.15 * pi), 0.6 * sin(1.15 * pi)), 
-    'CP6': (0.6 * cos(1.85 * pi), 0.6 * sin(1.85 * pi)), 
-    'CPz': (0, -0.2), 
+    'CP1': (0.2 * cos(1.25 * pi), 0.2 * sin(1.25 * pi)),
+    'CP2': (0.2 * cos(1.75 * pi), 0.2 * sin(1.75 * pi)),
+    'CP3': (0.4 * cos(1.17 * pi), 0.4 * sin(1.17 * pi)),
+    'CP4': (0.4 * cos(1.83 * pi), 0.4 * sin(1.83 * pi)),
+    'CP5': (0.6 * cos(1.15 * pi), 0.6 * sin(1.15 * pi)),
+    'CP6': (0.6 * cos(1.85 * pi), 0.6 * sin(1.85 * pi)),
+    'CPz': (0, -0.2),
     'Cz': (0, 0),
     'F1': (-0.18, 0.41),
     'F2': (0.18, 0.41),
@@ -129,6 +129,11 @@ class TopoPlot(object):
         else:
             self.data = None
 
+    @staticmethod
+    def normalize_electrode_name(name):
+        """Normalize electrode name."""
+        return name.upper().replace('FPZ', 'Fpz').replace('Z', 'z')
+
     def draw_electrodes(self):
         """Draw electrodes."""
         for electrode, position in ELECTRODES.items():
@@ -166,8 +171,10 @@ class TopoPlot(object):
             xi, yi = np.mgrid[-1:1:100j, -1:1:100j]
 
             # Electrode positions for data to interpolate from
-            points = [(ELECTRODES[electrode.upper().replace('FPZ', 'Fpz').replace('Z', 'z')]) 
-                      for electrode in self.data.index]
+            points = []
+            for electrode in self.data.index:
+                name = TopoPlot.normalize_electrode_name(electrode)
+                points.append(ELECTRODES[name])
 
             # Interpolate
             zi = griddata(points, self.data.values, (xi, yi), method=method)
