@@ -1,20 +1,21 @@
 #!/usr/bin/env python
-"""
+"""edf.py.
+
 Usage:
-  edf.py [options] [<file>]
+  edf.py [options] <file>
 
 Options:
   -h --help  Help
 
 """
 
-from __future__ import absolute_import 
+from __future__ import absolute_import, division, print_function
 
 from eegtools.io import edfplus
 
-# import pandas as pd
+import pandas as pd
 
-# import eeg
+from .. import eeg
 
 
 def edf_to_df(edf):
@@ -28,14 +29,14 @@ def edf_to_df(edf):
     return df
 
 
-def read_edf(file):
+def read_edf(filename):
     """Read EEG from European Data Format (EDF) files into dataframe.
 
     Eletrodes are distributed over columns while each sample has its own row.
 
     Parameters
     ----------
-    file : str
+    filename : str
         Filename of a EDF file.
 
     Returns
@@ -43,7 +44,7 @@ def read_edf(file):
     df : pandas.DataFrame
 
     """
-    edf_data = edfplus.load_edf(full_filename)
+    edf_data = edfplus.load_edf(filename)
     df = edf_to_df(edf_data)
     return df
 
@@ -54,12 +55,10 @@ def main(args):
         filename = args['<file>']
         df = read_edf(filename)
         sample = df.ix[0, :]
-#        eeg.topoplot(sample)
+        eeg.topoplot(sample)
 
 
 if __name__ == '__main__':
     import docopt
 
     main(docopt.docopt(__doc__))
-
-
