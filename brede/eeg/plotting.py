@@ -74,9 +74,19 @@ class TopoPlot(object):
     """Topographic plot."""
 
     def __init__(self, data=None, axes=None):
-        """Setup defaults."""
+        """Setup defaults.
+        
+        Parameters
+        ----------
+        data : Pandas.Series or dict
+            Pandas Series with values indexed by electrodes.
+        axes : matplotlib.axes.AxesSubplot object 
+            Axis object to render on.
+
+        """
         if axes is None:
-            axes = plt.axes()
+            fig = plt.figure()
+            axes = fig.gca()
         self.axes = axes
         self.center = np.array((0, 0))
         if data is not None:
@@ -88,7 +98,8 @@ class TopoPlot(object):
         """Draw electrodes."""
         for electrode, position in ELECTRODES.items():
             circle = plt.Circle(self.center + position,
-                                radius=0.04, fill=False)
+                                radius=0.04, fill=True,
+                                facecolor=(1, 1, 1))
             self.axes.add_patch(circle)
             position = self.center + position
             self.axes.text(position[0], position[1], electrode,
@@ -108,8 +119,11 @@ class TopoPlot(object):
 
     def draw_nose(self):
         """Draw nose."""
-        # TODO
-        pass
+        nose = plt.Line2D([sin(-0.1), 0, sin(0.1)], 
+                          [cos(-0.1), 1.1, cos(0.1)], 
+                          color=(0, 0, 0))
+        self.axes.add_line(nose)
+            
 
     def draw_data(self, method='linear', number_of_contours=10):
         """Draw countours from provided data. """
@@ -148,14 +162,15 @@ class TopoPlot(object):
         --------
         >>> import matplotlib.pyplot as plt
         >>> data = {'O1': 1, 'O2': 2, 'P3': -2, 'P4': -4}
+        >>> plt.ion()
         >>> topo_plot = TopoPlot(data)
         >>> topo_plot.draw()
-        >>> plt.show()
 
         """
         self.draw_head()
         self.draw_inner_head()
         self.draw_electrodes()
+        self.draw_nose()
         self.draw_data(method=method, number_of_contours=number_of_contours)
         self.axes.axis((-1.2, 1.2, -1.2, 1.2))
 
@@ -185,8 +200,8 @@ def topoplot(data=None, axes=None, method='linear', number_of_contours=10):
     --------
     >>> import matplotlib.pyplot as plt
     >>> data = {'O1': 1, 'O2': 2, 'P3': -2, 'P4': -4}
+    >>> plt.ion()
     >>> topoplot(data)
-    >>> plt.show()
 
     """
     topo_plot = TopoPlot(data=data, axes=axes)
