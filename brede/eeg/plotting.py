@@ -12,6 +12,11 @@ Options:
   --transpose       Transpose data.
 
 
+Data
+----
+ELECTRODES : dict
+    Dictionary indexed by electrode name with 2D positions as values
+
 References
 ----------
 The five percent electrode system for high-resolution EEG and ERP
@@ -32,6 +37,9 @@ import pandas as pd
 from scipy.interpolate import griddata
 
 
+__all__ = ('ELECTRODES', 'TopoPlot', 'topoplot')
+
+
 ELECTRODES = {
     'AF3': (-0.25, 0.62),
     'AF4': (0.25, 0.62),
@@ -44,46 +52,43 @@ ELECTRODES = {
     'C4': (0.4, 0),
     'C5': (-0.6, 0),
     'C6': (0.6, 0),
-    'CP1': (0.2 * cos(1.25 * pi), 0.2 * sin(1.25 * pi)),
-    'CP2': (0.2 * cos(1.75 * pi), 0.2 * sin(1.75 * pi)),
-    'CP3': (0.4 * cos(1.17 * pi), 0.4 * sin(1.17 * pi)),
-    'CP4': (0.4 * cos(1.83 * pi), 0.4 * sin(1.83 * pi)),
-    'CP5': (0.6 * cos(1.15 * pi), 0.6 * sin(1.15 * pi)),
-    'CP6': (0.6 * cos(1.85 * pi), 0.6 * sin(1.85 * pi)),
+    'CP1': (-0.18, -0.2),
+    'CP2': (0.18, -0.2),
+    'CP3': (-0.36, 0.4 * sin(1.17 * pi)),
+    'CP4': (0.36, 0.4 * sin(1.83 * pi)),
+    'CP5': (0.6 * cos(1.12 * pi), 0.6 * sin(1.12 * pi)),
+    'CP6': (0.6 * cos(1.88 * pi), 0.6 * sin(1.88 * pi)),
     'CPz': (0, -0.2),
     'Cz': (0, 0),
-    'F1': (-0.18, 0.41),
-    'F2': (0.18, 0.41),
-    'F3': (-0.35, 0.4),
-    'F4': (0.35, 0.4),
+    'F1': (-0.18, 0.4),
+    'F2': (0.18, 0.4),
+    'F3': (-0.35, 0.41),
+    'F4': (0.35, 0.41),
     'F5': (-0.5, 0.43),
     'F6': (0.5, 0.43),
     'F7': (0.8 * cos(0.8 * pi), 0.8 * sin(0.8 * pi)),
     'F8': (0.8 * cos(0.2 * pi), 0.8 * sin(0.2 * pi)),
     'FC1': (-0.2, 0.21),
     'FC2': (0.2, 0.21),
-    'FC3': (-0.39, 0.23),
-    'FC4': (0.39, 0.23),
-    'FC5': (-0.57, 0.25),
-    'FC6': (0.57, 0.25),
+    'FC3': (-0.39, 0.22),
+    'FC4': (0.39, 0.22),
+    'FC5': (-0.57, 0.23),
+    'FC6': (0.57, 0.23),
     'FCz': (0, 0.2),
-    'TP7': (0.8 * cos(1.1 * pi), 0.8 * sin(1.1 * pi)),
-    'TP8': (0.8 * cos(1.9 * pi), 0.8 * sin(1.9 * pi)),
+    'FP1': (0.8 * cos(0.6 * pi), 0.8 * sin(0.6 * pi)),
+    'FP2': (0.8 * cos(0.4 * pi), 0.8 * sin(0.4 * pi)),
     'Fpz': (0, 0.8),
     'FT7': (0.8 * cos(0.9 * pi), 0.8 * sin(0.9 * pi)),
     'FT8': (0.8 * cos(0.1 * pi), 0.8 * sin(0.1 * pi)),
     'Fz': (0, 0.4),
-    'FP1': (0.8 * cos(0.6 * pi), 0.8 * sin(0.6 * pi)),
-    'FP2': (0.8 * cos(0.4 * pi), 0.8 * sin(0.4 * pi)),
-    'Fpz': (0, 0.8),
     'Iz': (0, -1),
     'Nz': (0, 1),
     'P1': (-0.18, -0.41),
     'P2': (0.18, -0.41),
     'P3': (-0.35, -0.42),
     'P4': (0.35, -0.42),
-    'P5': (-0.5, -0.43),
-    'P6': (0.5, -0.43),
+    'P5': (-0.5, -0.44),
+    'P6': (0.5, -0.44),
     'P7': (0.8 * cos(1.2 * pi), 0.8 * sin(1.2 * pi)),
     'P8': (0.8 * cos(1.8 * pi), 0.8 * sin(1.8 * pi)),
     'PO3': (-0.24, -0.62),
@@ -99,6 +104,8 @@ ELECTRODES = {
     'T8': (0.8, 0),
     'T9': (-1, 0),
     'T10': (1, 0),
+    'TP7': (0.8 * cos(1.1 * pi), 0.8 * sin(1.1 * pi)),
+    'TP8': (0.8 * cos(1.9 * pi), 0.8 * sin(1.9 * pi)),
     'TP9': (cos(1.1 * pi), sin(1.1 * pi)),
     'TP10': (cos(1.9 * pi), sin(1.9 * pi)),
 }
@@ -131,7 +138,22 @@ class TopoPlot(object):
 
     @staticmethod
     def normalize_electrode_name(name):
-        """Normalize electrode name."""
+        """Normalize electrode name.
+
+        Parameters
+        ----------
+        name : str
+            Name of electrode to be normalized
+
+        Examples
+        --------
+        >>> TopoPlot.normalize_electrode_name('fpz')
+        'Fpz'
+
+        >>> TopoPlot.normalize_electrode_name('AFZ')
+        'AFz'
+
+        """
         return name.upper().replace('FPZ', 'Fpz').replace('Z', 'z')
 
     def draw_electrodes(self):
@@ -215,6 +237,7 @@ class TopoPlot(object):
         self.draw_nose()
         self.draw_data(method=method, number_of_contours=number_of_contours)
         self.axes.axis((-1.2, 1.2, -1.2, 1.2))
+        plt.axis('equal')
 
 
 def topoplot(data=None, axes=None, method='linear', number_of_contours=10):
