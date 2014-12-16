@@ -20,7 +20,7 @@ class EegRun(DataFrame):
 
     """Represent a EEG data set.
 
-    The Pandas DataFrame class is reused and extended with, e.g., Fourier 
+    The Pandas DataFrame class is reused and extended with, e.g., Fourier
     transformation.
 
     """
