@@ -12,6 +12,11 @@ Options:
   --transpose       Transpose data.
 
 
+Data
+----
+ELECTRODES : dict
+    Dictionary indexed by electrode name with 2D positions as values
+
 References
 ----------
 The five percent electrode system for high-resolution EEG and ERP
@@ -19,7 +24,7 @@ measurement, Robert Oostenveld, Peter Praamstra.
 
 """
 
-from __future__ import division
+from __future__ import absolute_import, division, print_function
 
 from math import cos, pi, sin
 
@@ -32,30 +37,65 @@ import pandas as pd
 from scipy.interpolate import griddata
 
 
+__all__ = ('ELECTRODES', 'TopoPlot', 'topoplot')
+
+
 ELECTRODES = {
     'AF3': (-0.25, 0.62),
     'AF4': (0.25, 0.62),
+    'AF7': (0.8 * cos(0.7 * pi), 0.8 * sin(0.7 * pi)),
+    'AF8': (0.8 * cos(0.3 * pi), 0.8 * sin(0.3 * pi)),
     'AFz': (0, 0.6),
+    'C1': (-0.2, 0),
+    'C2': (0.2, 0),
     'C3': (-0.4, 0),
     'C4': (0.4, 0),
+    'C5': (-0.6, 0),
+    'C6': (0.6, 0),
+    'CP1': (-0.18, -0.2),
+    'CP2': (0.18, -0.2),
+    'CP3': (-0.36, 0.4 * sin(1.17 * pi)),
+    'CP4': (0.36, 0.4 * sin(1.83 * pi)),
+    'CP5': (0.6 * cos(1.12 * pi), 0.6 * sin(1.12 * pi)),
+    'CP6': (0.6 * cos(1.88 * pi), 0.6 * sin(1.88 * pi)),
+    'CPz': (0, -0.2),
     'Cz': (0, 0),
-    'F3': (-0.35, 0.4),
-    'F4': (0.35, 0.4),
+    'F1': (-0.18, 0.4),
+    'F2': (0.18, 0.4),
+    'F3': (-0.35, 0.41),
+    'F4': (0.35, 0.41),
+    'F5': (-0.5, 0.43),
+    'F6': (0.5, 0.43),
     'F7': (0.8 * cos(0.8 * pi), 0.8 * sin(0.8 * pi)),
     'F8': (0.8 * cos(0.2 * pi), 0.8 * sin(0.2 * pi)),
-    'FC5': (-0.57, 0.25),
-    'FC6': (0.57, 0.25),
+    'FC1': (-0.2, 0.21),
+    'FC2': (0.2, 0.21),
+    'FC3': (-0.39, 0.22),
+    'FC4': (0.39, 0.22),
+    'FC5': (-0.57, 0.23),
+    'FC6': (0.57, 0.23),
     'FCz': (0, 0.2),
-    'Fz': (0, 0.4),
     'FP1': (0.8 * cos(0.6 * pi), 0.8 * sin(0.6 * pi)),
     'FP2': (0.8 * cos(0.4 * pi), 0.8 * sin(0.4 * pi)),
     'Fpz': (0, 0.8),
+    'FT7': (0.8 * cos(0.9 * pi), 0.8 * sin(0.9 * pi)),
+    'FT8': (0.8 * cos(0.1 * pi), 0.8 * sin(0.1 * pi)),
+    'Fz': (0, 0.4),
     'Iz': (0, -1),
     'Nz': (0, 1),
+    'P1': (-0.18, -0.41),
+    'P2': (0.18, -0.41),
     'P3': (-0.35, -0.42),
     'P4': (0.35, -0.42),
+    'P5': (-0.5, -0.44),
+    'P6': (0.5, -0.44),
     'P7': (0.8 * cos(1.2 * pi), 0.8 * sin(1.2 * pi)),
     'P8': (0.8 * cos(1.8 * pi), 0.8 * sin(1.8 * pi)),
+    'PO3': (-0.24, -0.62),
+    'PO4': (0.24, -0.62),
+    'PO7': (0.8 * cos(1.3 * pi), 0.8 * sin(1.3 * pi)),
+    'PO8': (0.8 * cos(1.7 * pi), 0.8 * sin(1.7 * pi)),
+    'POz': (0, -0.6),
     'Pz': (0, -0.4),
     'O1': (0.8 * cos(1.4 * pi), 0.8 * sin(1.4 * pi)),
     'O2': (0.8 * cos(1.6 * pi), 0.8 * sin(1.6 * pi)),
@@ -64,6 +104,8 @@ ELECTRODES = {
     'T8': (0.8, 0),
     'T9': (-1, 0),
     'T10': (1, 0),
+    'TP7': (0.8 * cos(1.1 * pi), 0.8 * sin(1.1 * pi)),
+    'TP8': (0.8 * cos(1.9 * pi), 0.8 * sin(1.9 * pi)),
     'TP9': (cos(1.1 * pi), sin(1.1 * pi)),
     'TP10': (cos(1.9 * pi), sin(1.9 * pi)),
 }
@@ -74,9 +116,19 @@ class TopoPlot(object):
     """Topographic plot."""
 
     def __init__(self, data=None, axes=None):
-        """Setup defaults."""
+        """Setup defaults.
+
+        Parameters
+        ----------
+        data : Pandas.Series or dict
+            Pandas Series with values indexed by electrodes.
+        axes : matplotlib.axes.AxesSubplot object
+            Axis object to render on.
+
+        """
         if axes is None:
-            axes = plt.axes()
+            fig = plt.figure()
+            axes = fig.gca()
         self.axes = axes
         self.center = np.array((0, 0))
         if data is not None:
@@ -84,11 +136,32 @@ class TopoPlot(object):
         else:
             self.data = None
 
+    @staticmethod
+    def normalize_electrode_name(name):
+        """Normalize electrode name.
+
+        Parameters
+        ----------
+        name : str
+            Name of electrode to be normalized
+
+        Examples
+        --------
+        >>> TopoPlot.normalize_electrode_name('fpz')
+        'Fpz'
+
+        >>> TopoPlot.normalize_electrode_name('AFZ')
+        'AFz'
+
+        """
+        return name.upper().replace('FPZ', 'Fpz').replace('Z', 'z')
+
     def draw_electrodes(self):
         """Draw electrodes."""
         for electrode, position in ELECTRODES.items():
             circle = plt.Circle(self.center + position,
-                                radius=0.04, fill=False)
+                                radius=0.04, fill=True,
+                                facecolor=(1, 1, 1))
             self.axes.add_patch(circle)
             position = self.center + position
             self.axes.text(position[0], position[1], electrode,
@@ -108,8 +181,10 @@ class TopoPlot(object):
 
     def draw_nose(self):
         """Draw nose."""
-        # TODO
-        pass
+        nose = plt.Line2D([sin(-0.1), 0, sin(0.1)],
+                          [cos(-0.1), 1.1, cos(0.1)],
+                          color=(0, 0, 0))
+        self.axes.add_line(nose)
 
     def draw_data(self, method='linear', number_of_contours=10):
         """Draw countours from provided data. """
@@ -118,7 +193,10 @@ class TopoPlot(object):
             xi, yi = np.mgrid[-1:1:100j, -1:1:100j]
 
             # Electrode positions for data to interpolate from
-            points = [(ELECTRODES[electrode]) for electrode in self.data.index]
+            points = []
+            for electrode in self.data.index:
+                name = TopoPlot.normalize_electrode_name(electrode)
+                points.append(ELECTRODES[name])
 
             # Interpolate
             zi = griddata(points, self.data.values, (xi, yi), method=method)
@@ -148,16 +226,18 @@ class TopoPlot(object):
         --------
         >>> import matplotlib.pyplot as plt
         >>> data = {'O1': 1, 'O2': 2, 'P3': -2, 'P4': -4}
+        >>> plt.ion()
         >>> topo_plot = TopoPlot(data)
         >>> topo_plot.draw()
-        >>> plt.show()
 
         """
         self.draw_head()
         self.draw_inner_head()
         self.draw_electrodes()
+        self.draw_nose()
         self.draw_data(method=method, number_of_contours=number_of_contours)
         self.axes.axis((-1.2, 1.2, -1.2, 1.2))
+        plt.axis('equal')
 
 
 def topoplot(data=None, axes=None, method='linear', number_of_contours=10):
@@ -185,8 +265,8 @@ def topoplot(data=None, axes=None, method='linear', number_of_contours=10):
     --------
     >>> import matplotlib.pyplot as plt
     >>> data = {'O1': 1, 'O2': 2, 'P3': -2, 'P4': -4}
+    >>> plt.ion()
     >>> topoplot(data)
-    >>> plt.show()
 
     """
     topo_plot = TopoPlot(data=data, axes=axes)

@@ -1,6 +1,11 @@
+"""Brede."""
 
 
-import eeg
-from eeg import topoplot
+from __future__ import absolute_import
 
-__all__ = ('eeg', 'topoplot')
+from . import eeg
+from . import io
+from .eeg import topoplot
+from .io.api import read_edf
+
+__all__ = ('eeg', 'io', 'read_edf', 'topoplot')
