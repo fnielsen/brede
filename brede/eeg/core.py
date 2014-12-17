@@ -2,11 +2,12 @@
 
 from __future__ import absolute_import, division, print_function
 
+# Absolute path here because of circular dependency
+import brede.io
+
 import numpy as np
 
 from pandas import DataFrame
-
-from ..io import read_edf
 
 
 class UnevenSamplingRate(Exception):
@@ -61,7 +62,7 @@ class EegRun(DataFrame):
             EegRun dataframe with read data.
 
         """
-        return cls(read_edf(filename))
+        return cls(brede.io.read_edf(filename))
 
     def fft(self):
         """Fourier transform of data.
