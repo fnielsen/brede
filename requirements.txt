@@ -1,3 +1,4 @@
+biopython
 EEGtools
 matplotlib
 numpy
