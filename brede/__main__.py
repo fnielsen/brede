@@ -31,7 +31,7 @@ from .io import read_edf
 
 def looks_like_file(filename):
     """Try to determine if a name looks like a filename."""
-    name, ext = splitext(filename)
+    _, ext = splitext(filename)
     if ext != '':
         return True
     return False

@@ -11,11 +11,12 @@ Options:
 
 from __future__ import absolute_import, division, print_function
 
+# Absolute path here because of circular dependency
+import brede.eeg
+
 from eegtools.io import edfplus
 
 import pandas as pd
-
-from .. import eeg
 
 
 def edf_to_df(edf):
@@ -55,7 +56,7 @@ def main(args):
         filename = args['<file>']
         df = read_edf(filename)
         sample = df.ix[0, :]
-        eeg.topoplot(sample)
+        brede.eeg.topoplot(sample)
 
 
 if __name__ == '__main__':
