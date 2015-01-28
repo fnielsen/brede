@@ -10,9 +10,9 @@ from os.path import exists, expanduser, join
 
 from urllib import urlretrieve
 
-import pandas as pd
+from brede.config import config
 
-from ..config import config
+import pandas as pd
 
 
 NEUROSYNTH_DATABASE_URL = "http://old.neurosynth.org/data/current_data.tar.gz"
@@ -47,6 +47,24 @@ class NeurosynthDatabase(object):
         self.neurosynth_download_filename = join(self.neurosynth_dir,
                                                  'current_data.tar.gz')
         self.neurosynth_database_url = NEUROSYNTH_DATABASE_URL
+
+    @property
+    def name(self):
+        """Return short name for database."""
+        return "Neurosynth"
+
+    @property
+    def description(self):
+        """Return a descriptive string about the data."""
+        return ("Neurosynth is a database setup by Tal Yarkoni and "
+                "contains stereotaxic coordinates from functional "
+                "neuroimaging studies.")
+
+    def __str__(self):
+        """Return descriptive string."""
+        string = "<NeurosynthDatabase({}x{})>"
+        df = self.database()
+        return string.format(*df.shape)
 
     def make_dir(self):
         """Make Neurosynth data directory."""
