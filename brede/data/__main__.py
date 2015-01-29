@@ -2,7 +2,7 @@
 """brede.data.
 
 Usage:
-  brede.data 
+  brede.data
 
 Options:
   -h --help  Help
@@ -13,10 +13,10 @@ Printing simple overview of available databases.
 
 from __future__ import print_function
 
-from docopt import docopt
-
 from brede.data.neurosynth import NeurosynthDatabase
 from brede.data.pubmed import Pubmed
+
+from docopt import docopt
 
 
 def main(args):
