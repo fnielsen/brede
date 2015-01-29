@@ -1,13 +1,21 @@
-"""Interface to Wikipedia text."""
+"""Interface to Wikipedia text.
+
+Usage:
+  wikipedia.py <page>
+
+"""
+
+from __future__ import print_function
 
 import re
 
-import requests
-
 from brede.config import config
 
+import requests
 
-WIKIPEDIA_INDEX = "https://en.wikipedia.org/w/index.php"
+
+URL_WIKIPEDIA_INDEX = "https://en.wikipedia.org/w/index.php"
+URL_WIKIPEDIA_API = "https://en.wikipedia.org/w/api.php"
 
 
 class WikiPage(object):
@@ -25,7 +33,8 @@ class WikiPage(object):
         """Setup title and empty content."""
         self.title = title
         self._raw = None
-        self.url_base = WIKIPEDIA_INDEX
+        self.url_base = URL_WIKIPEDIA_INDEX
+        self.setup_patterns()
 
     def __str__(self):
         """String representation of object."""
@@ -40,11 +49,6 @@ class WikiPage(object):
 
     def download(self):
         """Download page from Wikipedia.
-
-        Parameters
-        ----------
-        title : str
-            Page title on English Wikipedia
 
         Returns
         -------
@@ -66,42 +70,99 @@ class WikiPage(object):
                                 headers={'user-agent': user_agent})
         return response.text
 
+    def setup_patterns(self):
+        """Setup regular expression patterns for wiki markup handling."""
+        self.pattern_template = re.compile(r'{{[^}]+?}}',
+                                           flags=re.DOTALL | re.UNICODE)
+        self.pattern_category = re.compile(r'\[\[Category:[^\]]+?\]\]',
+                                           flags=re.UNICODE)
+        self.pattern_quote = re.compile(r"''+", flags=re.UNICODE)
+        self.pattern_ref = re.compile(r'<ref>|</ref>|<ref/>',
+                                      flags=re.DOTALL | re.UNICODE)
+        self.pattern_link = re.compile(r'\[\[([^\]\|]+?)\]\]',
+                                       flags=re.UNICODE)
+        self.pattern_link2 = re.compile(r'\[\[[^\|]+?\|([^\]]+?)\]\]',
+                                        flags=re.UNICODE)
+        self.pattern_h2 = re.compile(r'^==([^=]+)==\s*$',
+                                     flags=re.UNICODE | re.MULTILINE)
+        self.pattern_h3 = re.compile(r'^===([^=]+)===\s*$',
+                                     flags=re.UNICODE | re.MULTILINE)
+        self.pattern_h4 = re.compile(r'^====([^=]+)====\s*$',
+                                     flags=re.UNICODE | re.MULTILINE)
+        self.pattern_newlines = re.compile(r"\n\n+")
+        self.pattern_table = re.compile(r"{\|.+?\|}",
+                                        flags=re.DOTALL | re.UNICODE)
+
+    def strip_markup(self):
+        """Return text stripped for some wiki markup.
+
+        Returns
+        -------
+        text : str
+            String stripped for some of the wiki markup
+
+        """
+        text = self.pattern_template.sub('', self.raw)
+        text = self.pattern_category.sub('', text)
+        text = self.pattern_quote.sub('', text)
+        text = self.pattern_ref.sub('', text)
+        text = self.pattern_link.sub(r'\1', text)
+        text = self.pattern_link2.sub(r'\1', text)
+        text = self.pattern_table.sub('', text)
+
+        # Strip more than two newlines.
+        text = self.pattern_newlines.sub("\n\n", text)
+        return text
+
     def to_html(self):
         """Convert text to HTML.
 
-        Attempts to convert parts of the page to a HTML representation.
+        Attempts to convert parts of the page to an HTML representation.
 
         Note all cases are handled and the text is not escaped.
 
+        Returns
+        -------
+        html : str
+            String formatted in HTML
+
+        Examples
+        --------
+        >>> wp = WikiPage('Love Me Do')
+        >>> html = wp.to_html()
+        >>> '1962' in html
+        True
+
         """
-        pattern_template = re.compile(r'{{[^}]+}}',
-                                      flags=re.DOTALL | re.UNICODE)
-        pattern_category = re.compile(r'\[\[Category:[^\]]+\]\]',
-                                      flags=re.UNICODE)
-        pattern_quote = re.compile(r"''+", flags=re.UNICODE)
-        pattern_ref = re.compile(r'<ref>|</ref>|<ref/>',
-                                 flags=re.DOTALL | re.UNICODE)
-        pattern_link = re.compile(r'\[\[([^\]\|]+)\]\]',
-                                  flags=re.UNICODE)
-        pattern_link2 = re.compile(r'\[\[[^\|]+\|([^\]]+)\]\]',
-                                   flags=re.UNICODE)
+        text = self.strip_markup()
 
-        text = pattern_template.sub('', self.raw)
-        text = pattern_category.sub('', text)
-        text = pattern_quote.sub('', text)
-        text = pattern_ref.sub('', text)
-        text = pattern_link.sub(r'\1', text)
-        text = pattern_link2.sub(r'\1', text)
-
-        pattern_h2 = re.compile(r'^==([^=]+)==\s*$', flags=re.UNICODE)
-        pattern_h3 = re.compile(r'^===([^=]+)===\s*$', flags=re.UNICODE)
-        pattern_h4 = re.compile(r'^====([^=]+)====\s*$', flags=re.UNICODE)
-        text = pattern_h2.sub(r'<h2>\1</h2>', text)
-        text = pattern_h3.sub(r'<h3>\1</h3>', text)
-        text = pattern_h4.sub(r'<h4>\1</h4>', text)
+        text = self.pattern_h2.sub(r'<h2>\1</h2>', text)
+        text = self.pattern_h3.sub(r'<h3>\1</h3>', text)
+        text = self.pattern_h4.sub(r'<h4>\1</h4>', text)
 
         html = "<html><head><title>{}</title><head><body>"
         html = text
         html += "</body></html>"
 
         return html
+
+
+
+
+def main(args):
+    """Handle command-line interface.
+
+    Parameters
+    ----------
+    args : dict
+        Dict in docopt format with parse input arguments
+    
+    """
+    wiki_page = WikiPage(args['<page>'])
+    print(wiki_page.to_html())
+
+
+if __name__ == '__main__':
+    from docopt import docopt
+
+    main(docopt(__doc__))
