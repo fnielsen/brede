@@ -147,8 +147,6 @@ class WikiPage(object):
         return html
 
 
-
-
 def main(args):
     """Handle command-line interface.
 
@@ -156,7 +154,7 @@ def main(args):
     ----------
     args : dict
         Dict in docopt format with parse input arguments
-    
+
     """
     wiki_page = WikiPage(args['<page>'])
     print(wiki_page.to_html())
