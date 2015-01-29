@@ -27,4 +27,5 @@ def main(args):
         print("{}: {}".format(db.name, db.description))
 
 
-main(docopt(__doc__))
+if __name__ == '__main__':
+    main(docopt(__doc__))
