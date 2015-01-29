@@ -1,4 +1,5 @@
 biopython
+docopt
 EEGtools
 matplotlib
 numpy
