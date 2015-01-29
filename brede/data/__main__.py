@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-"""
+"""brede.data.
+
 Usage:
   brede.data 
 
@@ -19,6 +20,7 @@ from brede.data.pubmed import Pubmed
 
 
 def main(args):
+    """Handle command-line interface."""
     databases = [NeurosynthDatabase, Pubmed]
     for database in databases:
         db = database()
