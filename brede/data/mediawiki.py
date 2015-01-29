@@ -92,7 +92,7 @@ class Wiki(object):
         Examples
         --------
         >>> wiki = Wiki()
-        >>> text = wp.page('Amygdala')
+        >>> text = wiki.page('Amygdala')
         >>> 'basal ganglia' in text.lower()
         True
 
