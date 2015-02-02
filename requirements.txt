@@ -1,6 +1,8 @@
+biopython
 EEGtools
 matplotlib
 numpy
 pandas
+requests
 scikits.audiolab
 scipy

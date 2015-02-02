@@ -13,7 +13,7 @@ except ImportError:
 
 from Bio import Entrez, Medline
 
-from ..config import config
+from brede.config import config
 
 
 class Pubmed(object):
@@ -36,6 +36,16 @@ class Pubmed(object):
 
         Entrez.email = config.get('bio', 'email')
         Entrez.tool = 'brede'
+
+    @property
+    def name(self):
+        """Return short name for this database."""
+        return "PubMed"
+
+    @property
+    def description(self):
+        """Return descriptive string for this database."""
+        return ("Bibliographic records from the PubMed online database.")
 
     def setup_data_dir(self):
         """Create pubmed data directory if not exists."""
