@@ -81,7 +81,7 @@ class NeurosynthDatabase(object):
 
     def make_dir(self):
         """Make Neurosynth data directory."""
-        if not exists(self.data_dir):
+        if not exists(self.neurosynth_dir):
             makedirs(self.neurosynth_dir)
 
     def download(self):
