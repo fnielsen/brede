@@ -1,7 +1,10 @@
 """Watson interface.
 
 Usage:
-  brede.api.watson <question>
+  brede.api.watson [options] <question>
+
+Options:
+  -i --items=<items>   Items to return [default: 5]
 
 Description:
   The use of this program requires credentials to an IBM Watson instance.
@@ -149,7 +152,7 @@ def main(args):
     """Handle command-line interface."""
     watson = Watson()
     answer = watson.ask(args['<question>'])
-    answer.show()
+    answer.show(n=int(args['--items']))
 
 
 if __name__ == '__main__':
