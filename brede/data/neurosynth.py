@@ -1,7 +1,18 @@
-"""Interface to Neurosynth data."""
+"""brede.data.neurosynth - Interface to Neurosynth data.
+
+Usage:
+  brede.data.neurosynth [options]
+
+Options:
+  -h --help     Help
+
+Presently outputs the Neurosynth database as comma-separated values. This is
+a pretty long listing.
+
+"""
 
 
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
 import tarfile
 
@@ -10,9 +21,9 @@ from os.path import exists, expanduser, join
 
 from urllib import urlretrieve
 
-import pandas as pd
+from brede.config import config
 
-from ..config import config
+import pandas as pd
 
 
 NEUROSYNTH_DATABASE_URL = "http://old.neurosynth.org/data/current_data.tar.gz"
@@ -26,6 +37,8 @@ class NeurosynthDatabase(object):
     """Interface to dump of Neurosynth.
 
     Data from the Neurosynth website will be downloaded to a local directory.
+    Data is read from the local directory. Coordinates and 'features' (words)
+    are available from the database.
 
     Example
     -------
@@ -48,9 +61,27 @@ class NeurosynthDatabase(object):
                                                  'current_data.tar.gz')
         self.neurosynth_database_url = NEUROSYNTH_DATABASE_URL
 
+    @property
+    def name(self):
+        """Return short name for database."""
+        return "Neurosynth"
+
+    @property
+    def description(self):
+        """Return a descriptive string about the data."""
+        return ("Neurosynth is a database setup by Tal Yarkoni and "
+                "contains stereotaxic coordinates from functional "
+                "neuroimaging studies.")
+
+    def __str__(self):
+        """Return descriptive string."""
+        string = "<NeurosynthDatabase({}x{})>"
+        df = self.database()
+        return string.format(*df.shape)
+
     def make_dir(self):
         """Make Neurosynth data directory."""
-        if not exists(self.data_dir):
+        if not exists(self.neurosynth_dir):
             makedirs(self.neurosynth_dir)
 
     def download(self):
@@ -109,3 +140,15 @@ class NeurosynthDatabase(object):
                                sep='\t', low_memory=False,
                                index_col=0)
         return features
+
+
+def main(args):
+    """Handle command-line interface."""
+    nd = NeurosynthDatabase()
+    print(nd.database().to_csv())
+
+
+if __name__ == '__main__':
+    from docopt import docopt
+
+    main(docopt(__doc__))

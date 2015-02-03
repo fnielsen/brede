@@ -8,6 +8,11 @@ try:
 except ImportError:
     import configparser
 
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
+
 import logging
 
 from os.path import exists, expanduser
@@ -20,11 +25,18 @@ CONFIG_FILENAMES = [
     ]
 
 
+DEFAULTS = """
+[requests]
+user_agent = brede
+"""
+
 logger = logging.getLogger(__name__)
 logging.getLogger(__name__).addHandler(logging.NullHandler())
 
+config = configparser.SafeConfigParser()
 
-config = configparser.ConfigParser()
+config.readfp(StringIO(DEFAULTS))
+
 for filename in CONFIG_FILENAMES:
     full_filename = expanduser(filename)
     if exists(full_filename):
