@@ -1,7 +1,18 @@
-"""Interface to Neurosynth data."""
+"""brede.data.neurosynth - Interface to Neurosynth data.
+
+Usage:
+  brede.data.neurosynth [options]
+
+Options:
+  -h --help     Help
+
+Presently outputs the Neurosynth database as comma-separated values. This is
+a pretty long listing.
+
+"""
 
 
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
 import tarfile
 
@@ -26,6 +37,8 @@ class NeurosynthDatabase(object):
     """Interface to dump of Neurosynth.
 
     Data from the Neurosynth website will be downloaded to a local directory.
+    Data is read from the local directory. Coordinates and 'features' (words)
+    are available from the database.
 
     Example
     -------
@@ -127,3 +140,15 @@ class NeurosynthDatabase(object):
                                sep='\t', low_memory=False,
                                index_col=0)
         return features
+
+
+def main(args):
+    """Handle command-line interface."""
+    nd = NeurosynthDatabase()
+    print(nd.database().to_csv())
+
+
+if __name__ == '__main__':
+    from docopt import docopt
+
+    main(docopt(__doc__))
