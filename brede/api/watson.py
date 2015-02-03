@@ -1,4 +1,15 @@
-"""Interface to IBM Watson."""
+"""Watson interface.
+
+Usage:
+  brede.api.watson <question>
+
+Description:
+  The use of this program requires credentials to an IBM Watson instance.
+
+Example:
+  $ python -m brede.api.watson "What was the name of the Eurovision winner?"
+
+"""
 
 
 from __future__ import print_function
@@ -39,9 +50,13 @@ class WatsonResponse(dict):
 
     """Represent a response from the IBM Watson API."""
 
+    def to_json(self):
+        """Convert data to JSON representation."""
+        return json.dumps(dict(self))
+
     def to_yaml(self):
         """Convert to YAML representation."""
-        yaml.safe_dump(dict(self))
+        return yaml.safe_dump(dict(self))
 
     def show(self, n=5, show_text=False):
         """Print evidence list."""
@@ -61,6 +76,9 @@ class Watson(object):
 
     The use of this class requires credentials to an IBM Watson instance.
 
+    User, password and API URL are read from the brede.config if it is not
+    specified.
+
     Example
     -------
     >>> try:
@@ -70,8 +88,7 @@ class Watson(object):
     ...     print(True)
     ... else:
     ...     answer = api.ask('Who was called John?')
-    ...     yaml = answer.to_yaml()
-    ...     print(yaml)
+    ...     'question' in answer
     True
 
     """
@@ -126,3 +143,16 @@ class Watson(object):
         if response['question']['status'] == 'Failed':
             raise WatsonFailedError("'Failed' returned from IBM Watson API.")
         return WatsonResponse(response)
+
+
+def main(args):
+    """Handle command-line interface."""
+    watson = Watson()
+    answer = watson.ask(args['<question>'])
+    answer.show()
+
+
+if __name__ == '__main__':
+    from docopt import docopt
+
+    main(docopt(__doc__))
