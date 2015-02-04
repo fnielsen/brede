@@ -128,24 +128,50 @@ class WikiPage(object):
 
         Examples
         --------
-        >>> wp = WikiPage('Love Me Do')
-        >>> html = wp.to_html()
+        >>> wiki_page = WikiPage('Love Me Do')
+        >>> html = wiki_page.to_html()
         >>> '1962' in html
         True
 
         """
         text = self.strip_markup()
 
+        # Handle headings
         text = self.pattern_h2.sub(r'<h2>\1</h2>', text)
         text = self.pattern_h3.sub(r'<h3>\1</h3>', text)
         text = self.pattern_h4.sub(r'<h4>\1</h4>', text)
 
-        html = "<html><head><title>{}</title><head><body>"
+        # TODO: entities decoded, sanitized output
+
+        html = "<html><head><title>{}</title><head><body>".format(self.title)
         html = text
         html += "</body></html>"
 
         return html
 
+    def to_text(self):
+        """Convert raw wikitext to human-readable text.
+
+        Returns
+        -------
+        text : str
+            Text of wikitext.
+
+        Examples
+        --------
+        >>> wiki_page = WikiPage('Love Me Do')
+        >>> text = wiki_page.to_text()
+
+        """
+        text = self.strip_markup()
+
+        # Handle headings
+        text = self.pattern_h2.sub(r'\n\1.\n', text)
+        text = self.pattern_h3.sub(r'\n\1.\n', text)
+        text = self.pattern_h4.sub(r'\n\1.\n', text)
+
+        return text
+        
 
 def main(args):
     """Handle command-line interface.
