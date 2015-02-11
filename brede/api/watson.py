@@ -1,13 +1,17 @@
 """Watson interface.
 
 Usage:
-  brede.api.watson [options] <question>
+  brede.api.watson [options] [--json|--yaml] <question>
 
 Options:
-  -i --items=<items>   Items to return [default: 5]
+  -h --help                    Show this screen.
+  -i <items>, --items <items>  Items to return [default: 5].
+  -j, --json                   Output in JSON.
+  --yaml                       Output in YAML
 
 Description:
-  The use of this program requires credentials to an IBM Watson instance.
+  The use of this program requires credentials to an IBM Watson instance which
+  should be included in a configuration file (read by brede.config).
 
 Example:
   $ python -m brede.api.watson "What was the name of the Eurovision winner?"
@@ -52,6 +56,11 @@ class WatsonMissingConfig(WatsonException):
 class WatsonResponse(dict):
 
     """Represent a response from the IBM Watson API."""
+
+    @property
+    def evidencelist(self):
+        """Return the evidencelist field from the JSON response."""
+        return self['question']['evidencelist']
 
     def to_json(self):
         """Convert data to JSON representation."""
@@ -126,33 +135,53 @@ class Watson(object):
     def ask(self, question, items=5):
         """Query the IBM Watson with a question.
 
+        Communicates with the IBM Watson Experience Manager API by sending a 
+        query formed in JSON and parsing the returned JSON answer.
+
         Parameters
         ----------
         question : str
             String with question.
+        items : int
+            Number of items (answers) that the API should return.
 
         Returns
         -------
         response : WatsonResponse
             Dict-like structure.
 
+        Raises
+        ------
+        err : requests.exceptions.HTTPError
+            A 500 error may occur if the Watson corpus is not deployed.
+
         """
+        # Only 'questionText' seems to be required
         data = {"question": {"questionText": question,
-                             "items": items}}
+                             "items": items,
+                             "evidenceRequest": {"items": items,
+                                                 "profile": "no"}}}
         response = requests.post(self.url,
                                  headers=self.headers,
                                  data=json.dumps(data),
-                                 auth=(self.user, self.password)).json()
-        if response['question']['status'] == 'Failed':
+                                 auth=(self.user, self.password))
+        response.raise_for_status()
+        response_data = response.json()
+        if response_data['question']['status'] == 'Failed':
             raise WatsonFailedError("'Failed' returned from IBM Watson API.")
-        return WatsonResponse(response)
+        return WatsonResponse(response_data)
 
 
 def main(args):
     """Handle command-line interface."""
     watson = Watson()
-    answer = watson.ask(args['<question>'])
-    answer.show(n=int(args['--items']))
+    answer = watson.ask(args['<question>'], items=int(args['--items']))
+    if args['--json']:
+        print(answer.to_json())
+    elif args['--yaml']:
+        print(answer.to_yaml())
+    else:
+        answer.show(n=int(args['--items']))
 
 
 if __name__ == '__main__':
