@@ -16,6 +16,8 @@ Description:
 Example:
   $ python -m brede.api.watson "What was the name of the Eurovision winner?"
 
+Watson is a trademark of IBM.
+
 """
 
 
@@ -132,18 +134,22 @@ class Watson(object):
             message = "Missing [watson] section in the config file."
             raise WatsonMissingConfig(message)
 
-    def ask(self, question, items=5):
+    def ask(self, question, items=None):
         """Query the IBM Watson with a question.
 
-        Communicates with the IBM Watson Experience Manager API by sending a 
+        Communicates with the IBM Watson Experience Manager API by sending a
         query formed in JSON and parsing the returned JSON answer.
+
+        Items should be between 1 and 10 according to the documentation,
+        but if items is not send to the API the response may contain more than
+        10 items!
 
         Parameters
         ----------
         question : str
             String with question.
         items : int
-            Number of items (answers) that the API should return.
+            Number of items (answers) that the API should return,.
 
         Returns
         -------
@@ -155,13 +161,22 @@ class Watson(object):
         err : requests.exceptions.HTTPError
             A 500 error may occur if the Watson corpus is not deployed.
 
+        References 
+        ----------
+        http://www.ibm.com/smarterplanet/us/en/ibmwatson/developercloud/apis/
+
         """
-        # Only 'questionText' seems to be required
-        data = {"question": {"questionText": question,
-                             "items": items,
-                             "evidenceRequest": {"items": items,
-                                                 "profile": "no"}}}
-        response = requests.post(self.url,
+        # Items should be between 1 and 10, but if not send to the API it can 
+        # the response may contain more than 10 items!?
+        if items is None or items > 10:
+            # Only 'questionText' seems to be required
+            data = {"question": {"questionText": question}}
+        else:
+            data = {"question": {"questionText": question,
+                                 "items": items,
+                                 "evidenceRequest": {"items": items,
+                                                     "profile": "no"}}}
+        response = requests.post(self.url + '/question',
                                  headers=self.headers,
                                  data=json.dumps(data),
                                  auth=(self.user, self.password))
@@ -170,6 +185,38 @@ class Watson(object):
         if response_data['question']['status'] == 'Failed':
             raise WatsonFailedError("'Failed' returned from IBM Watson API.")
         return WatsonResponse(response_data)
+
+    def _ping(self):
+        """Ping the Watson service.
+
+        This apparently does not work.
+
+        References
+        ----------
+        http://www.ibm.com/smarterplanet/us/en/ibmwatson/developercloud/apis/
+
+        """
+        response = requests.get(self.url + '/ping',
+                                headers=self.headers,
+                                auth=(self.user, self.password))
+        if response.status_code == 200:
+            return True
+        return False
+
+    def _services(self):
+        """Return services. 
+
+        This apparently does not work.
+
+        References
+        ----------
+        http://www.ibm.com/smarterplanet/us/en/ibmwatson/developercloud/apis/
+
+        """
+        response = requests.get(self.url + '/services',
+                                headers=self.headers,
+                                auth=(self.user, self.password))
+        return response.json()
 
 
 def main(args):
