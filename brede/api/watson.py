@@ -161,12 +161,12 @@ class Watson(object):
         err : requests.exceptions.HTTPError
             A 500 error may occur if the Watson corpus is not deployed.
 
-        References 
+        References
         ----------
         http://www.ibm.com/smarterplanet/us/en/ibmwatson/developercloud/apis/
 
         """
-        # Items should be between 1 and 10, but if not send to the API it can 
+        # Items should be between 1 and 10, but if not send to the API it can
         # the response may contain more than 10 items!?
         if items is None or items > 10:
             # Only 'questionText' seems to be required
@@ -204,7 +204,7 @@ class Watson(object):
         return False
 
     def _services(self):
-        """Return services. 
+        """Return services.
 
         This apparently does not work.
 
