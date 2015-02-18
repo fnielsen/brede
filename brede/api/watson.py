@@ -14,7 +14,7 @@ Description:
   should be included in a configuration file (read by brede.config).
 
 Example:
-  $ python -m brede.api.watson "What was the name of the Eurovision winner?"
+  $ python -m brede.api.watson "Do you have any documents in your corpus?"
 
 Watson is a trademark of IBM.
 
@@ -64,8 +64,46 @@ class WatsonResponse(dict):
         """Return the evidencelist field from the JSON response."""
         return self['question']['evidencelist']
 
+    def retrieval_rank(self, title):
+        """Return retrieval rank for a given document title.
+
+        If the title if not found 'inf' (floating point) is returned.
+
+        Parameters
+        ----------
+        title : str
+            Ground truth title of the document.
+
+        Returns
+        -------
+        rank : float
+            Rank of document.
+
+        Examples
+        --------
+        >>> resp = {'question': {'evidencelist': [{'title': 'a'},
+        ...                                       {'title': 'b'}]}}
+        >>> watson_response = WatsonResponse(resp)
+        >>> watson_response.retrieval_rank('b')
+        2.0
+
+        """
+        rank = float('inf')
+        for n, evidence in enumerate(self.evidencelist, start=1):
+            if title == evidence['title']:
+                rank = float(n)
+                break
+        return rank
+
     def to_json(self):
-        """Convert data to JSON representation."""
+        """Convert data to JSON representation.
+
+        Returns
+        -------
+        json : str
+            String in JSON representation.
+
+        """
         return json.dumps(dict(self))
 
     def to_yaml(self):
@@ -108,7 +146,7 @@ class Watson(object):
     """
 
     def __init__(self, user=None, password=None, url=None):
-        """Setup credientials for an IBM Watson instance."""
+        """Setup credentials for an IBM Watson instance."""
         if user is None and password is None and url is None:
             self.check_config()
         self.user = user if user else config.get('watson', 'user')
@@ -137,11 +175,11 @@ class Watson(object):
     def ask(self, question, items=None):
         """Query the IBM Watson with a question.
 
-        Communicates with the IBM Watson Experience Manager API by sending a
-        query formed in JSON and parsing the returned JSON answer.
+        Communicates with the IBM Watson API by sending a query formed in JSON 
+        and parsing the returned JSON answer.
 
         Items should be between 1 and 10 according to the documentation,
-        but if items is not send to the API the response may contain more than
+        but if items are not send to the API the response may contain more than
         10 items!
 
         Parameters
