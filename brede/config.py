@@ -40,7 +40,7 @@ config.readfp(StringIO(DEFAULTS))
 for filename in CONFIG_FILENAMES:
     full_filename = expanduser(filename)
     if exists(full_filename):
-        logger.warn('Reading configuration file from {}'.format(full_filename))
+        logger.info('Reading configuration file from {}'.format(full_filename))
         config.read(full_filename)
         break
 else:
