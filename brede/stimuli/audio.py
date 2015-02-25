@@ -84,6 +84,22 @@ class WaveWriter(object):
             raise WaveWriterException('Wrong noise type')
         return data
 
+    def silence(self, length=10.0):
+        """Return silence.
+
+        Parameters
+        ----------
+        length : float
+            Length in seconds of the sample
+
+        Return
+        ------
+        data : numpy.array
+            Array with audio signal.
+        """
+        number_of_samples = int(length * self._samplerate)
+        return np.zeros(number_of_samples)
+
     def sinusoide(self, length=10.0, frequency=40.0):
         """Return sinusoide tone.
 
@@ -131,6 +147,12 @@ class WaveWriter(object):
         """Write sinusoide tone to file."""
         if self._fid is not None:
             data = self.sinusoide(length=length, frequency=frequency)
+            self._fid.write_frames(data)
+
+    def write_silence(self, length=10.0):
+        """Write silence to file."""
+        if self._fid is not None:
+            data = self.silence(length=length)
             self._fid.write_frames(data)
 
 
