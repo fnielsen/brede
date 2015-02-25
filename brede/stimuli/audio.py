@@ -92,8 +92,8 @@ class WaveWriter(object):
         length : float
             Length in seconds of the sample
 
-        Return
-        ------
+        Returns
+        -------
         data : numpy.array
             Array with audio signal.
         """
@@ -110,8 +110,8 @@ class WaveWriter(object):
         frequency : float
             Frequency in Hertz of the sinusoide
 
-        Return
-        ------
+        Returns
+        -------
         data : numpy.array
             Array with audio signal.
         """
@@ -144,13 +144,29 @@ class WaveWriter(object):
             self._fid.write_frames(data)
 
     def write_sinusoide(self, length=10.0, frequency=40.0):
-        """Write sinusoide tone to file."""
+        """Write sinusoide tone to file.
+
+        Parameters
+        ----------
+        length : float
+            Length in seconds of the sample.
+        frequency : float
+            Frequency in Hertz of the modulation.
+
+        """
         if self._fid is not None:
             data = self.sinusoide(length=length, frequency=frequency)
             self._fid.write_frames(data)
 
     def write_silence(self, length=10.0):
-        """Write silence to file."""
+        """Write silence to file.
+
+        Parameters
+        ----------
+        length : float
+            Length in seconds of the sample.
+
+        """
         if self._fid is not None:
             data = self.silence(length=length)
             self._fid.write_frames(data)
