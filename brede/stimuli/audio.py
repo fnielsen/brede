@@ -39,7 +39,18 @@ class WaveWriter(object):
     """Writer for WAV files."""
 
     def __init__(self, filename, channels=1, samplerate=44100):
-        """Set defaults."""
+        """Set defaults.
+
+        Parameters
+        ----------
+        filename : str
+            Name of wav file to write to.
+        channels : int, optional
+            Number of channels in the wav file.
+        samplerate : int or float, optional
+            Sample rate in Hertz.
+
+        """
         self._format = Format('wav', encoding='pcm16')
         self._filename = filename
         self._channels = channels
@@ -63,11 +74,11 @@ class WaveWriter(object):
 
         Parameters
         ----------
-        length : float
+        length : float, optional
             Length of the sample in seconds
-        frequency : float
+        frequency : float, optional
            Frequency in Hertz of the modulation
-        noisetype : 'normalwhite' or 'uniformwhite'
+        noisetype : 'normalwhite' or 'uniformwhite', optional
             Type of random generator for the noise.
 
         """
@@ -83,6 +94,45 @@ class WaveWriter(object):
         else:
             raise WaveWriterException('Wrong noise type')
         return data
+
+    def pulse_train(self, length=10.0, frequency=40.0,
+                    dutycycle=0.01):
+        """Return pulse train signal.
+
+        Parameters
+        ----------
+        length : float, optional
+            Length of the sample in seconds.
+        frequency : float, optional
+            Frequency in Hertz of the modulation.
+        dutycycle : float, optional
+            Ratio between the active part of the signal and the period.
+
+        Returns
+        -------
+        signal : numpy.array
+            Array with pulse train signal
+
+        References
+        ----------
+        https://en.wikipedia.org/wiki/Pulse_wave
+
+        """
+        signal = self.silence(length)
+        if dutycycle == 0:
+            return signal
+
+        number_of_samples = int(length * self._samplerate)
+        samples_per_period = self._samplerate / frequency
+        number_of_periods = int(number_of_samples // frequency)
+
+        # At least one sample should be active if dutycycle != 0
+        number_of_actives = max(1, int(round(dutycycle * samples_per_period)))
+
+        for n in range(number_of_periods):
+            offset = int(round(n * samples_per_period))
+            signal[offset:offset + number_of_actives] = 1
+        return signal
 
     def silence(self, length=10.0):
         """Return silence.
@@ -105,9 +155,9 @@ class WaveWriter(object):
 
         Parameters
         ----------
-        length : float
+        length : float, optional
             Length in seconds of the sample
-        frequency : float
+        frequency : float, optional
             Frequency in Hertz of the sinusoide
 
         Returns
@@ -141,6 +191,22 @@ class WaveWriter(object):
                                                   noisetype=noisetype)
             absmax = np.max(np.abs(data))
             data /= absmax
+            self._fid.write_frames(data)
+
+    def write_pulse_train(self, length=10.0, frequency=40.0):
+        """Write pulse train to a file.
+
+        Parameters
+        ----------
+        length : float
+            Length in seconds of the sample.
+        frequency : float
+            Frequency in Hertz of the modulation.
+
+        """
+        if self._fid is not None:
+            data = self.pulse_train(length=length,
+                                    frequency=frequency)
             self._fid.write_frames(data)
 
     def write_sinusoide(self, length=10.0, frequency=40.0):
