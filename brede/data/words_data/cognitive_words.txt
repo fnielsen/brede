@@ -528,3 +528,5 @@ word production
 working memory maintenance
 working memory manipulation
 working memory updating
+facial
+sentences
