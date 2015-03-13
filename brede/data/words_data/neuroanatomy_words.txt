@@ -36,6 +36,7 @@ anterior inferior cingulate sulcus
 anterior inferior medial
 anterior inferior medial frontal
 anterior insula
+anterior insulae
 anterior insular
 anterior intraparietal
 anterior intraparietal sulcus
@@ -83,6 +84,8 @@ basal ganglia
 basis
 basis pontis
 bilateral
+bilaterally
+bilateral superior
 brain
 broca
 broca homologue
@@ -90,6 +93,7 @@ broca s
 broca s area
 brocas
 brocas area
+brodmann
 buried
 buried postcentral
 buried sylvian
@@ -197,6 +201,7 @@ colliculus
 complex
 congulate
 congulate cortex
+contralateral
 corpus
 corpus callosom
 corpus callosum
@@ -210,6 +215,7 @@ cortex sii
 cortical
 cortical area
 cortical areas
+cortices
 cuneate
 cuneus
 cuneus midline
@@ -294,6 +300,7 @@ frontal middle
 frontal middle frontal
 frontal middle frontal gyrus
 frontal operculum
+frontal opercular
 frontal parietal
 frontal parietal operculum
 frontal pars
@@ -339,6 +346,7 @@ hand area
 hand area left
 head
 hemisphere
+hemispheres
 heschl
 heschls
 heschls gyrus
@@ -500,6 +508,7 @@ left caudate
 left caudate head
 left sensorimotor
 left sensorimotor complex
+left ventral
 lenticular
 lenticular nucleus
 lenticulate
@@ -1254,3 +1263,96 @@ wernicke s
 wernicke s area
 white
 white matter
+frontomedian wall
+left hemisphere
+bilateral fusiform
+cingular cortices
+right middle
+right anteromedia
+left fusiform
+left inferior
+bilateral middle
+fusiform gyri
+parietal lobules
+right parietal
+left dorsolateral
+ventral occipitotemporal
+mesial temporal
+gray matter
+cortical regions
+right cerebellar
+subgenual cingulate
+central prefrontal
+cortical surface
+peristriate cortex
+occipitotemporal cortex
+fronto-parietal
+dorsal pfc
+parahippocampal cortex
+posterior part
+parietal regions
+cortex bilaterally
+left superior
+right superior
+right fronto-parietal
+left parietal
+right intraparietal
+cerebral hemispheres
+pre-supplementary motor
+right anterior
+postero-ventral
+frontomedian
+temporolateral
+striatofrontal
+orbitalis
+temporo-occipital
+left-hemispheric
+occipital-temporal
+accumbens
+right-hemisphere
+hmt/v5+
+corticolimbic
+parietal-premotor
+anatomy
+brodman
+fundus
+perirolandic
+paralimbic
+perisylvian
+geniculate
+parahippocampus
+middle/superior
+dpmc
+left-
+hallux
+supranuclear
+parainsular
+subgenual
+orbito-frontal/prefrontal
+insulae
+orbitofrontal/prefrontal
+stg
+brains
+insula/sii
+occipito-temporal
+dorsal/ventral
+amygdalar
+v5+
+inter-regional
+fronto-paralimbic
+frontoparietal
+neocortical
+cortico-subcortical
+pre-supplementary
+ffa
+parieto-occipital
+lobes
+sma/pre-sma
+antero-posterior
+cuneus/precuneus
+v4
+striatal
+agranular
+frontotemporal
+temporoccipital
+ba
