@@ -1356,3 +1356,8 @@ agranular
 frontotemporal
 temporoccipital
 ba
+wm
+gray
+acc
+pfc
+subcortical
