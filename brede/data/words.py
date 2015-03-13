@@ -53,6 +53,7 @@ class Words(set):
         full_filename = self.full_filename(filename)
         with open(full_filename) as f:
             words = f.read().splitlines()
+        words = [word.strip() for word in words]
         return words
 
     def join(self, sep=u'\n'):
