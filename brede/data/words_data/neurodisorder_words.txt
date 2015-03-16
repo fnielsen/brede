@@ -1,0 +1,616 @@
+abulia
+agraphia
+alcoholism
+alexia
+alzheimer's disease
+aneurysm
+amaurosis fugax
+amnesia
+amyotrophic lateral sclerosis
+angelman syndrome
+aphasia
+apraxia
+arachnoiditis
+arnold-chiari malformation
+asperger syndrome
+ataxia
+ataxia-telangiectasia
+attention deficit hyperactivity disorder
+auditory processing disorder
+autism spectrum
+bipolar disorder
+bell's palsy
+brachial plexus injury
+brain damage
+brain injury
+brain tumor
+canavan disease
+capgras delusion
+carpal tunnel syndrome
+causalgia
+central pain syndrome
+central pontine myelinolysis
+centronuclear myopathy
+cephalic disorder
+cerebral aneurysm
+cerebral arteriosclerosis
+cerebral atrophy
+cerebral autosomal dominant arteriopathy with subcortical infarcts and leukoencephalopathy
+cerebral gigantism
+cerebral palsy
+cerebral vasculitis
+cervical spinal stenosis
+charcot-marie-tooth disease
+chiari malformation
+chorea
+chronic fatigue syndrome
+chronic inflammatory demyelinating polyneuropathy
+chronic pain
+coffin–lowry syndrome
+coma
+complex regional pain syndrome
+compression neuropathy
+congenital facial diplegia
+corticobasal degeneration
+cranial arteritis
+craniosynostosis
+creutzfeldt-jakob disease
+cumulative trauma disorders
+cushing's syndrome
+cytomegalic inclusion body disease
+cytomegalovirus infection
+dandy-walker syndrome
+dawson disease
+de morsier's syndrome
+dejerine-klumpke palsy
+dejerine-sottas disease
+delayed sleep phase syndrome
+dementia
+dermatomyositis
+developmental coordination disorder
+diabetic neuropathy
+diffuse sclerosis
+diplopia
+down syndrome
+dravet syndrome
+duchenne muscular dystrophy
+dysarthria
+dysautonomia
+dyscalculia
+dysgraphia
+dyskinesia
+dyslexia
+dystonia
+empty sella syndrome
+encephalitis
+encephalocele
+encephalotrigeminal angiomatosis
+encopresis
+enuresis
+epilepsy
+erb's palsy
+erythromelalgia
+essential tremor
+exploding head syndrome
+fabry's disease
+fahr's syndrome
+fainting
+familial spastic paralysis
+febrile seizures
+fisher syndrome
+friedreich's ataxia
+fibromyalgia
+foville's syndrome
+fetal alcohol syndrome
+fragile x syndrome
+fragile x-associated tremor/ataxia syndrome
+gaucher's disease
+gerstmann's syndrome
+giant cell arteritis
+giant cell inclusion disease
+globoid cell leukodystrophy
+gray matter heterotopia
+guillain-barré syndrome
+generalized anxiety disorder
+htlv-1 associated myelopathy
+hallervorden-spatz disease
+head injury
+headache
+hemifacial spasm
+hereditary spastic paraplegia
+heredopathia atactica polyneuritiformis
+herpes zoster oticus
+herpes zoster
+hirayama syndrome
+hirschsprung's disease
+holmes-adie syndrome
+holoprosencephaly
+huntington's disease
+hydranencephaly
+hydrocephalus
+hypercortisolism
+hypoxia
+immune-mediated encephalomyelitis
+inclusion body myositis
+incontinentia pigmenti
+infantile refsum disease
+infantile spasms
+inflammatory myopathy
+intracranial cyst
+intracranial hypertension
+joubert syndrome
+karak syndrome
+kearns-sayre syndrome
+kinsbourne syndrome
+kleine-levin syndrome
+klippel feil syndrome
+krabbe disease
+lafora disease
+lambert-eaton myasthenic syndrome
+landau-kleffner syndrome
+lateral medullary syndrome
+learning disabilities
+leigh's disease
+lennox-gastaut syndrome
+lesch-nyhan syndrome
+leukodystrophy
+leukoencephalopathy with vanishing white matter
+lewy body dementia
+lissencephaly
+locked-in syndrome
+lou gehrig's disease
+lumbar disc disease
+lumbar spinal stenosis
+lyme disease
+neurological sequelae
+machado-joseph disease 
+spinocerebellar ataxia type 3
+macrencephaly  
+macropsia	   
+mal de debarquement
+megalencephalic leukoencephalopathy with subcortical cysts
+megalencephaly
+melkersson-rosenthal syndrome
+menieres disease
+meningitis
+menkes disease
+metachromatic leukodystrophy
+microcephaly
+micropsia
+migraine
+miller fisher syndrome
+mini-stroke
+transient ischemic attack
+misophonia
+mitochondrial myopathy
+mobius syndrome
+monomelic amyotrophy
+motor neurone disease 
+motor skills disorder
+moyamoya disease
+mucopolysaccharidoses
+multi-infarct dementia
+multifocal motor neuropathy
+multiple sclerosis
+multiple system atrophy
+muscular dystrophy
+myalgic encephalomyelitis
+myasthenia gravis
+myelinoclastic diffuse sclerosis
+myoclonic encephalopathy of infants
+myoclonus
+myopathy
+myotubular myopathy
+myotonia congenita
+narcolepsy
+neuro-behçet's disease
+neurofibromatosis
+neuroleptic malignant syndrome
+neurological manifestations of aids
+neurological sequelae of lupus
+neuromyotonia
+neuronal ceroid lipofuscinosis
+neuronal migration disorders
+neuropathy
+neurosis
+niemann-pick disease
+non-24-hour sleep–wake disorder
+nonverbal learning disorder
+o'sullivan-mcleod syndrome
+occipital neuralgia
+occult spinal dysraphism sequence
+ohtahara syndrome
+olivopontocerebellar atrophy
+opsoclonus myoclonus syndrome
+optic neuritis
+orthostatic hypotension
+otosclerosis
+overuse syndrome
+palinopsia
+paresthesia
+parkinson's disease
+paramyotonia congenita
+paraneoplastic diseases
+paroxysmal attacks
+parry-romberg syndrome
+pandas
+pelizaeus-merzbacher disease
+periodic paralyses
+peripheral neuropathy
+pervasive developmental disorders
+photic sneeze reflex
+phytanic acid storage disease
+pick's disease
+pinched nerve
+pituitary tumors
+pmg
+polyneuropathy
+polio
+polymicrogyria
+polymyositis
+porencephaly
+post-polio syndrome
+postherpetic neuralgia
+postural hypotension
+prader-willi syndrome
+primary lateral sclerosis
+prion diseases
+progressive hemifacial atrophy
+progressive multifocal leukoencephalopathy
+progressive supranuclear palsy
+prosopagnosia
+pseudotumor cerebri
+quadrantanopia
+quadriplegia
+rabies
+radiculopathy
+ramsay hunt syndrome type i
+ramsay hunt syndrome type ii
+ramsay hunt syndrome type iii
+ramsay-hunt syndrome
+rasmussen encephalitis
+reflex neurovascular dystrophy
+refsum disease
+rem sleep behavior disorder
+repetitive stress injury
+restless legs syndrome
+retrovirus-associated myelopathy
+rett syndrome
+reye's syndrome
+rhythmic movement disorder
+romberg syndrome
+saint vitus dance
+sandhoff disease
+schilder's disease[disambiguation needed]
+schizencephaly
+sensory processing disorder
+septo-optic dysplasia
+shaken baby syndrome
+shingles
+shy-drager syndrome
+sjögren's syndrome
+sleep apnea
+sleeping sickness
+snatiation
+sotos syndrome
+spasticity
+spina bifida
+spinal cord injury
+spinal cord tumors
+spinal muscular atrophy
+spinal and bulbar muscular atrophy
+spinocerebellar ataxia
+split-brain
+steele-richardson-olszewski syndrome
+stiff-person syndrome
+stroke
+sturge-weber syndrome
+subacute sclerosing panencephalitis
+subcortical arteriosclerotic encephalopathy
+superficial siderosis
+sydenham's chorea
+syncope
+synesthesia
+syringomyelia
+tarsal tunnel syndrome
+tardive dyskinesia
+tardive dysphrenia
+tarlov cyst
+tay-sachs disease
+temporal arteritis
+tetanus
+tethered spinal cord syndrome
+thomsen disease
+thoracic outlet syndrome
+tic douloureux
+todd's paralysis
+tourette syndrome
+toxic encephalopathy
+transient ischemic attack
+transmissible spongiform encephalopathies
+transverse myelitis
+traumatic brain injury
+tremor
+trigeminal neuralgia
+tropical spastic paraparesis
+trypanosomiasis
+tuberous sclerosis
+von hippel-lindau disease
+viliuisk encephalomyelitis
+wallenberg's syndrome
+west syndrome
+whiplash
+williams syndrome
+wilson's disease
+zellweger syndrome
+abulia
+absence epilepsy
+acute stress disorder
+adjustment disorder
+adolescent antisocial behavior
+adult antisocial behavior
+adverse effects of medication-not otherwise specified
+age-related cognitive decline
+agoraphobia
+alcohol abuse
+alcohol dependence
+alcohol withdrawal
+alcoholic hallucinosis
+alzheimer's disease
+amnestic disorder
+amphetamine dependence
+amphetamine withdrawal psychosis
+anorexia nervosa
+anterograde amnesia
+antisocial personality disorder
+anxiety disorder
+anxiolytic-related disorders
+attention deficit disorder
+attention deficit hyperactivity disorder
+autism
+autophagia
+avoidant personality disorder
+atelophobia
+asperger syndrome
+barbiturate dependence
+benzodiazepine dependence
+benzodiazepine misuse
+benzodiazepine withdrawal
+bereavement
+bibliomania
+binge eating disorder
+bipolar disorder
+bipolar i disorder
+bipolar ii disorder
+body dysmorphic disorder
+borderline intellectual functioning
+borderline personality disorder
+brief psychotic disorder
+bulimia nervosa
+caffeine-related disorder
+caffeine-induced sleep disorder
+cannabis dependence
+claustrophobia
+catatonic disorder
+catatonic schizophrenia
+childhood amnesia
+childhood antisocial behavior
+circadian rhythm sleep disorder
+cocaine dependence
+cocaine intoxication
+cognitive disorder
+communication disorder
+conduct disorder
+cotard delusion
+cyclothymia
+delirium tremens
+depersonalization disorder
+depressive disorder
+derealization disorder
+dermatillomania
+desynchronosis
+developmental coordination disorder
+down syndrome
+diogenes syndrome
+dispareunia
+dissociative identity disorder
+multiple personality disorder
+dyspraxia
+dyslexia
+dysthymia
+ednos
+ekbom's syndrome (delusional parasitosis)
+encopresis
+enuresis (not due to a general medical condition)
+erotomania
+exhibitionism
+factitious disorder
+fregoli delusion
+frotteurism
+fugue state
+ganser syndrome
+generalized anxiety disorder
+general adaptation syndrome
+grandiose delusions
+hallucinogen-related disorder
+hallucinogen persisting perception disorder
+histrionic personality disorder
+huntington's disease
+hypomanic episode
+hypochondriasis
+kleptomania
+korsakoff's syndrome
+lacunar amnesia
+major depressive disorder
+major depressive episode
+maladaptive daydreaming
+male erectile disorder
+malingering
+manic episode
+mathematics disorder
+mean world syndrome
+medication-related disorder
+melancholia
+minor depressive disorder
+minor depressive episode
+misophonia
+mixed episode
+mood disorder
+mood episode
+morbid jealousy
+munchausen's syndrome
+munchausen's syndrome by proxy
+narcolepsy
+narcissistic personality disorder
+neglect of child
+neuroleptic-related disorder
+nicotine withdrawal
+night eating syndrome
+nightmare disorder
+neurocysticercosis
+obsessive-compulsive disorder (ocd)
+obsessive-compulsive personality disorder (ocpd)
+oneirophrenia
+opioid dependence
+opioid-related disorder
+oppositional defiant disorder (odd)
+orthorexia (on)
+pain disorder
+panic disorder
+paranoid personality disorder
+parasomnia
+parkinson's disease
+partner relational problem
+pathological gambling
+perfectionism
+persecutory delusion
+personality change due to a general medical condition
+personality disorder
+phencyclidine (or phencyclidine-like)-related disorder
+phobic disorder
+phonological disorder
+physical abuse
+pica
+polysubstance-related disorder
+post-traumatic embitterment disorder (pted)
+posttraumatic stress disorder (ptsd)
+pragmatic language disorder
+premature ejaculation
+primary hypersomnia
+primary insomnia
+psychogenic amnesia
+psychological factor affecting medical condition
+psychotic disorder
+pyromania
+reactive attachment disorder of infancy or early childhood
+reading disorder
+recurrent brief depression
+relational disorder
+residual schizophrenia
+retrograde amnesia
+rumination syndrome
+schizoaffective disorder
+schizoid personality disorder
+schizophrenia
+schizophreniform disorder
+schizotypal personality disorder
+seasonal affective disorder
+sedative-, hypnotic-, or anxiolytic-related disorder
+selective mutism
+separation anxiety disorder
+severe mental retardation
+shared psychotic disorder
+sleep disorder
+sleep terror disorder
+sleepwalking disorder
+small penis syndrome
+social anxiety disorder
+social phobia
+somatization disorder
+somatoform disorder
+specific phobia
+stendhal syndrome
+stereotypic movement disorder
+stockholm syndrome
+stuttering
+substance-related disorder
+tardive dyskinesia
+tourette syndrome
+transient tic disorder
+transient global amnesia
+trichotillomania
+white coat hypertension
+cognition disorders
+alzheimer disease
+depressive disorder, major
+memory disorders
+attention deficit disorder with hyperactivity
+parkinson disease
+depression
+autistic disorder
+attention deficit disorder with hyperactivity
+psychotic disorders
+stress disorders, post-traumatic
+obsessive-compulsive disorder
+child development disorders, pervasive
+brain injuries
+epilepsy, temporal lobe
+cocaine-related disorders
+perceptual disorders
+anxiety disorders
+mild cognitive impairment
+phobic disorders
+acute disease
+multiple sclerosis, relapsing-remitting
+mood disorders
+substance-related disorders
+huntington disease
+tobacco use disorder
+mental disorders
+learning disorders
+heroin dependence
+schizophrenia, paranoid
+language development disorders
+neurotic disorders
+brain diseases
+movement disorders
+language disorders
+speech disorders
+substance withdrawal syndrome
+cerebral infarction
+turner syndrome
+eating disorders
+vision disorders
+nervous system diseases
+somatoform disorders
+conversion disorder
+aphasia, primary progressive
+agnosia
+lewy body disease
+impulse control disorders
+auditory perceptual disorders
+temporomandibular joint disorders
+aphasia, broca
+basal ganglia diseases
+persistent vegetative state
+cerebellar diseases
+multiple sclerosis, chronic progressive
+apathy
+parkinsonian disorders
+attention deficit and disruptive behavior disorders
+epilepsy, frontal lobe
+communication disorders
+consciousness disorders
+cerebral hemorrhage
+dyslexia, acquired
+head injuries, closed
+sensation disorders
+olfaction disorders
+brain concussion
+articulation disorders
+fatigue syndrome, chronic
+dysthymic disorder
+neuropsychiatric disorders
+psychiatric disorders
+attention-deficit/hyperactivity disorder
+spectrum disorders
