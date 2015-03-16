@@ -175,7 +175,7 @@ class Watson(object):
     def ask(self, question, items=None):
         """Query the IBM Watson with a question.
 
-        Communicates with the IBM Watson API by sending a query formed in JSON 
+        Communicates with the IBM Watson API by sending a query formed in JSON
         and parsing the returned JSON answer.
 
         Items should be between 1 and 10 according to the documentation,
