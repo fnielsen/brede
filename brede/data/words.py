@@ -82,24 +82,6 @@ class CognitiveWords(Words):
         super(CognitiveWords, self).__init__(words)
 
 
-class NeuroimagingMethodWords(Words):
-
-    """Set of neuroimaging method words and phrases.
-
-    Examples
-    --------
-    >>> words = NeuroimagingMethodWords()
-    >>> 'positron' in words
-    True
-
-    """
-
-    def __init__(self):
-        """Read neuroimaging_method_words.txt file and setup set."""
-        words = self.read_words('neuroimaging_method_words.txt')
-        super(NeuroimagingMethodWords, self).__init__(words)
-
-
 class NeuroanatomyWords(Words):
 
     """Set of neuroanatomical words and phrases.
@@ -119,6 +101,48 @@ class NeuroanatomyWords(Words):
         """Read neuroanatomy_words.txt file and setup set."""
         words = self.read_words('neuroanatomy_words.txt')
         super(NeuroanatomyWords, self).__init__(words)
+
+
+class NeurodisorderWords(Words):
+
+    """Set of neuro- and psychiatry disorder and condition words and phrases.
+
+    Examples
+    --------
+    >>> words = NeurodisorderWords()
+    >>> 'alzheimer disease' in words
+    True
+
+    >>> 'inferior temporal gyrus' in words
+    False
+
+    """
+
+    def __init__(self):
+        """Read neurodisorder_words.txt file and setup set."""
+        words = self.read_words('neurodisorder_words.txt')
+        super(NeurodisorderWords, self).__init__(words)
+
+
+class NeuroimagingMethodWords(Words):
+
+    """Set of neuroimaging method words and phrases.
+
+    Examples
+    --------
+    >>> words = NeuroimagingMethodWords()
+    >>> 'positron' in words
+    True
+
+    >>> 'amygdala' in words
+    False
+
+    """
+
+    def __init__(self):
+        """Read neuroimaging_method_words.txt file and setup set."""
+        words = self.read_words('neuroimaging_method_words.txt')
+        super(NeuroimagingMethodWords, self).__init__(words)
 
 
 def main(args):
