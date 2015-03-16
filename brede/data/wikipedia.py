@@ -171,7 +171,7 @@ class WikiPage(object):
         text = self.pattern_h4.sub(r'\n\1.\n', text)
 
         return text
-        
+
 
 def main(args):
     """Handle command-line interface.
