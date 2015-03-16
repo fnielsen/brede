@@ -6,9 +6,9 @@ from setuptools import setup
 
 # https://stackoverflow.com/questions/14399534
 filename = os.path.join(os.path.dirname(__file__), 'requirements.txt')
-install_reqs = parse_requirements(filename)
-reqs = [str(ir.req) for ir in install_reqs]
-
+#install_reqs = parse_requirements(filename)
+#reqs = [str(ir.req) for ir in install_reqs]
+reqs = open(filename).read().splitlines()
 
 setup(
     name='brede',

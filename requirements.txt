@@ -7,4 +7,5 @@ pandas
 requests
 scikits.audiolab
 scipy
-yaml
+PyYAML
+
