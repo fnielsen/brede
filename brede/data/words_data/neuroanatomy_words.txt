@@ -1361,3 +1361,99 @@ gray
 acc
 pfc
 subcortical
+cerebral cortex
+gyrus cinguli
+mental recall
+corpus striatum
+nucleus accumbens
+cerebrospinal fluid
+mesencephalon
+brain stem
+neostriatum
+limbic system
+neocortex
+periaqueductal gray
+entorhinal cortex
+prosencephalon
+ventral tegmental area
+thalamic nuclei
+geniculate bodies
+central nervous system
+superior colliculi
+cerebral arteries
+telencephalon
+ppc
+posterior parietal cortex
+frontal areas
+temporal regions
+ventrolateral pfc
+basal forebrain
+brain regions
+lateral pfc
+left amygdala
+dorsomedial prefrontal
+bilateral insula
+fronto-occipital fasciculus
+right insula
+brain areas
+motor areas
+tegmental area
+occipito-temporal cortex
+dorsal striatum
+subcortical structures
+extrastriate body
+frontoparietal network
+parietal areas
+parietal cortices
+postcentral gyri
+right posterior
+visual areas
+right lateral
+right cerebellum
+planum temporale
+ventral striatal
+ventromedial prefrontal
+bilateral anterior
+prefrontal regions
+longitudinal fasciculus
+ventral tegmental
+fronto-parietal network
+left hippocampus
+pars opercularis
+temporal cortices
+left posterior
+right fusiform
+temporal lobes
+frontal lobes
+cortical midline
+frontal regions
+sensory cortices
+left angular
+subcortical regions
+left frontal
+bilateral inferior
+corona radiata
+temporo-parietal junction
+right hippocampus
+prefrontal cortices
+fusiform face
+brain region
+right hemisphere
+right amygdala
+left precentral
+temporal poles
+grey matter
+uncinate fasciculus
+retrosplenial cortex
+rostral anterior
+right inferior
+left ifg
+parietal lobes
+left insula
+face area
+dorsolateral pfc
+subthalamic nucleus
+somatosensory cortices
+frontotemporal lobar
+left temporal
+right dorsolateral
