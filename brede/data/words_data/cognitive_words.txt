@@ -1171,3 +1171,55 @@ lexical meaning
 visual movement perception
 mind wandering
 emotion-inducing
+risk taking
+voluntary risk taking
+involuntary risk taking
+value-based choices
+risk aversion
+gambling
+gambling task
+loss-induced
+approach-avoidance
+risk-dependent
+moral task
+moral deliberation
+moral tasks
+moral intuition
+memorizing
+viewing moral pictures
+moral pictures
+top-down attention
+spatial cue
+temporal cue
+auditory top-down temporal attention
+temporal attention
+time interval cues
+directed attention
+auditory spatial location
+cue-target paradigms
+visual cueing
+visual cueing of attention
+auditory target
+temporal orienting of attention
+spatial orienting
+spatial orienting of attention
+temporal orienting
+auditory spatial orienting of attention
+auditory spatial orienting
+orienting of attention
+bodily awareness
+bodily action
+agency
+moral sensitivity
+negative emotions
+ethical decision making
+ethical decision
+morality
+moral behaviour
+moral issues
+autobiographical memory retrieval
+social perspective taking
+social perspective
+perspective taking
+rule-based moral
+social situational 
