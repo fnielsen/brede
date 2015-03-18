@@ -614,3 +614,13 @@ neuropsychiatric disorders
 psychiatric disorders
 attention-deficit/hyperactivity disorder
 spectrum disorders
+disorders
+alzheimer
+mci
+bipolar
+lesions
+ocd
+depressive
+lesion
+mdd
+pd
