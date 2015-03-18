@@ -95,7 +95,7 @@ grammar learning
 fear acquisition
 attentionalauditory cues
 repetition priming
-psotive emotional
+positive emotional
 negative emotional
 emotional
 natural objects
