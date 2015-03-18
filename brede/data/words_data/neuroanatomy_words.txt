@@ -1437,6 +1437,7 @@ temporo-parietal junction
 right hippocampus
 prefrontal cortices
 fusiform face
+face area
 brain region
 right hemisphere
 right amygdala
@@ -1450,10 +1451,14 @@ right inferior
 left ifg
 parietal lobes
 left insula
-face area
 dorsolateral pfc
 subthalamic nucleus
 somatosensory cortices
 frontotemporal lobar
 left temporal
 right dorsolateral
+ofc
+ptsd
+ifg
+ips
+vmpfc
