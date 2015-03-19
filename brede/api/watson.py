@@ -67,7 +67,7 @@ class WatsonResponse(dict):
     def retrieval_rank(self, title):
         """Return retrieval rank for a given document title.
 
-        If the title if not found 'inf' (floating point) is returned.
+        If the title is not found 'inf' (floating point) is returned.
 
         Parameters
         ----------
@@ -113,6 +113,11 @@ class WatsonResponse(dict):
     def show(self, n=5, show_text=False):
         """Print evidence list."""
         for evidence in islice(self['question']['evidencelist'], n):
+            if not evidence:
+                # The API (2.24 probably) can apparent return an empty evidence
+                # in the first returned list item of the evidencelist.
+                print('MISSING')
+                continue
             if show_text:
                 text = ' - ' + evidence['text'][:40]
             else:
@@ -149,10 +154,9 @@ class Watson(object):
         """Setup credentials for an IBM Watson instance."""
         if user is None and password is None and url is None:
             self.check_config()
-        self.user = user if user else config.get('watson', 'user')
-        self.password = password if password else config.get('watson',
-                                                             'password')
-        self.url = url if url else config.get('watson', 'url')
+        self.user = user or config.get('watson', 'user')
+        self.password = password or config.get('watson', 'password')
+        self.url = url or config.get('watson', 'url')
         self.headers = {'Content-type': 'application/json',
                         'Accept': 'application/json'}
 
@@ -204,7 +208,7 @@ class Watson(object):
         http://www.ibm.com/smarterplanet/us/en/ibmwatson/developercloud/apis/
 
         """
-        # Items should be between 1 and 10, but if not send to the API it can
+        # Items should be between 1 and 10, but if not send to the API
         # the response may contain more than 10 items!?
         if items is None or items > 10:
             # Only 'questionText' seems to be required
