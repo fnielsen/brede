@@ -200,8 +200,8 @@ class Watson(object):
 
         Raises
         ------
-        err : requests.exceptions.HTTPError
-            A 500 error may occur if the Watson corpus is not deployed.
+        err : WatsonException
+            May be raise, e.g., with word in question too long.
 
         References
         ----------
@@ -222,7 +222,13 @@ class Watson(object):
                                  headers=self.headers,
                                  data=json.dumps(data),
                                  auth=(self.user, self.password))
-        response.raise_for_status()
+        try:
+            response.raise_for_status()
+        except requests.exceptions.HTTPError:
+            response_data = response.json()
+            raise WatsonException(response_data['message'])
+        except:
+            raise
         response_data = response.json()
         if response_data['question']['status'] == 'Failed':
             raise WatsonFailedError("'Failed' returned from IBM Watson API.")
