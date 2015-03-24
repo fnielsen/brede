@@ -28,7 +28,7 @@ def read_electrode_positions(filename):
 
     References
     ----------
-    SPM5's spm_eeg_ldata.
+    SPM8's spm_eeg_loaddata
 
     """
     struct = loadmat(filename, struct_as_record=False, squeeze_me=True)
