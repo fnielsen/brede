@@ -90,7 +90,10 @@ class WatsonResponse(dict):
         """
         rank = float('inf')
         for n, evidence in enumerate(self.evidencelist, start=1):
-            if title == evidence['title']:
+            # With Watson 2.24 the evidence list may have empty dictionary
+            # https://developer.ibm.com/answers/questions/182196/ ...
+            # missing-data-in-item-in-the-evidencelist-returned/
+            if 'title' in evidence and title == evidence['title']:
                 rank = float(n)
                 break
         return rank
