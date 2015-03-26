@@ -1388,3 +1388,30 @@ somatosensory perception
 somatosensory
 interoceptive representation
 spatial cognition
+sad
+angry
+body
+conflict
+negative arousal
+positive arousal
+negative image viewing
+physical pain
+negative affect
+negative mood
+negative emotional
+negative social feedback
+social feedback
+positive mood
+positive emotional
+positive social feedback
+negative facial affect
+positive facial affect
+negative social signals
+positive social signals
+distractors
+distractor
+negative pictures
+positive pictures
+negative facial cues
+positive facial cues
+
