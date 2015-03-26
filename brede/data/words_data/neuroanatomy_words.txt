@@ -69,13 +69,10 @@ anteroparietal
 area
 area left
 areas
-around
 around sylvian
 around sylvian fissure
-association
 association area
 association cortex
-auditory
 auditory association
 auditory association cortex
 auditory cortex
@@ -94,7 +91,6 @@ broca s area
 brocas
 brocas area
 brodmann
-buried
 buried postcentral
 buried sylvian
 buried sylvian cortex
@@ -130,7 +126,6 @@ caudate nucleus
 caudatum
 caudatus
 caudatus head
-cellbellum
 central
 central cingulate
 central gyrus
@@ -221,7 +216,6 @@ cuneus
 cuneus midline
 cuneus striate
 cuneus striate junction
-deep
 deep nuclei
 dentate
 dentate nucleus
@@ -266,17 +260,14 @@ dorsomedial nucleus of
 dorsomedial nucleus of thalamus
 entorrhinal
 entorrhinal cortex
-external
 external capsule
 extracerebral
 extrastriate
 extrastriate cortex
-eye
 eye field
 eye fields
 field
 fields
-finger
 finger si
 finger si sites
 fissure
@@ -323,7 +314,8 @@ fusiform lingual
 ganglia
 globus
 globus pallidus
-grey
+gray matter
+grey matter
 gyri
 gyrus
 gyrus angular
@@ -341,10 +333,8 @@ gyrus rectus ventral striatum
 gyrus retrosplenial
 gyrus temporal
 gyrus temporal lobe
-hand
 hand area
 hand area left
-head
 hemisphere
 hemispheres
 heschl
@@ -529,7 +519,6 @@ lingular
 lingular gyrus
 lobe
 lobule
-low
 low premotor
 lower
 lower premotor
@@ -658,7 +647,6 @@ midoccipital
 midoccipital gyrus
 midtemporal
 midtemporal gyrus
-motor
 motor area
 motor cingulate
 motor cingulate cortex
@@ -678,7 +666,6 @@ neuroanatomically
 neuroanatomy
 nigra
 no
-no data
 nuclei
 nucleus
 nucleus caudatus
@@ -997,14 +984,10 @@ secondary somatosensory
 secondary somatosensory cortex
 secondary visual
 secondary visual cortex
-sensorimotor
 sensorimotor complex
 sensorimotor cortex
-sensorimotor hand
 sensorimotor hand area
-sensory
 sensory area
-sensory hand
 sensory hand area
 si
 si sites
@@ -1250,7 +1233,6 @@ ventromedial
 ventromedial thalamus
 vermis
 vermis superior
-visual
 visual area
 visual association
 visual association area
