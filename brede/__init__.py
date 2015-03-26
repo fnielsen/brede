@@ -8,6 +8,7 @@ from . import io
 from .eeg import EegRun, topoplot
 from .io import read_edf
 from brede.core.matrix import Matrix
+from brede.surface.core import Surface
 
 
-__all__ = ('eeg', 'io', 'EegRun', 'Matrix', 'read_edf', 'topoplot')
+__all__ = ('eeg', 'io', 'EegRun', 'Matrix', 'read_edf', 'Surface', 'topoplot')
