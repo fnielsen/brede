@@ -1,8 +1,8 @@
-"""Handing of surfaces"""
+"""Handing of surfaces."""
 
 from __future__ import absolute_import
 
-from .core import Surface
+from .core import Surface, read_obj
 
 
-__all__ = ('Surface',)
+__all__ = ('read_obj', 'Surface')
