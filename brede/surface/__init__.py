@@ -1,7 +1,8 @@
 """Handing of surfaces"""
 
+from __future__ import absolute_import
 
-from brede.surface.core import Surface
+from .core import Surface
 
 
 __all__ = ('Surface',)
