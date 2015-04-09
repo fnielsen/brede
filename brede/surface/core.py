@@ -72,9 +72,13 @@ class TriSurface(Surface):
         with open(filename) as fid:
             for line in fid:
                 elements = line.split()
+                if not elements:
+                    # Empty line
+                    continue
+
                 if elements[0] == 'v':
                     vertices.append([float(element)
-                                     for element in elements[1:]])
+                                     for element in elements[1:4]])
                 elif elements[0] == 'vn':
                     # TODO
                     pass
