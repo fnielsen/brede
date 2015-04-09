@@ -97,7 +97,7 @@ class SBS2Data(object):
     def surface(self, model='small'):
         """Return surface from SBS2 data.
 
-        Read a surface from mesh_ctx_5124_normals.obj (large) or 
+        Read a surface from mesh_ctx_5124_normals.obj (large) or
         vertface_brain_reduced.obj (small).
 
         Arguments
@@ -116,7 +116,7 @@ class SBS2Data(object):
         """
         if model == 'small':
             filename = 'vertface_brain_reduced.obj'
-        elif model == 'large': 
+        elif model == 'large':
             filename = 'mesh_ctx_5124_normals.obj'
         else:
             raise ValueError('model should be small or large')
