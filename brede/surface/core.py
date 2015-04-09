@@ -1,13 +1,14 @@
 """Handle surfaces."""
 
 
-from __future__ import division, print_function
-
-from brede.core.matrix import Matrix
+from __future__ import absolute_import, division, print_function
 
 from mayavi.mlab import triangular_mesh
 
 import numpy as np
+
+from ..core.matrix import Matrix
+
 
 class Surface(object):
 
@@ -21,14 +22,14 @@ class Surface(object):
 
 
 class TriSurface(Surface):
-    
+
     """Representation of a triangularized surface with faces and vertices.
 
     Examples
     --------
-    >>> vertices = [[0, 1, 0], [1, 0, 0], [0, 0, -1], [-1, 0, 0], 
+    >>> vertices = [[0, 1, 0], [1, 0, 0], [0, 0, -1], [-1, 0, 0],
                     [0, 1, 0], [0, -1, 0]]
-    >>> faces = [[0, 2, 1], [0, 3, 2], [0, 4, 3], [0, 1, 4], 
+    >>> faces = [[0, 2, 1], [0, 3, 2], [0, 4, 3], [0, 1, 4],
                  [5, 1, 2], [5, 2, 3], [5, 3, 4], [5, 4, 1]]
     >>> surface = TriSurface(vertices, faces)
 
@@ -59,25 +60,26 @@ class TriSurface(Surface):
         """
         vertices = []
         faces = []
-        with open(filename) as fid: 
+        with open(filename) as fid:
             for line in fid:
                 elements = line.split()
                 if elements[0] == 'v':
-                    vertices.append([float(element) 
+                    vertices.append([float(element)
                                      for element in elements[1:]])
-                elif elements[0] == 'vn': 
+                elif elements[0] == 'vn':
                     # TODO
                     pass
                 elif elements[0] == 'f':
-                    faces.append([int(element.split('//')[0]) 
+                    faces.append([int(element.split('//')[0])
                                   for element in elements[1:]])
                 else:
                     # TODO
                     pass
         return cls(np.array(vertices), np.array(faces) - 1)
 
-    def faces_as_array(self):
-        pass
+    def faces_as_matrix(self):
+        """Return faces as matrix."""
+        return Matrix(self._faces)
 
     def plot(self, *args, **kwargs):
         """Plot surface."""
@@ -86,7 +88,7 @@ class TriSurface(Surface):
     def _plot_mayavi(self):
         """Plot surface with Mayavi.
 
-        The x-axis is switched to account the Mayavi's right-handed coordinate 
+        The x-axis is switched to account the Mayavi's right-handed coordinate
         system and Talairach's left-handed coordinate system.
 
         """
