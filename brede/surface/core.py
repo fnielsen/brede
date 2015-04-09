@@ -41,6 +41,15 @@ class TriSurface(Surface):
         self._faces = np.array(faces)
         self._vertex_values = np.array(vertex_values)
 
+    def __repr__(self):
+        """Return string representation."""
+        return "TriSurface(n_vertices={}, n_faces={})".format(
+            self._vertices.shape[0], self._faces.shape[0])
+
+    def __str__(self):
+        """Return string representation."""
+        return self.__repr__()
+
     @classmethod
     def read_obj(cls, filename):
         """Read Wavefront obj file.
@@ -88,8 +97,8 @@ class TriSurface(Surface):
     def _plot_mayavi(self):
         """Plot surface with Mayavi.
 
-        The x-axis is switched to account the Mayavi's right-handed coordinate
-        system and Talairach's left-handed coordinate system.
+        The x-axis is switched to account for the Mayavi's right-handed
+        coordinate system and Talairach's left-handed coordinate system.
 
         """
         if self._vertex_values is None:
@@ -106,3 +115,6 @@ class TriSurface(Surface):
                 self._vertices[:, 2],
                 self._faces)
         return handle
+
+
+read_obj = TriSurface.read_obj
