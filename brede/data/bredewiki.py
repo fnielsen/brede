@@ -93,7 +93,7 @@ class BredeWikiTemplates(db.DB):
                     self.bredewiki_templates_filename)
 
     def unpack(self, redownload=False):
-        """Extract the downloaded compressed Neurosynth dump file.
+        """Extract the downloaded file.
 
         It tests if the relevant database file is already downloaded.
         If not call then the download method is called.
