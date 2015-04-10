@@ -3,8 +3,6 @@
 
 from __future__ import absolute_import, division, print_function
 
-from mayavi.mlab import triangular_mesh
-
 import numpy as np
 
 from ..core.matrix import Matrix
@@ -105,6 +103,9 @@ class TriSurface(Surface):
         coordinate system and Talairach's left-handed coordinate system.
 
         """
+        # Delayed import of Mayavi
+        from mayavi.mlab import triangular_mesh
+
         if self._vertex_values is None:
             handle = triangular_mesh(
                 -self._vertices[:, 0],
@@ -119,6 +120,14 @@ class TriSurface(Surface):
                 self._vertices[:, 2],
                 self._faces)
         return handle
+
+    def show(self):
+        """Show the plotted surface."""
+        self._show_mayavi()
+
+    def _show_mayavi(self):
+        from mayavi.mlab import show
+        show()
 
 
 read_obj = TriSurface.read_obj
