@@ -90,10 +90,12 @@ class TriSurface(Surface):
 
     @property
     def vertex_values(self):
+        """Return vertex values."""
         return self._vertex_values
 
     @vertex_values.setter
     def vertex_values(self, values):
+        """Check and set vertex values."""
         if values is None:
             self._vertex_values = None
         elif len(values) == self._vertices.shape[0]:
@@ -132,7 +134,7 @@ class TriSurface(Surface):
                 self._vertices[:, 0],
                 self._vertices[:, 1],
                 self._vertices[:, 2],
-                self._faces, 
+                self._faces,
                 scalars=self._vertex_values,
                 *args, **kwargs)
         return handle
