@@ -37,7 +37,7 @@ class TriSurface(Surface):
         """Setup vertices, faces and optionally vertex values."""
         self._vertices = np.array(vertices)
         self._faces = np.array(faces)
-        self._vertex_values = np.array(vertex_values)
+        self.vertex_values = vertex_values
 
     def __repr__(self):
         """Return string representation."""
@@ -88,6 +88,19 @@ class TriSurface(Surface):
                     pass
         return cls(np.array(vertices), np.array(faces) - 1)
 
+    @property
+    def vertex_values(self):
+        return self._vertex_values
+
+    @vertex_values.setter
+    def vertex_values(self, values):
+        if values is None:
+            self._vertex_values = None
+        elif len(values) == self._vertices.shape[0]:
+            self._vertex_values = np.asarray(values)
+        else:
+            raise ValueError('values should be None or length of vertices')
+
     def faces_as_matrix(self):
         """Return faces as matrix."""
         return Matrix(self._faces)
@@ -96,7 +109,7 @@ class TriSurface(Surface):
         """Plot surface."""
         self._plot_mayavi(*args, **kwargs)
 
-    def _plot_mayavi(self):
+    def _plot_mayavi(self, *args, **kwargs):
         """Plot surface with Mayavi.
 
         The x-axis is switched to account for the Mayavi's right-handed
@@ -108,17 +121,20 @@ class TriSurface(Surface):
 
         if self._vertex_values is None:
             handle = triangular_mesh(
-                -self._vertices[:, 0],
+                self._vertices[:, 0],
                 self._vertices[:, 1],
                 self._vertices[:, 2],
                 self._faces,
-                scalars=self._vertex_values)
+                scalars=self._vertex_values,
+                *args, **kwargs)
         else:
             handle = triangular_mesh(
-                -self._vertices[:, 0],
+                self._vertices[:, 0],
                 self._vertices[:, 1],
                 self._vertices[:, 2],
-                self._faces)
+                self._faces, 
+                scalars=self._vertex_values,
+                *args, **kwargs)
         return handle
 
     def show(self):
