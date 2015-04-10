@@ -20,12 +20,21 @@ from shutil import move, rmtree
 from subprocess import call
 from tempfile import mkdtemp
 
+from pandas import read_csv
+
 from ..config import config
+from ..core.matrix import Matrix
 from ..surface import read_obj
 
 
 SBS2_SVN_DIR = ('https://github.com/SmartphoneBrainScanner/'
                 'smartphonebrainscanner2-core/trunk/sbs2_data')
+
+SBS2_ELECTRODES_EMOTIV = ['P7', 'FC6', 'T7', 'P8', 'O2', 'O1', 'FC5',
+                          'F3', 'F4', 'T8', 'F7', 'F8', 'AF4', 'AF3']
+
+SBS2_ELECTRODES_EMOCAP = ['TP10', 'Fz', 'P3', 'Cz', 'C4', 'TP9',  'Pz', 'P4',
+                          'F3', 'C3', 'O1', 'F4', 'Fpz', 'O2']
 
 
 class SBS2Data(object):
@@ -94,6 +103,43 @@ class SBS2Data(object):
             self.download()
             # no need for extraction
 
+    def forward_model(self, hardware='emotiv'):
+        """Return forward model.
+
+        Reads forward model from either
+        sbs2_data/hardware/emotiv/forwardmodel_spheres_reduced.txt
+        or sbs2_data/hardware/emocap/forwardmodel_spheres_reduced.txt
+
+        Arguments
+        ---------
+        hardware : 'emotiv' or 'emocap'
+            Hardward type for forward model
+
+        Returns
+        -------
+        matrix : brede.core.matrix.Matrix
+            Matrix with forward model returned channels x vertices
+
+        Examples
+        --------
+        >>> sbs2_data = SBS2Data()
+        >>> forward_model = sbs2_data.forward_model()
+        >>> forward_model.index[0]
+        'P7'
+
+        """
+        if hardware == 'emotiv':
+            electrodes = SBS2_ELECTRODES_EMOTIV
+        elif hardware == 'emocap':
+            electrodes = SBS2_ELECTRODES_EMOCAP
+        else:
+            raise ValueError('Wrong argument to model')
+        filename = join(self.sbs2_dir, 'sbs2_data', 'hardware', hardware,
+                        'forwardmodel_spheres_reduced.txt')
+        matrix = Matrix(read_csv(filename, sep='\t', header=None))
+        matrix.index = electrodes
+        return matrix
+
     def surface(self, model='small'):
         """Return surface from SBS2 data.
 
@@ -107,11 +153,10 @@ class SBS2Data(object):
 
         Examples
         --------
-        >>> import mayavi.mlab
         >>> sbs2_data = SBS2Data()
         >>> surface = sbs2_data.surface()
         >>> surface.plot()
-        >>> mayavi.mlab.show()
+        >>> surface.show()
 
         """
         if model == 'small':
@@ -128,12 +173,10 @@ class SBS2Data(object):
 
 def main(args):
     """Handle command-line interface."""
-    import mayavi.mlab
-
     sbs2_data = SBS2Data()
     surface = sbs2_data.surface(model='large')
     surface.plot()
-    mayavi.mlab.show()
+    surface.show()
 
 
 if __name__ == '__main__':
