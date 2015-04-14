@@ -123,9 +123,9 @@ class KeirnAunon(Data):
         Examples
         --------
         >>> ka = KeirnAunon()
-        >>> eeg_run = ka.trial(2, 'counting', 3)
+        >>> eeg_run = ka.trial(subject=3, state='multiplication', trial=2)
         >>> eeg_run.ix[0, 0]
-        -20.507
+        11.169
 
         See also
         --------
