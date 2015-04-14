@@ -196,7 +196,7 @@ class SBS2Data(object):
         >>> sbs2_data = SBS2Data()
         >>> spatial_coherence = sbs2_data.spatial_coherence()
         >>> spatial_coherence.shape
-        (1028, 1018)
+        (1028, 1028)
 
         """
         filename = join(self.sbs2_dir, 'sbs2_data', 'hardware', hardware,
