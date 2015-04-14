@@ -22,7 +22,7 @@ True
 
 from __future__ import absolute_import
 
-from . import eeg, neurosynth, pubmed, sbs2, wikipedia
+from . import keirnaunon, neurosynth, pubmed, sbs2, wikipedia
 from .bredewiki import BredeWikiTemplates
 from .neurosynth import NeurosynthDatabase
 from .pubmed import Pubmed
@@ -30,5 +30,6 @@ from .sbs2 import SBS2Data
 from .wikipedia import WikiPage
 
 
-__all__ = ('BredeWikiTemplates', 'eeg', 'neurosynth', 'NeurosynthDatabase',
+__all__ = ('BredeWikiTemplates', 'keirnaunon',
+           'neurosynth', 'NeurosynthDatabase',
            'pubmed', 'Pubmed', 'sbs2', 'SBS2Data', 'wikipedia', 'WikiPage')
