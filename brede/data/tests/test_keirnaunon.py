@@ -25,3 +25,6 @@ def test_trial():
 
     eeg_run = ka.trial(subject=3, state='multiplication', trial=2)
     assert eeg_run.ix[0, 0] == 11.169
+
+    eeg_run = ka.trial(2, 'counting', 3)
+    assert abs(-20.507 - eeg_run.ix[0, 0]) < 0.0000001
