@@ -17,7 +17,7 @@ class UnevenSamplingRate(Exception):
     pass
 
 
-class EegRun(DataFrame):
+class EEGRun(DataFrame):
 
     """Represent a EEG data set.
 
@@ -28,7 +28,7 @@ class EegRun(DataFrame):
 
     @property
     def _constructor(self):
-        return EegRun
+        return EEGRun
 
     def __init__(self, data=None, index=None, columns=None, dtype=None,
                  copy=False, sampling_rate=1.0):
@@ -58,8 +58,8 @@ class EegRun(DataFrame):
 
         Returns
         -------
-        eeg_run : EegRun
-            EegRun dataframe with read data.
+        eeg_run : EEGRun
+            EEGRun dataframe with read data.
 
         """
         return cls(brede.io.read_edf(filename))
@@ -74,7 +74,7 @@ class EegRun(DataFrame):
 
         Examples
         --------
-        >>> eeg_run = EegRun({'Cz': [1, -1, 1, -1]})
+        >>> eeg_run = EEGRun({'Cz': [1, -1, 1, -1]})
         >>> fourier = eeg_run.fft()
         >>> fourier.Cz.real
         array([ 0.,  0.,  4.,  0.])

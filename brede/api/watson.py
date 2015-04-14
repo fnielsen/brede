@@ -67,7 +67,7 @@ class WatsonResponse(dict):
     def retrieval_rank(self, title):
         """Return retrieval rank for a given document title.
 
-        If the title if not found 'inf' (floating point) is returned.
+        If the title is not found 'inf' (floating point) is returned.
 
         Parameters
         ----------
@@ -90,7 +90,10 @@ class WatsonResponse(dict):
         """
         rank = float('inf')
         for n, evidence in enumerate(self.evidencelist, start=1):
-            if title == evidence['title']:
+            # With Watson 2.24 the evidence list may have empty dictionary
+            # https://developer.ibm.com/answers/questions/182196/ ...
+            # missing-data-in-item-in-the-evidencelist-returned/
+            if 'title' in evidence and title == evidence['title']:
                 rank = float(n)
                 break
         return rank
@@ -113,6 +116,11 @@ class WatsonResponse(dict):
     def show(self, n=5, show_text=False):
         """Print evidence list."""
         for evidence in islice(self['question']['evidencelist'], n):
+            if not evidence:
+                # The API (2.24 probably) can apparent return an empty evidence
+                # in the first returned list item of the evidencelist.
+                print('MISSING')
+                continue
             if show_text:
                 text = ' - ' + evidence['text'][:40]
             else:
@@ -149,10 +157,9 @@ class Watson(object):
         """Setup credentials for an IBM Watson instance."""
         if user is None and password is None and url is None:
             self.check_config()
-        self.user = user if user else config.get('watson', 'user')
-        self.password = password if password else config.get('watson',
-                                                             'password')
-        self.url = url if url else config.get('watson', 'url')
+        self.user = user or config.get('watson', 'user')
+        self.password = password or config.get('watson', 'password')
+        self.url = url or config.get('watson', 'url')
         self.headers = {'Content-type': 'application/json',
                         'Accept': 'application/json'}
 
@@ -196,15 +203,15 @@ class Watson(object):
 
         Raises
         ------
-        err : requests.exceptions.HTTPError
-            A 500 error may occur if the Watson corpus is not deployed.
+        err : WatsonException
+            May be raise, e.g., with word in question too long.
 
         References
         ----------
         http://www.ibm.com/smarterplanet/us/en/ibmwatson/developercloud/apis/
 
         """
-        # Items should be between 1 and 10, but if not send to the API it can
+        # Items should be between 1 and 10, but if not send to the API
         # the response may contain more than 10 items!?
         if items is None or items > 10:
             # Only 'questionText' seems to be required
@@ -218,7 +225,13 @@ class Watson(object):
                                  headers=self.headers,
                                  data=json.dumps(data),
                                  auth=(self.user, self.password))
-        response.raise_for_status()
+        try:
+            response.raise_for_status()
+        except requests.exceptions.HTTPError:
+            response_data = response.json()
+            raise WatsonException(response_data['message'])
+        except:
+            raise
         response_data = response.json()
         if response_data['question']['status'] == 'Failed':
             raise WatsonFailedError("'Failed' returned from IBM Watson API.")
