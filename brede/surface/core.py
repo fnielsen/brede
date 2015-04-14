@@ -89,6 +89,16 @@ class TriSurface(Surface):
         return cls(np.array(vertices), np.array(faces) - 1)
 
     @property
+    def vertices(self):
+        """Return vertices."""
+        return self._vertices
+
+    @property
+    def faces(self):
+        """Return faces."""
+        return self._faces
+
+    @property
     def vertex_values(self):
         """Return vertex values."""
         return self._vertex_values
@@ -103,13 +113,9 @@ class TriSurface(Surface):
         else:
             raise ValueError('values should be None or length of vertices')
 
-    def faces_as_matrix(self):
-        """Return faces as matrix."""
-        return Matrix(self._faces)
-
     def plot(self, *args, **kwargs):
         """Plot surface."""
-        self._plot_mayavi(*args, **kwargs)
+        return self._plot_mayavi(*args, **kwargs)
 
     def _plot_mayavi(self, *args, **kwargs):
         """Plot surface with Mayavi.
