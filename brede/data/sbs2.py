@@ -252,7 +252,7 @@ class SBS2Data(object):
         --------
         >>> sbs2_data = SBS2Data()
         >>> surface = sbs2_data.surface()
-        >>> surface.plot()
+        >>> handle = surface.plot()
         >>> surface.show()
 
         """
