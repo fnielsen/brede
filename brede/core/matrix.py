@@ -9,18 +9,58 @@ from pandas import DataFrame
 
 from scipy.sparse import csr_matrix
 
+from sklearn.decomposition import FastICA
+
+from .vector import Vector
+
 
 class Matrix(DataFrame):
 
     """Extended dataframe object.
 
-    This object corresponds to a Pandas dataframe object.
+    This object corresponds to a Pandas DataFrame object.
 
     """
 
     @property
     def _constructor(self):
         return Matrix
+
+    def ica(self, n_components=None):
+        """Return result from independent component analysis.
+
+        X = SA + m
+
+        Sklearn's FastICA implementation is used.
+
+        Parameters
+        ----------
+        n_components : int, optional
+            Number of ICA components.
+
+        Returns
+        -------
+        source : Matrix
+            Estimated source matrix (S)
+        mixing_matrix : Matrix
+            Estimated mixing matrix (A)
+        mean_vector : brede.core.vector.Vector
+            Estimated mean vector
+
+        References
+        ----------
+        http://scikit-learn.org/stable/modules/decomposition.html#ica
+
+        """
+        if n_components is None:
+            n_components = int(np.ceil(np.sqrt(float(min(self.shape)) / 2)))
+
+        ica = FastICA(n_components=n_components)
+        sources = Matrix(ica.fit_transform(self.values), index=self.index)
+        mixing_matrix = Matrix(ica.mixing_.T, columns=self.columns)
+        mean_vector = Vector(ica.mean_, index=self.columns)
+
+        return sources, mixing_matrix, mean_vector
 
     def idf(self):
         """Return scaled version with inverse document frequency.
