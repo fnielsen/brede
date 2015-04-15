@@ -8,6 +8,7 @@ import brede.io
 import numpy as np
 
 from pandas import DataFrame
+from pandas import read_csv as pandas_read_csv
 
 
 class UnevenSamplingRate(Exception):
@@ -48,6 +49,24 @@ class EEGRun(DataFrame):
         return 1 / interval
 
     @classmethod
+    def read_csv(cls, filename, sampling_rate=1.0, *args, **kwargs):
+        """Read comma-separated file.
+
+        Parameters
+        ----------
+        filename : str
+            Filename for the csv file
+
+        Returns
+        -------
+        eeg_run : EEGRun
+            EEGRun dataframe with read data.
+
+        """
+        return cls(pandas_read_csv(filename, *args, **kwargs),
+                   sampling_rate=sampling_rate)
+
+    @classmethod
     def read_edf(cls, filename):
         """Read EDF file.
 
@@ -83,3 +102,6 @@ class EEGRun(DataFrame):
         fourier = np.fft.fft(self, axis=0)
         frequencies = np.fft.fftfreq(self.shape[0], 1 / self.sampling_rate())
         return DataFrame(fourier, index=frequencies, columns=self.columns)
+
+
+read_csv = EEGRun.read_csv
