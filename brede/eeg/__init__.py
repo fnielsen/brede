@@ -1,7 +1,7 @@
 """EEG modules, classes and functions."""
 
-from __future__ import absolute_import
 
+from __future__ import absolute_import
 
 from . import plotting
 from .core import EEGRun
