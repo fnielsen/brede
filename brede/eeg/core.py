@@ -14,6 +14,76 @@ from pandas import DataFrame
 from pandas import read_csv as pandas_read_csv
 
 
+ELECTRODES = {
+    'AF3',
+    'AF4',
+    'AF7',
+    'AF8',
+    'AFz',
+    'C1',
+    'C2',
+    'C3',
+    'C4',
+    'C5',
+    'C6',
+    'CP1',
+    'CP2',
+    'CP3',
+    'CP4',
+    'CP5',
+    'CP6',
+    'CPz',
+    'Cz',
+    'F1',
+    'F2',
+    'F3',
+    'F4',
+    'F5',
+    'F6',
+    'F7',
+    'F8',
+    'FC1',
+    'FC2',
+    'FC3',
+    'FC4',
+    'FC5',
+    'FC6',
+    'FCz',
+    'FP1',
+    'FP2',
+    'Fpz',
+    'FT7',
+    'FT8',
+    'Fz',
+    'Iz',
+    'Nz',
+    'P1',
+    'P2',
+    'P3',
+    'P4',
+    'P5',
+    'P6',
+    'P7',
+    'P8',
+    'PO3',
+    'PO4',
+    'PO7',
+    'PO8',
+    'POz',
+    'Pz',
+    'O1',
+    'O2',
+    'Oz',
+    'T7',
+    'T8',
+    'T9',
+    'T10',
+    'TP7',
+    'TP8',
+    'TP9',
+    'TP10'
+}
+
 EMOTIV_TO_EMOCAP_MAP = {
     'F3': 'P4',
     'FC6': 'Fz',
@@ -154,7 +224,7 @@ class EEGRun(DataFrame):
 
         Returns
         -------
-        df : Spectrum
+        spectrum : Spectrum
             Dataframe-like with frequencies in rows and electrodes in columns.
 
         Examples
@@ -170,7 +240,79 @@ class EEGRun(DataFrame):
         return Spectrum(fourier, index=frequencies, columns=self.columns)
 
 
-read_csv = EEGRun.read_csv
+class EEGAuxRun(EEGRun):
+
+    """Represent a EEG data set with auxilliary data.
+
+    The Pandas DataFrame class is reused and extended with, e.g., Fourier
+    transformation.
+
+    Attributes
+    ----------
+    sampling_rate : float
+        Sampling rate in Hertz
+    electrodes : list of str
+        Names for columns that are electrodes
+
+    """
+
+    @property
+    def _constructor(self):
+        return EEGAuxRun
+
+    def __init__(self, data=None, index=None, columns=None, dtype=None,
+                 copy=False, sampling_rate=1.0, electrodes=None):
+        """Construct dataframe-like object."""
+        EEGRun.__init__(self, data=data, index=index, columns=columns,
+                        dtype=dtype, copy=copy)
+
+        if sampling_rate is not None:
+            self.index = np.arange(0, len(self) * sampling_rate, sampling_rate)
+
+        if electrodes is None:
+            self.electrodes = [column for column in self.columns
+                               if column in ELECTRODES]
+        else:
+            self.electrodes = electrodes
+
+    def emotiv_to_emocap(self, check_all=True, change_qualities=True,
+                         inplace=True):
+        """Change column names for Emotiv electrodes to Emocap.
+
+        Specialized method to change the electrode names in the dataframe
+        column from Emotiv electrode names to Emocap electrode names.
+
+        """
+        old_electrodes = self.electrodes
+        super(EEGAuxRun, self).emotiv_to_emocap(
+            check_all=check_all,
+            change_qualities=change_qualities,
+            inplace=inplace)
+        self.electrodes = [EMOTIV_TO_EMOCAP_MAP[electrode]
+                           for electrode in old_electrodes]
+
+    def fft(self):
+        """Fourier transform of data.
+
+        Returns
+        -------
+        spectrum : Spectrum
+            Dataframe-like with frequencies in rows and electrodes in columns.
+
+        Examples
+        --------
+        >>> eeg_run = EEGRun({'Cz': [1, -1, 1, -1]})
+        >>> fourier = eeg_run.fft()
+        >>> fourier.Cz.real
+        array([ 0.,  0.,  4.,  0.])
+
+        """
+        fourier = np.fft.fft(self.ix[:, self.electrodes], axis=0)
+        frequencies = np.fft.fftfreq(self.shape[0], 1 / self.sampling_rate)
+        return Spectrum(fourier, index=frequencies, columns=self.electrodes)
+
+
+read_csv = EEGAuxRun.read_csv
 
 
 class Spectrum(DataFrame):
