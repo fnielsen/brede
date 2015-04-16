@@ -127,6 +127,9 @@ class KeirnAunon(Data):
         >>> eeg_run.ix[0, 0]
         11.169
 
+        >>> eeg_run.sampling_rate
+        250.0
+
         See also
         --------
         brede.eeg.core
