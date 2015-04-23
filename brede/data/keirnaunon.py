@@ -216,8 +216,8 @@ def _number_of_trials():
 
     Examples
     --------
-    >>> number_of_trials = brede.data.keirnaunon._number_of_trials()
-    >>> number_of_trials[(7, 'counting')]
+    >>> number_of_trials = _number_of_trials()
+    >>> number_of_trials[7]
     5
 
     """
