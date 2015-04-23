@@ -34,7 +34,7 @@ from urllib import urlretrieve
 
 from .core import Data
 from ..config import config
-from ..eeg.core import EEGRun
+from ..eeg.core import EEGRun, EEGRuns
 
 
 URL = "http://www.cs.colostate.edu/eeg/data/alleegdata.ascii.gz"
@@ -43,10 +43,32 @@ ELECTRODES = ['C3', 'C4', 'P3', 'P4', 'O1', 'O2']
 
 SAMPLING_RATE = 1./250
 
+# This constant is setup via the _number_of_trials function
+# The key here is the subject identifier.
+NUMBER_OF_TRIALS = {
+    1: 10,
+    2: 5,
+    3: 10,
+    4: 10,
+    5: 15,
+    6: 10,
+    7: 5
+}
+
 
 class KeirnAunon(Data):
 
-    """EEG data from a study by Keirn and Aunon.."""
+    """EEG data from a study by Keirn and Aunon.
+
+    Examples
+    --------
+    >>> ka = KeirnAunon()
+    >>> eeg_run = ka.trial()
+    >>> fourier = eeg_run.fft()
+    >>> fourier.plot_mean_spectrum()
+    >>> fourier.show()
+
+    """
 
     def __init__(self, subject=1, state='baseline', trial=1):
         """Setup metadata."""
@@ -57,7 +79,7 @@ class KeirnAunon(Data):
 
     @property
     def _constructor(self):
-        return KeirnAunon
+        return type(self)
 
     def __str__(self):
         """Return descriptive string."""
@@ -100,8 +122,12 @@ class KeirnAunon(Data):
             with open(self.filename, 'w') as outfile:
                 outfile.write(content)
 
+    @staticmethod
+    def _match_line(subject, state, trial):
+        return 'subject {}, {}, trial {}'.format(subject, state, trial)
+
     def trial(self, subject=1, state='baseline', trial=1):
-        """Read data from the 6 electrodes.
+        """Read data from the 6 electrodes from specified trial.
 
         The possible states are: baseline, multiplication, letter-composing,
         rotation and counting.
@@ -136,7 +162,7 @@ class KeirnAunon(Data):
 
         """
         self.unpack()
-        match_line = 'subject {}, {}, trial {}'.format(subject, state, trial)
+        match_line = self._match_line(subject, state, trial)
         with open(self.filename) as fid:
             while fid.readline().strip() != match_line:
                 # Skipping lines until relevant data
@@ -148,6 +174,64 @@ class KeirnAunon(Data):
                          columns=ELECTRODES,
                          sampling_rate=SAMPLING_RATE)
         return eeg_run
+
+    def trials_for_subject_state(self, subject=1, state='baseline'):
+        """Return data from all trials for a subject/state combination.
+
+        Parameters
+        ----------
+        subject : int, optional
+            Subject identifier
+        state : 'baseline' or other, optional
+            State of trial
+
+        Returns
+        -------
+        eeg_runs : brede.eeg.core.EEGRuns
+            3D Panel-like structure with (trial x time x electrode).
+
+        """
+        self.unpack()
+        number_of_trials = NUMBER_OF_TRIALS[subject]
+        trials = range(1, number_of_trials + 1)
+        data = []
+        with open(self.filename) as fid:
+            for trial in trials:
+                match_line = self._match_line(subject, state, trial)
+                while fid.readline().strip() != match_line:
+                    # Skipping lines until relevant data
+                    pass
+                data.append(zip(*[[float(elem)
+                                   for elem in fid.readline().split()]
+                                  for n in range(6)]))
+
+        # trial x time x electrode
+        return EEGRuns(data, items=trials, minor_axis=ELECTRODES)
+
+
+def _number_of_trials():
+    """Find the number of trials for each subject/state combination.
+
+    Note that within subject all states have the same number of trials.
+
+    Examples
+    --------
+    >>> number_of_trials = brede.data.keirnaunon._number_of_trials()
+    >>> number_of_trials[(7, 'counting')]
+    5
+
+    """
+    ka = KeirnAunon()
+    number_of_trials = {}
+    with open(ka.filename) as fid:
+        for line in fid:
+            if line.startswith('subject'):
+                subject = int(line[8])
+                state = line.split()[2]
+                trial = int(line.split()[4])
+                number_of_trials[(subject, state)] = trial
+                number_of_trials[subject] = trial
+    return number_of_trials
 
 
 def main(args):
