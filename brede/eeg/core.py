@@ -13,6 +13,9 @@ import numpy as np
 from pandas import DataFrame
 from pandas import read_csv as pandas_read_csv
 
+from ..core.matrix import Matrix
+from ..core.tensor import Tensor
+
 
 ELECTRODES = {
     'AF3',
@@ -116,9 +119,12 @@ class ElectrodeNameError(Exception):
     pass
 
 
-class EEGRun(DataFrame):
+class EEGRun(Matrix):
 
     """Represent a EEG data set.
+
+    The 'run' should be a temporal-consecutive data set with a fixed sampling
+    rate.
 
     The Pandas DataFrame class is reused and extended with, e.g., Fourier
     transformation.
@@ -240,6 +246,13 @@ class EEGRun(DataFrame):
         return Spectrum(fourier, index=frequencies, columns=self.columns)
 
 
+class EEGRuns(Tensor):
+
+    """Multiple EEGRuns of the same length."""
+
+    pass
+
+
 class EEGAuxRun(EEGRun):
 
     """Represent a EEG data set with auxilliary data.
@@ -312,12 +325,13 @@ class EEGAuxRun(EEGRun):
         return Spectrum(fourier, index=frequencies, columns=self.electrodes)
 
 
-read_csv = EEGAuxRun.read_csv
-
-
 class Spectrum(DataFrame):
 
-    """Represent a spectrum for an EEG signal as a dataframe-like object."""
+    """Represent spectrum for an EEG signal as a dataframe-like object.
+
+    Each frequency is in each row.
+
+    """
 
     def plot_electrode_spectrum(self, electrode):
         """Plot the spectrum of an electrode.
@@ -390,3 +404,6 @@ class Spectrum(DataFrame):
     def show(self):
         """Show Matplotlib plot."""
         plt.show()
+
+
+read_csv = EEGAuxRun.read_csv
