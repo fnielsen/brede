@@ -110,7 +110,7 @@ class KeirnAunon(Data):
     def download(self):
         """Download data set from web site."""
         self.make_dirs()
-        urlretrieve(URL, self.filename)
+        urlretrieve(URL, self.gzip_filename)
 
     def unpack(self, redownload=False):
         """Unpack data set from conditional download."""
