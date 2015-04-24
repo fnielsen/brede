@@ -69,13 +69,10 @@ anteroparietal
 area
 area left
 areas
-around
 around sylvian
 around sylvian fissure
-association
 association area
 association cortex
-auditory
 auditory association
 auditory association cortex
 auditory cortex
@@ -94,7 +91,6 @@ broca s area
 brocas
 brocas area
 brodmann
-buried
 buried postcentral
 buried sylvian
 buried sylvian cortex
@@ -130,7 +126,6 @@ caudate nucleus
 caudatum
 caudatus
 caudatus head
-cellbellum
 central
 central cingulate
 central gyrus
@@ -221,7 +216,6 @@ cuneus
 cuneus midline
 cuneus striate
 cuneus striate junction
-deep
 deep nuclei
 dentate
 dentate nucleus
@@ -266,17 +260,14 @@ dorsomedial nucleus of
 dorsomedial nucleus of thalamus
 entorrhinal
 entorrhinal cortex
-external
 external capsule
 extracerebral
 extrastriate
 extrastriate cortex
-eye
 eye field
 eye fields
 field
 fields
-finger
 finger si
 finger si sites
 fissure
@@ -323,7 +314,8 @@ fusiform lingual
 ganglia
 globus
 globus pallidus
-grey
+gray matter
+grey matter
 gyri
 gyrus
 gyrus angular
@@ -341,10 +333,8 @@ gyrus rectus ventral striatum
 gyrus retrosplenial
 gyrus temporal
 gyrus temporal lobe
-hand
 hand area
 hand area left
-head
 hemisphere
 hemispheres
 heschl
@@ -529,7 +519,6 @@ lingular
 lingular gyrus
 lobe
 lobule
-low
 low premotor
 lower
 lower premotor
@@ -658,7 +647,6 @@ midoccipital
 midoccipital gyrus
 midtemporal
 midtemporal gyrus
-motor
 motor area
 motor cingulate
 motor cingulate cortex
@@ -678,7 +666,6 @@ neuroanatomically
 neuroanatomy
 nigra
 no
-no data
 nuclei
 nucleus
 nucleus caudatus
@@ -997,14 +984,10 @@ secondary somatosensory
 secondary somatosensory cortex
 secondary visual
 secondary visual cortex
-sensorimotor
 sensorimotor complex
 sensorimotor cortex
-sensorimotor hand
 sensorimotor hand area
-sensory
 sensory area
-sensory hand
 sensory hand area
 si
 si sites
@@ -1250,7 +1233,6 @@ ventromedial
 ventromedial thalamus
 vermis
 vermis superior
-visual
 visual area
 visual association
 visual association area
@@ -1361,3 +1343,106 @@ gray
 acc
 pfc
 subcortical
+cerebral cortex
+gyrus cinguli
+mental recall
+corpus striatum
+nucleus accumbens
+cerebrospinal fluid
+mesencephalon
+brain stem
+neostriatum
+limbic system
+neocortex
+periaqueductal gray
+entorhinal cortex
+prosencephalon
+ventral tegmental area
+thalamic nuclei
+geniculate bodies
+central nervous system
+superior colliculi
+cerebral arteries
+telencephalon
+ppc
+posterior parietal cortex
+frontal areas
+temporal regions
+ventrolateral pfc
+basal forebrain
+brain regions
+lateral pfc
+left amygdala
+dorsomedial prefrontal
+bilateral insula
+fronto-occipital fasciculus
+right insula
+brain areas
+motor areas
+tegmental area
+occipito-temporal cortex
+dorsal striatum
+subcortical structures
+extrastriate body
+frontoparietal network
+parietal areas
+parietal cortices
+postcentral gyri
+right posterior
+visual areas
+right lateral
+right cerebellum
+planum temporale
+ventral striatal
+ventromedial prefrontal
+bilateral anterior
+prefrontal regions
+longitudinal fasciculus
+ventral tegmental
+fronto-parietal network
+left hippocampus
+pars opercularis
+temporal cortices
+left posterior
+right fusiform
+temporal lobes
+frontal lobes
+cortical midline
+frontal regions
+sensory cortices
+left angular
+subcortical regions
+left frontal
+bilateral inferior
+corona radiata
+temporo-parietal junction
+right hippocampus
+prefrontal cortices
+fusiform face
+face area
+brain region
+right hemisphere
+right amygdala
+left precentral
+temporal poles
+grey matter
+uncinate fasciculus
+retrosplenial cortex
+rostral anterior
+right inferior
+left ifg
+parietal lobes
+left insula
+dorsolateral pfc
+subthalamic nucleus
+somatosensory cortices
+frontotemporal lobar
+left temporal
+right dorsolateral
+ofc
+ptsd
+ifg
+ips
+vmpfc
+mid-dorsolateral prefrontal
+mpfc
