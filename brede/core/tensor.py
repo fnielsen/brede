@@ -12,4 +12,4 @@ class Tensor(Panel):
 
     @property
     def _constructor(self):
-        return Tensor
+        return type(self)
