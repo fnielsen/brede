@@ -18,6 +18,11 @@ man and his surroundings, IEEE Transactions on Biomedical Engineering
 1989 Keirn and Aunon
 http://www.cs.colostate.edu/eeg/main/data/1989_Keirn_and_Aunon
 
+Examples
+--------
+>>> ka = KeirnAunon()
+>>> trial = ka.trial()
+
 """
 
 
@@ -32,6 +37,8 @@ from os.path import exists, expanduser, join
 
 from urllib import urlretrieve
 
+import numpy as np
+
 from .core import Data
 from ..config import config
 from ..eeg.core import EEGRun, EEGRuns
@@ -45,6 +52,8 @@ SAMPLING_RATE = 1./250
 
 # This constant is setup via the _number_of_trials function
 # The key here is the subject identifier.
+# All states for each subject has the same number of trials
+# so indexing on state is not necessary
 NUMBER_OF_TRIALS = {
     1: 10,
     2: 5,
@@ -60,6 +69,9 @@ class KeirnAunon(Data):
 
     """EEG data from a study by Keirn and Aunon.
 
+    This class can be viewed as a singleton class. There are no instance
+    variables.
+
     Examples
     --------
     >>> ka = KeirnAunon()
@@ -70,7 +82,7 @@ class KeirnAunon(Data):
 
     """
 
-    def __init__(self, subject=1, state='baseline', trial=1):
+    def __init__(self):
         """Setup metadata."""
         self.data_dir = join(expanduser(config.get('data', 'data_dir')),
                              'keirnaunon')
@@ -194,19 +206,21 @@ class KeirnAunon(Data):
         self.unpack()
         number_of_trials = NUMBER_OF_TRIALS[subject]
         trials = range(1, number_of_trials + 1)
-        data = []
+        data = {}
         with open(self.filename) as fid:
             for trial in trials:
                 match_line = self._match_line(subject, state, trial)
                 while fid.readline().strip() != match_line:
                     # Skipping lines until relevant data
                     pass
-                data.append(zip(*[[float(elem)
-                                   for elem in fid.readline().split()]
-                                  for n in range(6)]))
+                data[trial] = np.array(
+                    zip(*[[float(elem)
+                           for elem in fid.readline().split()]
+                          for n in range(6)]))
 
         # trial x time x electrode
-        return EEGRuns(data, items=trials, minor_axis=ELECTRODES)
+        return EEGRuns(data, minor_axis=ELECTRODES,
+                       sampling_rate=SAMPLING_RATE)
 
 
 def _number_of_trials():
