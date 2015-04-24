@@ -131,6 +131,8 @@ class EEGRun(Matrix):
 
     """
 
+    _metadata = ['sampling_rate']
+
     @property
     def _constructor(self):
         return EEGRun
@@ -138,8 +140,9 @@ class EEGRun(Matrix):
     def __init__(self, data=None, index=None, columns=None, dtype=None,
                  copy=False, sampling_rate=1.0):
         """Construct dataframe-like object."""
-        DataFrame.__init__(self, data=data, index=index, columns=columns,
-                           dtype=dtype, copy=copy)
+        super(Matrix, self).__init__(
+            data=data, index=index, columns=columns,
+            dtype=dtype, copy=copy)
         if sampling_rate is not None:
             self.index = np.arange(0, len(self) * sampling_rate, sampling_rate)
 
@@ -230,7 +233,7 @@ class EEGRun(Matrix):
 
         Returns
         -------
-        spectrum : Spectrum
+        spectrum : Spectra
             Dataframe-like with frequencies in rows and electrodes in columns.
 
         Examples
@@ -243,14 +246,67 @@ class EEGRun(Matrix):
         """
         fourier = np.fft.fft(self, axis=0)
         frequencies = np.fft.fftfreq(self.shape[0], 1 / self.sampling_rate)
-        return Spectrum(fourier, index=frequencies, columns=self.columns)
+        return Spectra(fourier, index=frequencies, columns=self.columns)
 
 
 class EEGRuns(Tensor):
 
     """Multiple EEGRuns of the same length."""
 
-    pass
+    _metadata = ['sampling_rate']
+
+    @property
+    def _constructor(self):
+        return type(self)
+
+    def __init__(self, data=None, items=None, major_axis=None, minor_axis=None,
+                 dtype=None, copy=False, sampling_rate=1.0):
+        """Construct Panel-like object."""
+        super(EEGRuns, self).__init__(
+            data=data, items=items, major_axis=major_axis,
+            minor_axis=minor_axis,
+            dtype=dtype, copy=copy)
+        if sampling_rate is not None:
+            self.major_axis = np.arange(0,
+                                        self.shape[1] * sampling_rate,
+                                        sampling_rate)
+
+    @property
+    def sampling_rate(self):
+        """Return sampling rate.
+
+        Raises
+        ------
+        UnevenSamplingRateError
+
+        """
+        intervals = np.diff(self.major_axis.values)
+        interval = intervals.mean()
+        interval_variation = max(intervals - interval) / interval
+        if interval_variation > 10 ** -10:
+            raise UnevenSamplingRateError
+        return 1 / interval
+
+    def fft(self):
+        """Fourier transform of data.
+
+        Returns
+        -------
+        spectrum : Tensor
+            Panel-like with frequencies in major_axis
+
+        Examples
+        --------
+        >>> eeg_runs = EEGRuns({'Trial 1': {'Cz': [1, -1, 1, -1]}})
+        >>> fourier = eeg_runs.fft()
+        >>> fourier['Trial 1', :, 'Cz'].real
+        array([ 0.,  0.,  4.,  0.])
+
+        """
+        fourier = np.fft.fft(self, axis=1)
+        frequencies = np.fft.fftfreq(self.shape[1], 1 / self.sampling_rate)
+        return Spectra3(fourier, items=self.items,
+                        major_axis=frequencies, minor_axis=self.minor_axis)
 
 
 class EEGAuxRun(EEGRun):
@@ -269,9 +325,11 @@ class EEGAuxRun(EEGRun):
 
     """
 
+    _metadata = ['electrodes', 'sampling_rate']
+
     @property
     def _constructor(self):
-        return EEGAuxRun
+        return type(self)
 
     def __init__(self, data=None, index=None, columns=None, dtype=None,
                  copy=False, sampling_rate=1.0, electrodes=None):
@@ -309,7 +367,7 @@ class EEGAuxRun(EEGRun):
 
         Returns
         -------
-        spectrum : Spectrum
+        spectrum : Spectra
             Dataframe-like with frequencies in rows and electrodes in columns.
 
         Examples
@@ -322,14 +380,14 @@ class EEGAuxRun(EEGRun):
         """
         fourier = np.fft.fft(self.ix[:, self.electrodes], axis=0)
         frequencies = np.fft.fftfreq(self.shape[0], 1 / self.sampling_rate)
-        return Spectrum(fourier, index=frequencies, columns=self.electrodes)
+        return Spectra(fourier, index=frequencies, columns=self.electrodes)
 
 
-class Spectrum(DataFrame):
+class Spectra(DataFrame):
 
-    """Represent spectrum for an EEG signal as a dataframe-like object.
+    """Represent spectra for an EEG signal as a dataframe-like object.
 
-    Each frequency is in each row.
+    Each frequency is in each row, electrodes in columns
 
     """
 
@@ -383,7 +441,7 @@ class Spectrum(DataFrame):
 
         Examples
         --------
-        >>> spectrum = Spectrum({'Cz': [1, 2, 3, 1, 2, 10, 3, 4, 1]})
+        >>> spectrum = Spectra({'Cz': [1, 2, 3, 1, 2, 10, 3, 4, 1]})
         >>> spectrum.peak_frequency()
         5
 
@@ -397,6 +455,98 @@ class Spectrum(DataFrame):
             magnitudes = np.mean(np.abs(self.ix[indices, :]), axis=1)
         else:
             magnitudes = np.abs(self.ix[indices, electrode])
+
+        peak_frequency = magnitudes.argmax()
+        return peak_frequency
+
+    def show(self):
+        """Show Matplotlib plot."""
+        plt.show()
+
+
+class Spectra3(Tensor):
+
+    """Represent spectra for an EEG signal as a Panel-like object.
+
+    Each run is in items, each frequency is in each major_axis, electrodes in
+    minor_axis.
+
+    """
+
+    def plot_electrode_run_spectrum(self, electrode, run):
+        """Plot the spectrum of an electrode.
+
+        Parameters
+        ----------
+        electrode : str
+            Electrode name associated with column
+        run : str or int
+            Index for run.
+
+        """
+        positive_frequencies = self.major_axis >= 0
+        plt.plot(self.major_axis[positive_frequencies],
+                 np.abs(self[run, positive_frequencies, electrode]))
+        plt.xlabel('Frequency')
+        plt.ylabel('Magnitude')
+        plt.title('Spectrum of {} for run {}'.format(electrode, run))
+
+    def plot_mean_spectrum(self):
+        """Plot the spectrum of the mean across electrodes and runs.
+
+        Only the positive part of the spectrum is shown.
+
+        """
+        positive_frequencies = self.major_axis >= 0
+        magnitudes = np.abs(self[:, positive_frequencies, :])
+        plt.plot(self.major_axis[positive_frequencies],
+                 magnitudes.values.mean(axis=(0, 2)))
+        plt.xlabel('Frequency')
+        plt.ylabel('Magnitude')
+        plt.title('Mean spectrum across {} runs and {} electrodes'.format(
+            self.shape[0], self.shape[2]))
+
+    def peak_frequency(self, min_frequency=0.0, max_frequency=None,
+                       electrode=None, run=None):
+        """Return frequency with peak magnitude.
+
+        Parameters
+        ----------
+        min_frequency : float
+            Minimum frequency to search for peak from
+        max_frequency : float
+            Maximum frequency to search for peak from
+        electrode : str, optional
+            Electrode to use for finding peak. If None then the mean of the
+            magnitude across all electrodes is used.
+
+        Returns
+        -------
+        freq : float
+            Peak frequency
+
+        Examples
+        --------
+        >>> spectrum = Spectra3({'Trial 1':
+        ...                      {'Cz': [1, 2, 3, 1, 2, 10, 3, 4, 1]}})
+        >>> spectrum.peak_frequency()
+        5
+
+        """
+        min_frequency = max(0.0, min_frequency)
+        if max_frequency is None:
+            max_frequency = max(self.major_axis)
+
+        indices = ((self.major_axis >= min_frequency) &
+                   (self.major_axis <= max_frequency))
+        if electrode is None and run is None:
+            magnitudes = np.abs(self[:, indices, :]).mean(axis=2).mean(axis=1)
+        elif electrode is None:
+            magnitudes = np.abs(self[run, indices, :]).mean(axis=2)
+        elif run is None:
+            magnitudes = np.abs(self[:, indices, electrode]).mean(axis=0)
+        else:
+            magnitudes = np.abs(self[run, indices, electrode])
 
         peak_frequency = magnitudes.argmax()
         return peak_frequency
