@@ -13,6 +13,7 @@ def test_name():
 
 
 def test_sampling_rate():
+    """Test constant for sampling rate."""
     assert keirnaunon.SAMPLING_RATE == 250
 
 
