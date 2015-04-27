@@ -10,11 +10,12 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 
-from pandas import DataFrame
+from pandas import DataFrame, Series
 from pandas import read_csv as pandas_read_csv
 
 from ..core.matrix import Matrix
 from ..core.tensor import Tensor
+from ..core.tensor4d import Tensor4D
 
 
 ELECTRODES = {
@@ -144,7 +145,8 @@ class EEGRun(Matrix):
             data=data, index=index, columns=columns,
             dtype=dtype, copy=copy)
         if sampling_rate is not None:
-            self.index = np.arange(0, len(self) * sampling_rate, sampling_rate)
+            self.index = np.arange(0, len(self) / sampling_rate,
+                                   1 / sampling_rate)
 
     @property
     def sampling_rate(self):
@@ -267,9 +269,8 @@ class EEGRuns(Tensor):
             minor_axis=minor_axis,
             dtype=dtype, copy=copy)
         if sampling_rate is not None:
-            self.major_axis = np.arange(0,
-                                        self.shape[1] * sampling_rate,
-                                        sampling_rate)
+            self.major_axis = np.arange(
+                0, self.shape[1] / sampling_rate, 1 / sampling_rate)
 
     @property
     def sampling_rate(self):
@@ -305,8 +306,70 @@ class EEGRuns(Tensor):
         """
         fourier = np.fft.fft(self, axis=1)
         frequencies = np.fft.fftfreq(self.shape[1], 1 / self.sampling_rate)
-        return Spectra3(fourier, items=self.items,
-                        major_axis=frequencies, minor_axis=self.minor_axis)
+        return Spectra3D(fourier, items=self.items,
+                         major_axis=frequencies, minor_axis=self.minor_axis)
+
+
+class EEGRuns4D(Tensor4D):
+
+    """Multiple EEGRuns of the same length."""
+
+    _metadata = ['sampling_rate']
+
+    @property
+    def _constructor(self):
+        return type(self)
+
+    def __init__(self, data=None, labels=None, items=None,
+                 major_axis=None, minor_axis=None,
+                 dtype=None, copy=False, sampling_rate=1.0):
+        """Construct Panel-like object."""
+        super(EEGRuns4D, self).__init__(
+            data=data, labels=labels, items=items,
+            major_axis=major_axis, minor_axis=minor_axis,
+            dtype=dtype, copy=copy)
+        if sampling_rate is not None:
+            self.major_axis = np.arange(
+                0, self.shape[2] / sampling_rate, 1 / sampling_rate)
+
+    @property
+    def sampling_rate(self):
+        """Return sampling rate.
+
+        Raises
+        ------
+        UnevenSamplingRateError
+
+        """
+        intervals = np.diff(self.major_axis.values)
+        interval = intervals.mean()
+        interval_variation = max(intervals - interval) / interval
+        if interval_variation > 10 ** -10:
+            raise UnevenSamplingRateError
+        return 1 / interval
+
+    def fft(self):
+        """Fourier transform of data.
+
+        Returns
+        -------
+        spectra : Spectra4D
+            Panel4D-like with frequencies in major_axis
+
+        Examples
+        --------
+        >>> eeg_runs = EEGRuns4D([[[[1], [-1], [1], [-1]]]],
+        ...     labels=['baseline'], items=['Trial 1'],
+        ...     minor_axis=['Cz'])
+        >>> fourier = eeg_runs.fft()
+        >>> fourier['baseline', 'Trial 1', :, 'Cz'].real
+        array([ 0.,  0.,  4.,  0.])
+
+        """
+        fourier = np.fft.fft(self, axis=2)
+        frequencies = np.fft.fftfreq(self.shape[2], 1 / self.sampling_rate)
+        return Spectra4D(fourier, labels=self.labels, items=self.items,
+                         major_axis=frequencies, minor_axis=self.minor_axis)
 
 
 class EEGAuxRun(EEGRun):
@@ -464,7 +527,7 @@ class Spectra(DataFrame):
         plt.show()
 
 
-class Spectra3(Tensor):
+class Spectra3D(Tensor):
 
     """Represent spectra for an EEG signal as a Panel-like object.
 
@@ -527,7 +590,7 @@ class Spectra3(Tensor):
 
         Examples
         --------
-        >>> spectrum = Spectra3({'Trial 1':
+        >>> spectrum = Spectra3D({'Trial 1':
         ...                      {'Cz': [1, 2, 3, 1, 2, 10, 3, 4, 1]}})
         >>> spectrum.peak_frequency()
         5
@@ -547,6 +610,102 @@ class Spectra3(Tensor):
             magnitudes = np.abs(self[:, indices, electrode]).mean(axis=0)
         else:
             magnitudes = np.abs(self[run, indices, electrode])
+
+        peak_frequency = magnitudes.argmax()
+        return peak_frequency
+
+    def show(self):
+        """Show Matplotlib plot."""
+        plt.show()
+
+
+class Spectra4D(Tensor4D):
+
+    """Represent spectra for an EEG signal as a Panel4-like object.
+
+    Each run is in items, each frequency is in each major_axis, electrodes in
+    minor_axis.
+
+    """
+
+    def plot_electrode_label_run_spectrum(self, electrode, run, label):
+        """Plot the spectrum of an electrode.
+
+        Parameters
+        ----------
+        electrode : str
+            Electrode name associated with column
+        run : str or int
+            Index for run.
+
+        """
+        positive_frequencies = self.major_axis >= 0
+        plt.plot(self.major_axis[positive_frequencies],
+                 np.abs(self[label, run, positive_frequencies, electrode]))
+        plt.xlabel('Frequency')
+        plt.ylabel('Magnitude')
+        plt.title('Spectrum of {} for run {}'.format(electrode, run))
+
+    def plot_mean_spectrum(self):
+        """Plot the spectrum of the mean across electrodes and runs.
+
+        Only the positive part of the spectrum is shown.
+
+        """
+        positive_frequencies = self.major_axis >= 0
+        magnitudes = np.abs(self[:, :, positive_frequencies, :])
+        plt.plot(self.major_axis[positive_frequencies],
+                 magnitudes.values.mean(axis=(0, 1, 3)))
+        plt.xlabel('Frequency')
+        plt.ylabel('Magnitude')
+        plt.title(('Mean spectrum across {} labels, {} runs '
+                   'and {} electrodes').format(
+            self.shape[0], self.shape[1], self.shape[3]))
+
+    def peak_frequency(self, min_frequency=0.0, max_frequency=None,
+                       electrode=None, run=None, label=None):
+        """Return frequency with peak magnitude.
+
+        Parameters
+        ----------
+        min_frequency : float
+            Minimum frequency to search for peak from
+        max_frequency : float
+            Maximum frequency to search for peak from
+        electrode : str, optional
+            Electrode to use for finding peak. If None then the mean of the
+            magnitude across all electrodes is used.
+        run : Index, optional
+            Index for the run
+        label : Index, optional
+            Index for the label
+
+        Returns
+        -------
+        freq : float
+            Peak frequency
+
+        Examples
+        --------
+        >>> spectrum = Spectra4D({'baseline': {'Trial 1':
+        ...                      {'Cz': [1, 2, 3, 1, 2, 10, 3, 4, 1]}}})
+        >>> spectrum.peak_frequency()
+        5
+
+        """
+        min_frequency = max(0.0, min_frequency)
+        if max_frequency is None:
+            max_frequency = max(self.major_axis)
+
+        indices = ((self.major_axis >= min_frequency) &
+                   (self.major_axis <= max_frequency))
+        if electrode is None and run is None and label is None:
+            magnitudes = np.abs(self[:, :, indices, :]).values.mean(
+                axis=(0, 1, 3))
+            magnitudes = Series(magnitudes, index=self.major_axis[indices])
+        else:
+            magnitudes = np.abs(self[label, run, indices, electrode])
+        # TODO: Combination when some of the indices are not parameters.
 
         peak_frequency = magnitudes.argmax()
         return peak_frequency
