@@ -157,8 +157,8 @@ class KeirnAunon(Data):
         The possible states are: baseline, multiplication, letter-composing,
         rotation and counting.
 
-        Arguments
-        ---------
+        Parameters
+        ----------
         subject : int, optional
             Subject identifier from 1 to 7.
         state : 'baseline' or 'multiplication', optional
