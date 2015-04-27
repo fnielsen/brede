@@ -20,8 +20,10 @@ http://www.cs.colostate.edu/eeg/main/data/1989_Keirn_and_Aunon
 
 Examples
 --------
+>>> from brede.data.keirnaunon import KeirnAunon
 >>> ka = KeirnAunon()
->>> trial = ka.trial()
+>>> ka.trial().fft().peak_frequency(min_frequency=5.0)
+60.0
 
 """
 
