@@ -435,7 +435,7 @@ class EEGAuxRun(EEGRun):
         """Construct dataframe-like object."""
         EEGRun.__init__(self, data=data, index=index, columns=columns,
                         dtype=dtype, copy=copy, sampling_rate=sampling_rate)
-        
+
         if electrodes is None:
             self.electrodes = [column for column in self.columns
                                if column in ELECTRODES]
@@ -519,12 +519,13 @@ class EEGAuxRun(EEGRun):
             min_frequency=min_frequency, max_frequency=max_frequency,
             electrode=electrode)
         return frequency
-        
+
     def plot_electrode_spectrum(self, electrode):
         """Plot the spectrum of an electrode."""
         self.fft().plot_electrode_spectrum(electrode)
 
     def plot_mean_spectrum(self):
+        """Plot mean spectrum across electrodes."""
         self.fft().plot_mean_spectrum()
 
 
