@@ -9,6 +9,9 @@ Options:
 
 EEG data from a study by Keirn and Aunon.
 
+Note that the data for "subject 4, letter-composing, trial 10" contains nothing
+but NaN. 
+
 References
 ----------
 Zachary A. Keirn, Jorge I. Aunon, A new mode of communication between
