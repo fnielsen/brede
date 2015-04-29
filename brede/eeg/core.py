@@ -139,7 +139,7 @@ class EEGRun(Matrix):
         return EEGRun
 
     def __init__(self, data=None, index=None, columns=None, dtype=None,
-                 copy=False, sampling_rate=1.0):
+                 copy=False, sampling_rate=None):
         """Construct dataframe-like object."""
         super(Matrix, self).__init__(
             data=data, index=index, columns=columns,
@@ -431,14 +431,11 @@ class EEGAuxRun(EEGRun):
         return type(self)
 
     def __init__(self, data=None, index=None, columns=None, dtype=None,
-                 copy=False, sampling_rate=1.0, electrodes=None):
+                 copy=False, sampling_rate=None, electrodes=None):
         """Construct dataframe-like object."""
         EEGRun.__init__(self, data=data, index=index, columns=columns,
-                        dtype=dtype, copy=copy)
-
-        if sampling_rate is not None:
-            self.index = np.arange(0, len(self) * sampling_rate, sampling_rate)
-
+                        dtype=dtype, copy=copy, sampling_rate=sampling_rate)
+        
         if electrodes is None:
             self.electrodes = [column for column in self.columns
                                if column in ELECTRODES]
@@ -461,8 +458,25 @@ class EEGAuxRun(EEGRun):
         self.electrodes = [EMOTIV_TO_EMOCAP_MAP[electrode]
                            for electrode in old_electrodes]
 
+    def center(self):
+        """Center the electrode data.
+
+        The mean for each electrode column is computed and subtracted from the
+        relevant columns.
+
+        Returns
+        -------
+        new : EEGAuxRun
+            New DataFrame-like object with centered electrode data.
+
+        """
+        means = self.ix[:, self.electrodes].mean(axis=0)
+        new = EEGAuxRun(self)
+        new.ix[:, self.electrodes] -= means
+        return new
+
     def fft(self):
-        """Fourier transform of data.
+        """Fourier transform of electrode data.
 
         Returns
         -------
@@ -480,6 +494,38 @@ class EEGAuxRun(EEGRun):
         fourier = np.fft.fft(self.ix[:, self.electrodes], axis=0)
         frequencies = np.fft.fftfreq(self.shape[0], 1 / self.sampling_rate)
         return Spectra(fourier, index=frequencies, columns=self.electrodes)
+
+    def peak_frequency(self, min_frequency=0.0, max_frequency=None,
+                       electrode=None):
+        """Return frequency with peak magnitude.
+
+        Parameters
+        ----------
+        min_frequency : float
+            Minimum frequency to search for peak from
+        max_frequency : float
+            Maximum frequency to search for peak from
+        electrode : str, optional
+            Electrode to use for finding peak. If None then the mean of the
+            magnitude across all electrodes is used.
+
+        Returns
+        -------
+        freq : float
+            Peak frequency
+
+        """
+        frequency = self.fft().peak_frequency(
+            min_frequency=min_frequency, max_frequency=max_frequency,
+            electrode=electrode)
+        return frequency
+        
+    def plot_electrode_spectrum(self, electrode):
+        """Plot the spectrum of an electrode."""
+        self.fft().plot_electrode_spectrum(electrode)
+
+    def plot_mean_spectrum(self):
+        self.fft().plot_mean_spectrum()
 
 
 class Spectra(DataFrame):
