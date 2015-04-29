@@ -21,9 +21,11 @@ from os.path import exists, expanduser, join
 
 from urllib import urlretrieve
 
-from brede.config import config
-
 import pandas as pd
+
+from .core import Data
+from .pubmed import Pubmed
+from ..config import config
 
 
 NEUROSYNTH_DATABASE_URL = "http://old.neurosynth.org/data/current_data.tar.gz"
@@ -32,7 +34,7 @@ NEUROSYNTH_DATABASE_URL = ("https://github.com/neurosynth/neurosynth-data/"
                            "?raw=true")
 
 
-class NeurosynthDatabase(object):
+class NeurosynthDatabase(Data):
 
     """Interface to dump of Neurosynth.
 
@@ -140,6 +142,28 @@ class NeurosynthDatabase(object):
                                sep='\t', low_memory=False,
                                index_col=0)
         return features
+
+    def medlines(self):
+        """Return list of Medline structures for papers in Neurosynth.
+
+        Returns
+        -------
+        medlines : list of Bio.Medline.Record
+            List of Medline strutures
+
+        Examples
+        --------
+        >>> nd = NeurosynthDatabase()
+        >>> medlines = nd.medlines()
+        >>> authors = [m['FAU'] for m in medlines if m['PMID'] == '15238438']
+        >>> 'Nielsen, Finn A' in authors[0]
+        True
+
+        """
+        nd_database = self.database()
+        pubmed = Pubmed()
+        medlines = pubmed.get_medlines(set(nd_database.id))
+        return medlines
 
 
 def main(args):
