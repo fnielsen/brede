@@ -10,7 +10,7 @@ Options:
 EEG data from a study by Keirn and Aunon.
 
 Note that the data for "subject 4, letter-composing, trial 10" contains nothing
-but NaN. 
+but NaN.
 
 References
 ----------
