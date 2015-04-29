@@ -164,6 +164,10 @@ class EEGRun(Matrix):
             raise UnevenSamplingRateError
         return 1 / interval
 
+    @sampling_rate.setter
+    def sampling_rate(self, value):
+        self.index = np.arange(0, len(self) / value, 1 / value)
+
     @classmethod
     def read_csv(cls, filename, sampling_rate=1.0, *args, **kwargs):
         """Read comma-separated file.
@@ -288,6 +292,10 @@ class EEGRuns(Tensor):
             raise UnevenSamplingRateError
         return 1 / interval
 
+    @sampling_rate.setter
+    def sampling_rate(self, value):
+        self.major_axis = np.arange(0, self.shape[1] / value, 1 / value)
+
     def fft(self):
         """Fourier transform of data.
 
@@ -347,6 +355,10 @@ class EEGRuns4D(Tensor4D):
         if interval_variation > 10 ** -10:
             raise UnevenSamplingRateError
         return 1 / interval
+
+    @sampling_rate.setter
+    def sampling_rate(self, value):
+        self.major_axis = np.arange(0, self.shape[2] / value, 1 / value)
 
     def fft(self):
         """Fourier transform of data.
