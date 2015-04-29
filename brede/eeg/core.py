@@ -166,6 +166,14 @@ class EEGRun(Matrix):
 
     @sampling_rate.setter
     def sampling_rate(self, value):
+        """Set the index from the sampling rate.
+
+        Parameters
+        ----------
+        value : float
+            Sampling rate
+
+        """
         self.index = np.arange(0, len(self) / value, 1 / value)
 
     @classmethod
@@ -294,6 +302,14 @@ class EEGRuns(Tensor):
 
     @sampling_rate.setter
     def sampling_rate(self, value):
+        """Set the major axis from the sampling rate.
+
+        Parameters
+        ----------
+        value : float
+            Sampling rate
+
+        """
         self.major_axis = np.arange(0, self.shape[1] / value, 1 / value)
 
     def fft(self):
@@ -358,6 +374,14 @@ class EEGRuns4D(Tensor4D):
 
     @sampling_rate.setter
     def sampling_rate(self, value):
+        """Set the major axis from the sampling rate.
+
+        Parameters
+        ----------
+        value : float
+            Sampling rate
+
+        """
         self.major_axis = np.arange(0, self.shape[2] / value, 1 / value)
 
     def fft(self):
