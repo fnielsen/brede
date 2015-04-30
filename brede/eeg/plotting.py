@@ -438,7 +438,7 @@ def topoplot(data=None, axes=None, method='linear', number_of_contours=10,
     >>> import matplotlib.pyplot as plt
     >>> data = {'O1': 1, 'O2': 2, 'P3': -2, 'P4': -4}
     >>> plt.ion()
-    >>> topoplot(data)
+    >>> topo_plot = topoplot(data)
 
     """
     if isinstance(data, pd.Series) or isinstance(data, dict) or data is None:
