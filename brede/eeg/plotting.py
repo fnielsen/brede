@@ -366,7 +366,7 @@ class MultiPlot(TopoPlot):
         lim = [ax.get_xlim() for ax in self._subaxes]
         if lim == []:
             lim = None
-        return 
+        return lim
 
     @xlim.setter
     def xlim(self, left=None, right=None):
@@ -386,9 +386,8 @@ class MultiPlot(TopoPlot):
     @ylim.setter
     def ylim(self, bottom=None, top=None):
         """Set y-axis limits on all subplots."""
-        if bottom is not None: 
-            for ax in self._subaxes:
-                ax.set_ylim(bottom, top)
+        for ax in self._subaxes:
+            ax.set_ylim(bottom, top)
         self.figure.canvas.draw()
 
     def auto_ylim(self, xlim=None):
