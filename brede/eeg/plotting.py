@@ -195,7 +195,7 @@ class TopoPlot(object):
         self.axes.add_line(nose)
 
     def draw_data(self, method='linear', number_of_contours=10):
-        """Draw countours from provided data. """
+        """Draw countours from provided data."""
         if self.data is not None:
             # Coordinates for points to interpolate to
             xi, yi = np.mgrid[-1:1:100j, -1:1:100j]
@@ -207,6 +207,7 @@ class TopoPlot(object):
                 points.append(ELECTRODES[name])
 
             # Interpolate
+            # TODO: Will not work with 2 electrodes.
             zi = griddata(points, self.data.values, (xi, yi), method=method)
 
             # Defaults
@@ -256,7 +257,7 @@ class MultiPlot(TopoPlot):
 
     """
 
-    def __init__(self, data=None, axes=None):
+    def __init__(self, data=None, axes=None, xlim=None, ylim=None):
         """Setup defaults.
 
         Parameters
@@ -277,6 +278,9 @@ class MultiPlot(TopoPlot):
         # Contains a list of axes used to plot data data from individual
         # electrodes
         self._subaxes = []
+
+        self.xlim = xlim
+        self.ylim = ylim
 
         self.center = np.array((0, 0))
 
@@ -325,7 +329,13 @@ class MultiPlot(TopoPlot):
         if self.data is not None:
 
             if ylim is None:
-                ylim = self.auto_ylim(xlim)
+                if self.ylim is None:
+                    ylim = self.auto_ylim(xlim)
+                else:
+                    ylim = self.ylim
+
+            if xlim is None:
+                xlim = self.xlim
 
             for electrode in self.data.columns:
                 if electrode in ELECTRODES:
@@ -353,7 +363,10 @@ class MultiPlot(TopoPlot):
     @property
     def xlim(self):
         """Return xlim for subplots."""
-        return [ax.get_xlim() for ax in self._subaxes]
+        lim = [ax.get_xlim() for ax in self._subaxes]
+        if lim == []:
+            lim = None
+        return 
 
     @xlim.setter
     def xlim(self, left=None, right=None):
@@ -365,13 +378,17 @@ class MultiPlot(TopoPlot):
     @property
     def ylim(self):
         """Return ylim for subplots."""
-        return [ax.get_ylim() for ax in self._subaxes]
+        lim = [ax.get_ylim() for ax in self._subaxes]
+        if lim == []:
+            lim = None
+        return lim
 
     @ylim.setter
     def ylim(self, bottom=None, top=None):
         """Set y-axis limits on all subplots."""
-        for ax in self._subaxes:
-            ax.set_ylim(bottom, top)
+        if bottom is not None: 
+            for ax in self._subaxes:
+                ax.set_ylim(bottom, top)
         self.figure.canvas.draw()
 
     def auto_ylim(self, xlim=None):
@@ -420,12 +437,16 @@ def topoplot(data=None, axes=None, method='linear', number_of_contours=10,
 
     Parameters
     ----------
-    data : pandas.Series, optional
+    data : pandas.Series or pandas.DataFrame, optional
         Series with values and indexed by electrode names.
     methods : str, optional
         Interpolation method
     number_of_contours : int
         Number of contours in the colored plot.
+    xlim : 2-tuple of floats, optional
+        Limits of x-axis in multiplot
+    ylim : 2-tuple of floats, optional
+        Limits of y-axis in multiplot
 
     References
     ----------
@@ -449,6 +470,11 @@ def topoplot(data=None, axes=None, method='linear', number_of_contours=10,
         multi_plot = MultiPlot(data=data, axes=axes)
         multi_plot.draw(xlim=xlim, ylim=ylim)
         return multi_plot
+
+
+def show():
+    """Show plot."""
+    plt.show()
 
 
 def main(args):
