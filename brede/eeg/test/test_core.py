@@ -5,7 +5,19 @@ from __future__ import absolute_import
 
 import numpy as np
 
+import pytest
+
 from .. import core
+
+
+@pytest.fixture
+def eeg_aux_run():
+    """Return an instance of EEGAuxRun with data."""
+    eeg_aux_run = core.EEGAuxRun(
+        [[1, 2, 'yes'], [3, 4, 'no']],
+        columns=['C3', 'C4', 'label'],
+        sampling_rate=2.0)
+    return eeg_aux_run
 
 
 def test_electrodes():
@@ -76,3 +88,17 @@ def test_eegruns4d_constructor():
         labels=['baseline'], items=['Trial 1'],
         minor_axis=['C3', 'C4'], sampling_rate=2.0)
     assert isinstance(np.isnan(eeg_runs4d), core.EEGRuns4D)
+
+
+def test_eeg_aux_run(eeg_aux_run):
+    """Test setup of EEGAuxRun."""
+    assert len(eeg_aux_run.shape) == 2
+    assert eeg_aux_run.shape[1] == 3
+    assert eeg_aux_run.shape[0] == 2
+    assert eeg_aux_run.electrodes == ['C3', 'C4']
+
+
+def test_eeg_aux_run_getitem(eeg_aux_run):
+    """Test indexing in EEGAuxRun."""
+    new_eeg_aux_run = eeg_aux_run[['C3']]
+    assert new_eeg_aux_run.electrodes == ['C3']
