@@ -13,6 +13,7 @@ import numpy as np
 from pandas import DataFrame, Series
 from pandas import read_csv as pandas_read_csv
 
+from .plotting import MultiPlot
 from ..core.matrix import Matrix
 from ..core.tensor import Tensor
 from ..core.tensor4d import Tensor4D
@@ -442,6 +443,15 @@ class EEGAuxRun(EEGRun):
         else:
             self.electrodes = electrodes
 
+    def __getitem__(self, key):
+        """Get column or columns."""
+        value = super(EEGAuxRun, self).__getitem__(key)
+        if isinstance(value, EEGAuxRun):
+            new_electrodes = [electrode for electrode in key
+                              if electrode in self.electrodes]
+            value.electrodes = new_electrodes
+        return value
+
     def emotiv_to_emocap(self, check_all=True, change_qualities=True,
                          inplace=True):
         """Change column names for Emotiv electrodes to Emocap.
@@ -565,6 +575,12 @@ class Spectra(DataFrame):
         plt.xlabel('Frequency')
         plt.ylabel('Magnitude')
         plt.title('Mean spectrum across {} electrodes'.format(self.shape[1]))
+
+    def plot_spectra(self, title=None, xlim=None, ylim=None):
+        """Plot multiple spectra."""
+        positive_frequencies = self.index >= 0
+        multi_plot = MultiPlot(self.ix[positive_frequencies, :].abs())
+        multi_plot.draw(title=title, xlim=xlim, ylim=ylim)
 
     def peak_frequency(self, min_frequency=0.0, max_frequency=None,
                        electrode=None):
