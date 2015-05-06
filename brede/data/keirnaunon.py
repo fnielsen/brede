@@ -86,10 +86,12 @@ class KeirnAunon(Data):
 
     Examples
     --------
+    >>> import matplotlib.pyplot as plt
     >>> ka = KeirnAunon()
     >>> eeg_run = ka.trial()
     >>> fourier = eeg_run.fft()
     >>> fourier.plot_mean_spectrum()
+    >>> plt.ion()
     >>> fourier.show()
 
     """
