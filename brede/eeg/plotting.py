@@ -219,11 +219,13 @@ class TopoPlot(object):
 
             # TODO: center
 
-    def draw(self, method='linear', number_of_contours=None):
+    def draw(self, title=None, method='linear', number_of_contours=None):
         """Draw all components in topoplot including the data.
 
         Parameters
         ----------
+        title : str, optional
+            Title to put on the plot
         methods : str, optional
             Interpolation method
         number_of_contours : int
@@ -245,6 +247,8 @@ class TopoPlot(object):
         self.draw_data(method=method, number_of_contours=number_of_contours)
         self.axes.axis((-1.2, 1.2, -1.2, 1.2))
         self.axes.axis('equal')
+        if title is not None:
+            self.axes.set_title(title)
 
 
 class MultiPlot(TopoPlot):
@@ -409,11 +413,13 @@ class MultiPlot(TopoPlot):
             ylim = -abs_max, abs_max
         return ylim
 
-    def draw(self, xlim=None, ylim=None):
+    def draw(self, title=None, xlim=None, ylim=None):
         """Draw all components in multiplot including the data.
 
         Parameters
         ----------
+        title : str, optional
+            Title to put on the plot
         xlim : tuple of floats, optional
             X-axis limits used for each individual plots
         ylim : tuple of floats, optional
@@ -425,10 +431,12 @@ class MultiPlot(TopoPlot):
         self.draw_inner_head()
         self.draw_nose()
         self.draw_data(xlim=xlim, ylim=ylim)
+        if title is not None:
+            self.axes.set_title(title)
 
 
 def topoplot(data=None, axes=None, method='linear', number_of_contours=10,
-             xlim=None, ylim=None):
+             title=None, xlim=None, ylim=None):
     """Plot topographic map of the scalp in 2-D circular view.
 
     Draw the colored scalp map based on data in a Pandas Series where
@@ -463,11 +471,12 @@ def topoplot(data=None, axes=None, method='linear', number_of_contours=10,
     """
     if isinstance(data, pd.Series) or isinstance(data, dict) or data is None:
         topo_plot = TopoPlot(data=data, axes=axes)
-        topo_plot.draw(method=method, number_of_contours=number_of_contours)
+        topo_plot.draw(title=title, method=method,
+                       number_of_contours=number_of_contours)
         return topo_plot
     elif isinstance(data, pd.DataFrame):
         multi_plot = MultiPlot(data=data, axes=axes)
-        multi_plot.draw(xlim=xlim, ylim=ylim)
+        multi_plot.draw(title=title, xlim=xlim, ylim=ylim)
         return multi_plot
 
 
