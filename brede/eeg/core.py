@@ -13,6 +13,8 @@ import numpy as np
 from pandas import DataFrame, Series
 from pandas import read_csv as pandas_read_csv
 
+from scipy.signal import welch
+
 from .plotting import MultiPlot
 from ..core.matrix import Matrix
 from ..core.tensor import Tensor
@@ -263,6 +265,18 @@ class EEGRun(Matrix):
         frequencies = np.fft.fftfreq(self.shape[0], 1 / self.sampling_rate)
         return Spectra(fourier, index=frequencies, columns=self.columns)
 
+    def welch(self):
+        """Return Welch periodogram.
+
+        Returns
+        -------
+        periodogram : Spectra
+
+        """
+        frequencies, Pxx = welch(self.T, fs=self.sampling_rate)
+        periodogram = Spectra(Pxx.T, index=frequencies, columns=self.columns)
+        return periodogram
+
 
 class EEGRuns(Tensor):
 
@@ -504,6 +518,14 @@ class EEGAuxRun(EEGRun):
         fourier = np.fft.fft(self.ix[:, self.electrodes], axis=0)
         frequencies = np.fft.fftfreq(self.shape[0], 1 / self.sampling_rate)
         return Spectra(fourier, index=frequencies, columns=self.electrodes)
+
+    def welch(self):
+        """Return Welch periodogram of electrode data."""
+        frequencies, Pxx = welch(self.ix[:, self.electrodes].T,
+                                 fs=self.sampling_rate)
+        periodogram = Spectra(Pxx.T, index=frequencies,
+                              columns=self.electrodes)
+        return periodogram
 
     def peak_frequency(self, min_frequency=0.0, max_frequency=None,
                        electrode=None):
