@@ -82,8 +82,24 @@ class Wikidata(object):
                 running = False
 
     def find_entity(self, query):
-        """Return first entity from a Wikidata search."""
-        entity = next(self.find_entities(query, limit=1))
+        """Return first entity from a Wikidata search.
+
+        Parameters
+        ----------
+        query : str
+            Query string.
+
+        Returns
+        -------
+        entity : dict
+           Dictionary with entity information. An empty dict is returned if no
+           entity is identified.
+
+        """
+        try:
+            entity = next(self.find_entities(query, limit=1))
+        except StopIteration:
+            entity = {}
         return entity
 
     def find_entity_id(self, query):
