@@ -1,6 +1,7 @@
 biopython
 docopt
 EEGtools
+lazy
 matplotlib
 mayavi
 numpy
