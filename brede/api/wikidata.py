@@ -41,7 +41,7 @@ class Wikidata(object):
 
     def find_entities(self, query, limit=7):
         """Return entities from a Wikidata search.
-        
+
         Parameters
         ----------
         query : str
