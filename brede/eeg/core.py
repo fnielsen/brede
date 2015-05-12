@@ -215,11 +215,16 @@ class EEGRun(Matrix):
         return cls(brede.io.read_edf(filename))
 
     def emotiv_to_emocap(self, check_all=True, change_qualities=True,
-                         inplace=True):
+                         inplace=False):
         """Change column names for Emotiv electrodes to Emocap.
 
         Specialized method to change the electrode names in the dataframe
         column from Emotiv electrode names to Emocap electrode names.
+
+        Returns
+        -------
+        eeg_run : EEGRun
+            EEGRun data
 
         """
         emotiv_to_emocap_map = EMOTIV_TO_EMOCAP_MAP
@@ -242,6 +247,7 @@ class EEGRun(Matrix):
 
         if inplace:
             self.columns = columns
+            return self
         else:
             return EEGRun(self, columns=columns)
 
@@ -265,15 +271,37 @@ class EEGRun(Matrix):
         frequencies = np.fft.fftfreq(self.shape[0], 1 / self.sampling_rate)
         return Spectra(fourier, index=frequencies, columns=self.columns)
 
-    def welch(self):
+    def plot_electrode_spectrogram(self, electrode):
+        """Plot the spectrogram for specified electrode.
+
+        Parameters
+        ----------
+        electrode : str
+            Electrode name corresponding to column name
+
+        """
+        plt.specgram(self.ix[:, electrode], Fs=self.sampling_rate)
+        plt.title('Spectrogram for {}'.format(electrode))
+        plt.xlabel('Time [seconds]')
+        plt.ylabel('Frequency [Hz]')
+
+    def welch(self, window='hanning', nperseg=256):
         """Return Welch periodogram.
+
+        Parameters
+        ----------
+        window : str or tuple or array_like, optional
+            Desired window
+        nperseg : int, optional
+            Length of each segment.  Defaults to 256.
 
         Returns
         -------
         periodogram : Spectra
 
         """
-        frequencies, Pxx = welch(self.T, fs=self.sampling_rate)
+        frequencies, Pxx = welch(self.T, fs=self.sampling_rate, window=window, 
+                                 nperseg=nperseg)
         periodogram = Spectra(Pxx.T, index=frequencies, columns=self.columns)
         return periodogram
 
@@ -467,7 +495,7 @@ class EEGAuxRun(EEGRun):
         return value
 
     def emotiv_to_emocap(self, check_all=True, change_qualities=True,
-                         inplace=True):
+                         inplace=False):
         """Change column names for Emotiv electrodes to Emocap.
 
         Specialized method to change the electrode names in the dataframe
@@ -475,14 +503,20 @@ class EEGAuxRun(EEGRun):
 
         """
         old_electrodes = self.electrodes
-        super(EEGAuxRun, self).emotiv_to_emocap(
+        new = super(EEGAuxRun, self).emotiv_to_emocap(
             check_all=check_all,
             change_qualities=change_qualities,
             inplace=inplace)
-        self.electrodes = [EMOTIV_TO_EMOCAP_MAP[electrode]
-                           for electrode in old_electrodes]
+        new_electrodes = [EMOTIV_TO_EMOCAP_MAP[electrode]
+                          for electrode in old_electrodes]
+        if inplace:
+            self.electrodes = new_electrodes
+            return self
+        else:
+            new.electrodes = new_electrodes
+            return new
 
-    def center(self):
+    def center(self, inplace=False):
         """Center the electrode data.
 
         The mean for each electrode column is computed and subtracted from the
@@ -495,9 +529,13 @@ class EEGAuxRun(EEGRun):
 
         """
         means = self.ix[:, self.electrodes].mean(axis=0)
-        new = EEGAuxRun(self)
-        new.ix[:, self.electrodes] -= means
-        return new
+        if inplace: 
+            self.ix[:, self.electrodes] -= means
+            return self
+        else:
+            new = EEGAuxRun(self)
+            new.ix[:, self.electrodes] -= means
+            return new
 
     def fft(self):
         """Fourier transform of electrode data.
@@ -519,10 +557,24 @@ class EEGAuxRun(EEGRun):
         frequencies = np.fft.fftfreq(self.shape[0], 1 / self.sampling_rate)
         return Spectra(fourier, index=frequencies, columns=self.electrodes)
 
-    def welch(self):
-        """Return Welch periodogram of electrode data."""
-        frequencies, Pxx = welch(self.ix[:, self.electrodes].T,
-                                 fs=self.sampling_rate)
+    def welch(self, window='hanning', nperseg=256):
+        """Return Welch periodogram of electrode data.
+
+        Parameters
+        ----------
+        window : str or tuple or array_like, optional
+            Desired window
+        nperseg : int, optional
+            Length of each segment.  Defaults to 256.
+
+        Returns
+        -------
+        periodogram : Spectra
+
+        """
+        frequencies, Pxx = welch(
+            self.ix[:, self.electrodes].T,
+            fs=self.sampling_rate, window=window, nperseg=nperseg)
         periodogram = Spectra(Pxx.T, index=frequencies,
                               columns=self.electrodes)
         return periodogram
