@@ -12,6 +12,8 @@ Examples:
 
 """
 
+from __future__ import absolute_import, division, print_function
+
 import json
 
 from lazy import lazy
@@ -31,7 +33,7 @@ class Question(object):
 
     """
 
-    def __init__(self, question, analyzer=None):
+    def __init__(self, question):
         """Setup question and API connections."""
         self.question = question
         self.wikidata = Wikidata()
