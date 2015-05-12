@@ -300,7 +300,7 @@ class EEGRun(Matrix):
         periodogram : Spectra
 
         """
-        frequencies, Pxx = welch(self.T, fs=self.sampling_rate, window=window, 
+        frequencies, Pxx = welch(self.T, fs=self.sampling_rate, window=window,
                                  nperseg=nperseg)
         periodogram = Spectra(Pxx.T, index=frequencies, columns=self.columns)
         return periodogram
@@ -529,7 +529,7 @@ class EEGAuxRun(EEGRun):
 
         """
         means = self.ix[:, self.electrodes].mean(axis=0)
-        if inplace: 
+        if inplace:
             self.ix[:, self.electrodes] -= means
             return self
         else:
