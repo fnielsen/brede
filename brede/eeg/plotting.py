@@ -29,7 +29,9 @@ from __future__ import absolute_import, division, print_function
 
 from math import cos, pi, sin
 
+import matplotlib.lines as lines
 import matplotlib.pyplot as plt
+import matplotlib.transforms as transforms
 
 import numpy as np
 
@@ -253,7 +255,7 @@ class TopoPlot(object):
 
 class MultiPlot(TopoPlot):
 
-    """Multiple plots orginize topographically.
+    """Multiple plots organized topographically.
 
     References
     ----------
@@ -328,18 +330,41 @@ class MultiPlot(TopoPlot):
         subaxes.yaxis.set_tick_params(labelsize=y_labelsize)
         return subaxes
 
-    def draw_data(self, width=0.25, height=0.25, xlim=None, ylim=None):
-        """Draw data."""
+    def draw_data(self, type='plot', width=0.25, height=0.25,
+                  xlim=None, ylim=None,
+                  vmin=None, vmax=None,
+                  axis=False):
+        """Draw data.
+
+        Parameters
+        ----------
+        type : 'plot', 'spectrogram', optional
+            Type of plot
+        xlim : 2-tuple of floats, optional
+            X-axis limits
+        ylim : 2-tuple of floats, optional
+            Y-axis limits
+        vmin : float, optional
+            Minimum value for spectrogram colormap
+        vmax : float, optional
+            Maximum value for spectrogram colormap
+        axis : bool, optional
+            Determine whether the axis should be shown
+
+        """
         if self.data is not None:
 
             if ylim is None:
-                if self.ylim is None:
+                if self.ylim is None and type != 'spectrogram':
                     ylim = self.auto_ylim(xlim)
                 else:
                     ylim = self.ylim
 
             if xlim is None:
                 xlim = self.xlim
+
+            if vmin is None:
+                vmin = 0
 
             for electrode in self.data.columns:
                 if electrode in ELECTRODES:
@@ -351,8 +376,47 @@ class MultiPlot(TopoPlot):
                         axis_bgcolor='w')
 
                     # Actual data plot
-                    self.data.ix[:, electrode].plot(
-                        ax=subaxes, xlim=xlim, ylim=ylim)
+                    if type == 'plot':
+                        self.data.ix[:, electrode].plot(
+                            ax=subaxes, xlim=xlim, ylim=ylim)
+
+                        if not axis:
+                            # x-axis
+                            trans = transforms.blended_transform_factory(
+                                subaxes.transAxes, subaxes.transData)
+                            line = lines.Line2D(
+                                (0, 1), (0, 0),
+                                transform=trans, color=(0, 0, 0))
+                            subaxes.add_line(line)
+
+                            trans = transforms.blended_transform_factory(
+                                subaxes.transAxes, subaxes.transAxes)
+                            line = lines.Line2D(
+                                (0, 0), (0, 1),
+                                transform=trans, color=(0, 0, 0))
+                            subaxes.add_line(line)
+
+                    elif type == 'spectrogram':
+                        spectrum, frequencies, midpoints, axes = plt.specgram(
+                            self.data.ix[:, electrode],
+                            Fs=self.data.sampling_rate,
+                            vmin=vmin,
+                            vmax=vmax,
+                            axes=subaxes)
+
+                        # Adjust axis around spectrogram image.
+                        if xlim is None:
+                            xlim = midpoints[0], midpoints[-1]
+                        subaxes.set_xlim(xlim)
+                        if ylim is None:
+                            ylim = frequencies[0], frequencies[-1]
+                        subaxes.set_ylim(ylim)
+
+                    else:
+                        raise ValueError("Wrong value for 'type' argument")
+
+                    if not axis:
+                        subaxes.set_axis_off()
 
                     # Annotation
                     # http://matplotlib.org/users/transforms_tutorial.html
@@ -413,7 +477,9 @@ class MultiPlot(TopoPlot):
             ylim = -abs_max, abs_max
         return ylim
 
-    def draw(self, title=None, xlim=None, ylim=None):
+    def draw(self, type='plot', title=None, xlim=None, ylim=None,
+             vmin=None, vmax=None,
+             axis=False):
         """Draw all components in multiplot including the data.
 
         Parameters
@@ -430,7 +496,8 @@ class MultiPlot(TopoPlot):
         self.draw_head()
         self.draw_inner_head()
         self.draw_nose()
-        self.draw_data(xlim=xlim, ylim=ylim)
+        self.draw_data(type=type, xlim=xlim, ylim=ylim, vmin=vmin,
+                       vmax=vmax, axis=axis)
         if title is not None:
             self.axes.set_title(title)
 
