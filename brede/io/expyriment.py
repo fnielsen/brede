@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""brede.io.expyriment
+"""brede.io.expyriment.
 
 Usage:
   breed.io.expyriment [options] <file>
@@ -16,7 +16,7 @@ import pandas as pd
 
 def read_xpe(filename, *args, **kwargs):
     """Read 'xpe' Expyriment file.
-    
+
     Parameters
     ----------
     filename : str
@@ -30,7 +30,7 @@ def read_xpe(filename, *args, **kwargs):
     """
     df = pd.read_csv(filename, *args, comment="#", **kwargs)
     return df
-    
+
 
 def main(args):
     """Handle command-line arguments."""
@@ -42,5 +42,3 @@ if __name__ == '__main__':
     import docopt
 
     main(docopt.docopt(__doc__))
-
-
