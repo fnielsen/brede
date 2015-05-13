@@ -9,8 +9,8 @@ from .. import sbs2
 @pytest.fixture
 def sbs2_data():
     """Instance object."""
-    sbs2_data = sbs2.SBS2Data()
-    return sbs2_data
+    sd = sbs2.SBS2Data()
+    return sd
 
 
 def test_electrode_names(sbs2_data):
