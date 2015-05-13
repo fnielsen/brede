@@ -271,7 +271,7 @@ class EEGRun(Matrix):
         frequencies = np.fft.fftfreq(self.shape[0], 1 / self.sampling_rate)
         return Spectra(fourier, index=frequencies, columns=self.columns)
 
-    def plot_electrode_spectrogram(self, electrode, NFFT=None, noverlap=128):
+    def plot_electrode_spectrogram(self, electrode, nfft=None, noverlap=128):
         """Plot the spectrogram for specified electrode.
 
         Parameters
@@ -284,7 +284,7 @@ class EEGRun(Matrix):
             The number of overlap between time blocks.
 
         """
-        plt.specgram(self.ix[:, electrode], NFFT=NFFT, Fs=self.sampling_rate, 
+        plt.specgram(self.ix[:, electrode], NFFT=nfft, Fs=self.sampling_rate,
                      noverlap=noverlap)
         plt.title('Spectrogram for {}'.format(electrode))
         plt.xlabel('Time [seconds]')
