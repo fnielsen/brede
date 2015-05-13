@@ -8,6 +8,7 @@ from . import io
 from . import surface
 from .core.matrix import Matrix
 from .eeg import EEGRun
+from .eeg.plotting import topoplot
 from .io import read_edf
 from .surface.core import Surface
 
