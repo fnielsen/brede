@@ -4,14 +4,15 @@ Usage:
   brede.data.sbs2 [options]
 
 Options:
-  -h --help     Help
+  -h --help       Help
+  --model=<size>  Size of model large or small [default: large]
 
 Smartphone brain scanner data. Presently a surface is plotted.
 
 """
 
 
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 from os import chdir, getcwd, makedirs
 from os.path import exists, expanduser, join
@@ -37,7 +38,7 @@ SBS2_SVN_DIR = ('https://github.com/SmartphoneBrainScanner/'
 SBS2_ELECTRODES_EMOTIV = ['P7', 'FC6', 'T7', 'P8', 'O2', 'O1', 'FC5',
                           'F3', 'F4', 'T8', 'F7', 'F8', 'AF4', 'AF3']
 
-SBS2_ELECTRODES_EMOCAP = ['TP10', 'Fz', 'P3', 'Cz', 'C4', 'TP9',  'Pz', 'P4',
+SBS2_ELECTRODES_EMOCAP = ['TP10', 'Fz', 'P3', 'Cz', 'C4', 'TP9', 'Pz', 'P4',
                           'F3', 'C3', 'O1', 'F4', 'Fpz', 'O2']
 
 
@@ -71,15 +72,9 @@ class SBS2Data(object):
         self.sbs2_dir = join(self.data_dir, 'sbs2')
         self.unpack(redownload=redownload)
 
-    @property
-    def name(self):
-        """Return short name for database."""
-        return "SBS2 data files"
+    name = "SBS2 data files"
 
-    @property
-    def description(self):
-        """Return a descriptive string about the data."""
-        return ("Smartphone brain scanner datafiles.")
+    description = "Smartphone brain scanner datafiles."
 
     def __str__(self):
         """Return descriptive string."""
@@ -103,7 +98,7 @@ class SBS2Data(object):
         temp_dir = mkdtemp()
         chdir(temp_dir)
         try:
-            call(['svn', 'export',  SBS2_SVN_DIR])
+            call(['svn', 'export', SBS2_SVN_DIR])
         finally:
             chdir(saved_dir)
         move(join(temp_dir, 'sbs2_data'), self.sbs2_dir)
@@ -120,7 +115,8 @@ class SBS2Data(object):
             self.download()
             # no need for extraction
 
-    def electrode_names(self, hardware='emotiv'):
+    @staticmethod
+    def electrode_names(hardware='emotiv'):
         """Return electrode names."""
         if hardware == 'emotiv':
             electrodes = SBS2_ELECTRODES_EMOTIV
@@ -336,7 +332,7 @@ class SBS2Data(object):
 def main(args):
     """Handle command-line interface."""
     sbs2_data = SBS2Data()
-    surface = sbs2_data.surface(model='large')
+    surface = sbs2_data.surface(model=args['--model'])
     surface.plot()
     surface.show()
 

@@ -3,14 +3,15 @@
 Plot EEG data.
 
 Usage:
-  plotting.py topoplot [options] [<file>]
+  plotting.py [options] [<file>]
 
 Options:
   -h --help         Show this screen.
   --version         Show version.
+  --center          Center the data before plotting
   --sample-index=N  Row index (indexed from one).
   --transpose       Transpose data.
-
+  --xlim=lim        X-axis limits.
 
 Data
 ----
@@ -28,7 +29,9 @@ from __future__ import absolute_import, division, print_function
 
 from math import cos, pi, sin
 
+import matplotlib.lines as lines
 import matplotlib.pyplot as plt
+import matplotlib.transforms as transforms
 
 import numpy as np
 
@@ -37,7 +40,7 @@ import pandas as pd
 from scipy.interpolate import griddata
 
 
-__all__ = ('ELECTRODES', 'TopoPlot', 'topoplot')
+__all__ = ('ELECTRODES', 'MultiPlot', 'TopoPlot', 'topoplot')
 
 
 ELECTRODES = {
@@ -127,14 +130,21 @@ class TopoPlot(object):
 
         """
         if axes is None:
-            fig = plt.figure()
-            axes = fig.gca()
+            self.figure = plt.figure()
+            axes = self.figure.gca()
+        else:
+            self.figure = axes.get_figure()
         self.axes = axes
         self.center = np.array((0, 0))
-        if data is not None:
+        if isinstance(data, dict):
             self.data = pd.Series(data)
-        else:
+        elif isinstance(data, pd.Series):
+            self.data = data
+        elif data is None:
             self.data = None
+        else:
+            raise ValueError("Wrong type of value for 'data': {}".format(
+                type(data)))
 
     @staticmethod
     def normalize_electrode_name(name):
@@ -187,7 +197,7 @@ class TopoPlot(object):
         self.axes.add_line(nose)
 
     def draw_data(self, method='linear', number_of_contours=10):
-        """Draw countours from provided data. """
+        """Draw countours from provided data."""
         if self.data is not None:
             # Coordinates for points to interpolate to
             xi, yi = np.mgrid[-1:1:100j, -1:1:100j]
@@ -199,6 +209,7 @@ class TopoPlot(object):
                 points.append(ELECTRODES[name])
 
             # Interpolate
+            # TODO: Will not work with 2 electrodes.
             zi = griddata(points, self.data.values, (xi, yi), method=method)
 
             # Defaults
@@ -210,13 +221,13 @@ class TopoPlot(object):
 
             # TODO: center
 
-    def draw(self, method='linear', number_of_contours=None):
+    def draw(self, title=None, method='linear', number_of_contours=None):
         """Draw all components in topoplot including the data.
 
         Parameters
         ----------
-        data : pandas.Series, optional
-            Series with values and indexed by electrode names.
+        title : str, optional
+            Title to put on the plot
         methods : str, optional
             Interpolation method
         number_of_contours : int
@@ -237,10 +248,262 @@ class TopoPlot(object):
         self.draw_nose()
         self.draw_data(method=method, number_of_contours=number_of_contours)
         self.axes.axis((-1.2, 1.2, -1.2, 1.2))
-        plt.axis('equal')
+        self.axes.axis('equal')
+        if title is not None:
+            self.axes.set_title(title)
 
 
-def topoplot(data=None, axes=None, method='linear', number_of_contours=10):
+class MultiPlot(TopoPlot):
+
+    """Multiple plots organized topographically.
+
+    References
+    ----------
+    http://www.fieldtriptoolbox.org/reference/ft_multiploter
+
+    """
+
+    def __init__(self, data=None, axes=None, xlim=None, ylim=None):
+        """Setup defaults.
+
+        Parameters
+        ----------
+        data : Pandas.DataFrame
+            Pandas DataFrame with values indexed by electrodes.
+        axes : matplotlib.axes.AxesSubplot object
+            Axis object to render on.
+
+        """
+        if axes is None:
+            self.figure = plt.figure()
+            axes = self.figure.gca()
+        else:
+            self.figure = axes.get_figure()
+        self.axes = axes
+
+        # Contains a list of axes used to plot data data from individual
+        # electrodes
+        self._subaxes = []
+
+        self.xlim = xlim
+        self.ylim = ylim
+
+        self.center = np.array((0, 0))
+
+        if isinstance(data, pd.DataFrame):
+            self.data = data
+        elif data is None:
+            self.data = None
+        else:
+            raise ValueError("Wrong type of value for 'data': {}".format(
+                type(data)))
+
+    def add_subplot_axes(self, ax, rect, axis_bgcolor=None):
+        """Add subaxes to currect specified axes.
+
+        References
+        ----------
+        Pablo https://stackoverflow.com/users/2309442/pablo
+
+        Pablo's answer to "Embedding small plots inside subplots in matplotlib"
+        https://stackoverflow.com/questions/17458580/
+
+        """
+        # Modified from
+        # https://stackoverflow.com/questions/17458580/
+        box = ax.get_position()
+        width, height = box.width, box.height
+        subaxes_box = [(rect[0], rect[1]), (rect[0]+rect[2], rect[1]+rect[3])]
+        subaxes_display_coords = ax.transData.transform(subaxes_box)
+        trans_figure = self.figure.transFigure.inverted()
+        subaxes_figure_coords = trans_figure.transform(subaxes_display_coords)
+        x, y = subaxes_figure_coords[0, :]
+        width, height = (subaxes_figure_coords[1, :] -
+                         subaxes_figure_coords[0, :])
+        subaxes = self.figure.add_axes(
+            [x, y, width, height], axis_bgcolor=axis_bgcolor)
+        x_labelsize = subaxes.get_xticklabels()[0].get_size()
+        y_labelsize = subaxes.get_yticklabels()[0].get_size()
+        x_labelsize *= rect[2]**0.5
+        y_labelsize *= rect[3]**0.5
+        subaxes.xaxis.set_tick_params(labelsize=x_labelsize)
+        subaxes.yaxis.set_tick_params(labelsize=y_labelsize)
+        return subaxes
+
+    def draw_data(self, type='plot', width=0.25, height=0.25,
+                  xlim=None, ylim=None,
+                  vmin=None, vmax=None,
+                  axis=False):
+        """Draw data.
+
+        Parameters
+        ----------
+        type : 'plot', 'spectrogram', optional
+            Type of plot
+        xlim : 2-tuple of floats, optional
+            X-axis limits
+        ylim : 2-tuple of floats, optional
+            Y-axis limits
+        vmin : float, optional
+            Minimum value for spectrogram colormap
+        vmax : float, optional
+            Maximum value for spectrogram colormap
+        axis : bool, optional
+            Determine whether the axis should be shown
+
+        """
+        if self.data is not None:
+
+            if ylim is None:
+                if self.ylim is None and type != 'spectrogram':
+                    ylim = self.auto_ylim(xlim)
+                else:
+                    ylim = self.ylim
+
+            if xlim is None:
+                xlim = self.xlim
+
+            if vmin is None:
+                vmin = 0
+
+            for electrode in self.data.columns:
+                if electrode in ELECTRODES:
+
+                    # Axes and position
+                    x, y = ELECTRODES[electrode]
+                    subaxes = self.add_subplot_axes(
+                        self.axes, [x - width/2, y - height/2, width, height],
+                        axis_bgcolor='w')
+
+                    # Actual data plot
+                    if type == 'plot':
+                        self.data.ix[:, electrode].plot(
+                            ax=subaxes, xlim=xlim, ylim=ylim)
+
+                        if not axis:
+                            # x-axis
+                            trans = transforms.blended_transform_factory(
+                                subaxes.transAxes, subaxes.transData)
+                            line = lines.Line2D(
+                                (0, 1), (0, 0),
+                                transform=trans, color=(0, 0, 0))
+                            subaxes.add_line(line)
+
+                            trans = transforms.blended_transform_factory(
+                                subaxes.transAxes, subaxes.transAxes)
+                            line = lines.Line2D(
+                                (0, 0), (0, 1),
+                                transform=trans, color=(0, 0, 0))
+                            subaxes.add_line(line)
+
+                    elif type == 'spectrogram':
+                        spectrum, frequencies, midpoints, axes = plt.specgram(
+                            self.data.ix[:, electrode],
+                            Fs=self.data.sampling_rate,
+                            vmin=vmin,
+                            vmax=vmax,
+                            axes=subaxes)
+
+                        # Adjust axis around spectrogram image.
+                        if xlim is None:
+                            xlim = midpoints[0], midpoints[-1]
+                        subaxes.set_xlim(xlim)
+                        if ylim is None:
+                            ylim = frequencies[0], frequencies[-1]
+                        subaxes.set_ylim(ylim)
+
+                    else:
+                        raise ValueError("Wrong value for 'type' argument")
+
+                    if not axis:
+                        subaxes.set_axis_off()
+
+                    # Annotation
+                    # http://matplotlib.org/users/transforms_tutorial.html
+                    subaxes.text(0.5, 0.95, electrode,
+                                 transform=subaxes.transAxes,
+                                 fontweight='bold', va='top', ha='center')
+                    subaxes.set_yticklabels([])
+                    subaxes.set_xticklabels([])
+
+                    self._subaxes.append(subaxes)
+
+    @property
+    def xlim(self):
+        """Return xlim for subplots."""
+        lim = [ax.get_xlim() for ax in self._subaxes]
+        if lim == []:
+            lim = None
+        return lim
+
+    @xlim.setter
+    def xlim(self, left=None, right=None):
+        """Set x-axis limits on all subplots."""
+        for ax in self._subaxes:
+            ax.set_xlim(left, right)
+        self.figure.canvas.draw()
+
+    @property
+    def ylim(self):
+        """Return ylim for subplots."""
+        lim = [ax.get_ylim() for ax in self._subaxes]
+        if lim == []:
+            lim = None
+        return lim
+
+    @ylim.setter
+    def ylim(self, bottom=None, top=None):
+        """Set y-axis limits on all subplots."""
+        for ax in self._subaxes:
+            ax.set_ylim(bottom, top)
+        self.figure.canvas.draw()
+
+    def auto_ylim(self, xlim=None):
+        """Return an estimate for a good ylim."""
+        electrodes = [col for col in self.data.columns
+                      if col in ELECTRODES]
+        if xlim is None:
+            data = self.data.ix[:, electrodes]
+        else:
+            indices = ((self.data.index >= xlim[0]) &
+                       (self.data.index <= xlim[1]))
+            data = self.data.ix[indices, electrodes]
+        min_data = data.min().min()
+        max_data = data.max().max()
+        if min_data >= 0:
+            ylim = 0, max_data
+        else:
+            abs_max = max(abs(min_data), max_data)
+            ylim = -abs_max, abs_max
+        return ylim
+
+    def draw(self, type='plot', title=None, xlim=None, ylim=None,
+             vmin=None, vmax=None,
+             axis=False):
+        """Draw all components in multiplot including the data.
+
+        Parameters
+        ----------
+        title : str, optional
+            Title to put on the plot
+        xlim : tuple of floats, optional
+            X-axis limits used for each individual plots
+        ylim : tuple of floats, optional
+            Y-axis limits used for each individual plots
+
+        """
+        self.axes.axis((-1.2, 1.2, -1.2, 1.2))
+        self.draw_head()
+        self.draw_inner_head()
+        self.draw_nose()
+        self.draw_data(type=type, xlim=xlim, ylim=ylim, vmin=vmin,
+                       vmax=vmax, axis=axis)
+        if title is not None:
+            self.axes.set_title(title)
+
+
+def topoplot(data=None, axes=None, method='linear', number_of_contours=10,
+             title=None, xlim=None, ylim=None):
     """Plot topographic map of the scalp in 2-D circular view.
 
     Draw the colored scalp map based on data in a Pandas Series where
@@ -248,12 +511,16 @@ def topoplot(data=None, axes=None, method='linear', number_of_contours=10):
 
     Parameters
     ----------
-    data : pandas.Series, optional
+    data : pandas.Series or pandas.DataFrame, optional
         Series with values and indexed by electrode names.
     methods : str, optional
         Interpolation method
     number_of_contours : int
         Number of contours in the colored plot.
+    xlim : 2-tuple of floats, optional
+        Limits of x-axis in multiplot
+    ylim : 2-tuple of floats, optional
+        Limits of y-axis in multiplot
 
     References
     ----------
@@ -266,37 +533,55 @@ def topoplot(data=None, axes=None, method='linear', number_of_contours=10):
     >>> import matplotlib.pyplot as plt
     >>> data = {'O1': 1, 'O2': 2, 'P3': -2, 'P4': -4}
     >>> plt.ion()
-    >>> topoplot(data)
+    >>> topo_plot = topoplot(data)
 
     """
-    topo_plot = TopoPlot(data=data, axes=axes)
-    topo_plot.draw(method=method, number_of_contours=number_of_contours)
+    if isinstance(data, pd.Series) or isinstance(data, dict) or data is None:
+        topo_plot = TopoPlot(data=data, axes=axes)
+        topo_plot.draw(title=title, method=method,
+                       number_of_contours=number_of_contours)
+        return topo_plot
+    elif isinstance(data, pd.DataFrame):
+        multi_plot = MultiPlot(data=data, axes=axes)
+        multi_plot.draw(title=title, xlim=xlim, ylim=ylim)
+        return multi_plot
 
 
-def main():
-    """Hande command-line interface to topographic plot."""
-    from docopt import docopt
+def show():
+    """Show plot."""
+    plt.show()
 
-    args = docopt(__doc__)
-    if args['topoplot']:
-        if args['<file>'] is None:
-            topoplot()
-        else:
-            filename = args['<file>']
-            if filename.lower().endswith('.csv'):
-                df = pd.read_csv(filename, index_col=0)
-                if args['--transpose']:
-                    df = df.T
-                if args['--sample-index'] is None:
-                    series = (df ** 2).mean()
-                else:
-                    sample_index = int(args['--sample-index'])
-                    series = df.iloc[sample_index - 1, :]
+
+def main(args):
+    """Handle command-line interface to topographic plot."""
+    xlim = args['--xlim']
+    if args['--xlim'] is not None:
+        xlim = [float(lim) for lim in xlim.split(',')]
+
+    if args['<file>'] is None:
+        topoplot()
+    else:
+        filename = args['<file>']
+        if filename.lower().endswith('.csv'):
+            from .core import read_csv
+
+            df = read_csv(filename, index_col=0)
+            if args['--transpose']:
+                df = df.T
+            if args['--sample-index'] is None:
+                if args['--center'] is not None:
+                    df = df.center()
+                topoplot(df, xlim=xlim)
             else:
-                exit('Only csv files handled')
-            topoplot(series)
+                sample_index = int(args['--sample-index'])
+                series = df.iloc[sample_index - 1, :]
+                topoplot(series)
+        else:
+            exit('Only csv files handled')
     plt.show()
 
 
 if __name__ == '__main__':
-    main()
+    from docopt import docopt
+
+    main(docopt(__doc__))

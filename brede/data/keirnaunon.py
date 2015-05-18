@@ -9,6 +9,9 @@ Options:
 
 EEG data from a study by Keirn and Aunon.
 
+Note that the data for "subject 4, letter-composing, trial 10" contains nothing
+but NaN.
+
 References
 ----------
 Zachary A. Keirn, Jorge I. Aunon, A new mode of communication between
@@ -20,8 +23,10 @@ http://www.cs.colostate.edu/eeg/main/data/1989_Keirn_and_Aunon
 
 Examples
 --------
+>>> from brede.data.keirnaunon import KeirnAunon
 >>> ka = KeirnAunon()
->>> trial = ka.trial()
+>>> ka.trial().fft().peak_frequency(min_frequency=5.0)
+60.0
 
 """
 
@@ -35,20 +40,22 @@ import gzip
 from os import makedirs
 from os.path import exists, expanduser, join
 
+from re import findall
+
 from urllib import urlretrieve
 
 import numpy as np
 
 from .core import Data
 from ..config import config
-from ..eeg.core import EEGRun, EEGRuns
+from ..eeg.core import EEGRun, EEGRuns, EEGRuns4D
 
 
 URL = "http://www.cs.colostate.edu/eeg/data/alleegdata.ascii.gz"
 
 ELECTRODES = ['C3', 'C4', 'P3', 'P4', 'O1', 'O2']
 
-SAMPLING_RATE = 1./250
+NUMBER_OF_SAMPLES = 2500
 
 # This constant is setup via the _number_of_trials function
 # The key here is the subject identifier.
@@ -64,6 +71,11 @@ NUMBER_OF_TRIALS = {
     7: 5
 }
 
+SAMPLING_RATE = 250
+
+STATES = ['baseline', 'multiplication', 'letter-composing', 'rotation',
+          'counting']
+
 
 class KeirnAunon(Data):
 
@@ -74,10 +86,12 @@ class KeirnAunon(Data):
 
     Examples
     --------
+    >>> import matplotlib.pyplot as plt
     >>> ka = KeirnAunon()
     >>> eeg_run = ka.trial()
     >>> fourier = eeg_run.fft()
     >>> fourier.plot_mean_spectrum()
+    >>> plt.ion()
     >>> fourier.show()
 
     """
@@ -138,14 +152,18 @@ class KeirnAunon(Data):
     def _match_line(subject, state, trial):
         return 'subject {}, {}, trial {}'.format(subject, state, trial)
 
+    @staticmethod
+    def _match_line_subject(subject):
+        return 'subject {},'.format(subject)
+
     def trial(self, subject=1, state='baseline', trial=1):
         """Read data from the 6 electrodes from specified trial.
 
         The possible states are: baseline, multiplication, letter-composing,
         rotation and counting.
 
-        Arguments
-        ---------
+        Parameters
+        ----------
         subject : int, optional
             Subject identifier from 1 to 7.
         state : 'baseline' or 'multiplication', optional
@@ -221,6 +239,55 @@ class KeirnAunon(Data):
         # trial x time x electrode
         return EEGRuns(data, minor_axis=ELECTRODES,
                        sampling_rate=SAMPLING_RATE)
+
+    def trials_for_subject(self, subject=1):
+        """Return all trials for a subject.
+
+        This will return a 4D (state x trial x time x electrode) Panel.
+
+        Parameters
+        ----------
+        subject : int, optional
+            Identifier for subject from 1 to 7
+
+        Returns
+        -------
+        eeg_runs4d : brede.eeg.core.EEGRuns4D
+            Panel4D-like structure
+
+        """
+        self.unpack()
+        number_of_trials = NUMBER_OF_TRIALS[subject]
+
+        trials = range(1, number_of_trials + 1)
+        data = np.zeros((len(STATES), len(trials),
+                         NUMBER_OF_SAMPLES, len(ELECTRODES)))
+
+        # Read data from file
+        with open(self.filename) as fid:
+            # Identify header
+            match_line = self._match_line_subject(subject)
+
+            for _ in range(len(trials) * len(STATES)):
+                line = fid.readline()
+                while not line.startswith(match_line):
+                    # Skipping lines until relevant data
+                    line = fid.readline()
+                elements = findall(r'(?:\w|\-)+', line)
+                state = elements[2]
+                state_index = STATES.index(state)
+                trial = int(elements[4])
+
+                # Read EEG data
+                data[state_index, trial-1, :, :] = np.array(
+                    zip(*[[float(elem)
+                           for elem in fid.readline().split()]
+                          for n in range(6)]))
+
+        # state x trial x time x electrode
+        return EEGRuns4D(data, labels=STATES, items=trials,
+                         minor_axis=ELECTRODES,
+                         sampling_rate=SAMPLING_RATE)
 
 
 def _number_of_trials():

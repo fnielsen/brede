@@ -10,11 +10,15 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 
-from pandas import DataFrame
+from pandas import DataFrame, Series
 from pandas import read_csv as pandas_read_csv
 
+from scipy.signal import welch
+
+from .plotting import MultiPlot
 from ..core.matrix import Matrix
 from ..core.tensor import Tensor
+from ..core.tensor4d import Tensor4D
 
 
 ELECTRODES = {
@@ -138,13 +142,14 @@ class EEGRun(Matrix):
         return EEGRun
 
     def __init__(self, data=None, index=None, columns=None, dtype=None,
-                 copy=False, sampling_rate=1.0):
+                 copy=False, sampling_rate=None):
         """Construct dataframe-like object."""
         super(Matrix, self).__init__(
             data=data, index=index, columns=columns,
             dtype=dtype, copy=copy)
         if sampling_rate is not None:
-            self.index = np.arange(0, len(self) * sampling_rate, sampling_rate)
+            self.index = np.arange(0, len(self) / sampling_rate,
+                                   1 / sampling_rate)
 
     @property
     def sampling_rate(self):
@@ -161,6 +166,18 @@ class EEGRun(Matrix):
         if interval_variation > 10 ** -10:
             raise UnevenSamplingRateError
         return 1 / interval
+
+    @sampling_rate.setter
+    def sampling_rate(self, value):
+        """Set the index from the sampling rate.
+
+        Parameters
+        ----------
+        value : float
+            Sampling rate
+
+        """
+        self.index = np.arange(0, len(self) / value, 1 / value)
 
     @classmethod
     def read_csv(cls, filename, sampling_rate=1.0, *args, **kwargs):
@@ -198,11 +215,16 @@ class EEGRun(Matrix):
         return cls(brede.io.read_edf(filename))
 
     def emotiv_to_emocap(self, check_all=True, change_qualities=True,
-                         inplace=True):
+                         inplace=False):
         """Change column names for Emotiv electrodes to Emocap.
 
         Specialized method to change the electrode names in the dataframe
         column from Emotiv electrode names to Emocap electrode names.
+
+        Returns
+        -------
+        eeg_run : EEGRun
+            EEGRun data
 
         """
         emotiv_to_emocap_map = EMOTIV_TO_EMOCAP_MAP
@@ -225,6 +247,7 @@ class EEGRun(Matrix):
 
         if inplace:
             self.columns = columns
+            return self
         else:
             return EEGRun(self, columns=columns)
 
@@ -248,6 +271,45 @@ class EEGRun(Matrix):
         frequencies = np.fft.fftfreq(self.shape[0], 1 / self.sampling_rate)
         return Spectra(fourier, index=frequencies, columns=self.columns)
 
+    def plot_electrode_spectrogram(self, electrode, nfft=None, noverlap=128):
+        """Plot the spectrogram for specified electrode.
+
+        Parameters
+        ----------
+        electrode : str
+            Electrode name corresponding to column name.
+        NFFT : int, optional
+            The number of data points used in the FFT.
+        noverlap : int, optional
+            The number of overlap between time blocks.
+
+        """
+        plt.specgram(self.ix[:, electrode], NFFT=nfft, Fs=self.sampling_rate,
+                     noverlap=noverlap)
+        plt.title('Spectrogram for {}'.format(electrode))
+        plt.xlabel('Time [seconds]')
+        plt.ylabel('Frequency [Hz]')
+
+    def welch(self, window='hanning', nperseg=256):
+        """Return Welch periodogram.
+
+        Parameters
+        ----------
+        window : str or tuple or array_like, optional
+            Desired window
+        nperseg : int, optional
+            Length of each segment.  Defaults to 256.
+
+        Returns
+        -------
+        periodogram : Spectra
+
+        """
+        frequencies, Pxx = welch(self.T, fs=self.sampling_rate, window=window,
+                                 nperseg=nperseg)
+        periodogram = Spectra(Pxx.T, index=frequencies, columns=self.columns)
+        return periodogram
+
 
 class EEGRuns(Tensor):
 
@@ -267,9 +329,8 @@ class EEGRuns(Tensor):
             minor_axis=minor_axis,
             dtype=dtype, copy=copy)
         if sampling_rate is not None:
-            self.major_axis = np.arange(0,
-                                        self.shape[1] * sampling_rate,
-                                        sampling_rate)
+            self.major_axis = np.arange(
+                0, self.shape[1] / sampling_rate, 1 / sampling_rate)
 
     @property
     def sampling_rate(self):
@@ -286,6 +347,18 @@ class EEGRuns(Tensor):
         if interval_variation > 10 ** -10:
             raise UnevenSamplingRateError
         return 1 / interval
+
+    @sampling_rate.setter
+    def sampling_rate(self, value):
+        """Set the major axis from the sampling rate.
+
+        Parameters
+        ----------
+        value : float
+            Sampling rate
+
+        """
+        self.major_axis = np.arange(0, self.shape[1] / value, 1 / value)
 
     def fft(self):
         """Fourier transform of data.
@@ -305,8 +378,82 @@ class EEGRuns(Tensor):
         """
         fourier = np.fft.fft(self, axis=1)
         frequencies = np.fft.fftfreq(self.shape[1], 1 / self.sampling_rate)
-        return Spectra3(fourier, items=self.items,
-                        major_axis=frequencies, minor_axis=self.minor_axis)
+        return Spectra3D(fourier, items=self.items,
+                         major_axis=frequencies, minor_axis=self.minor_axis)
+
+
+class EEGRuns4D(Tensor4D):
+
+    """Multiple EEGRuns of the same length."""
+
+    _metadata = ['sampling_rate']
+
+    @property
+    def _constructor(self):
+        return type(self)
+
+    def __init__(self, data=None, labels=None, items=None,
+                 major_axis=None, minor_axis=None,
+                 dtype=None, copy=False, sampling_rate=1.0):
+        """Construct Panel-like object."""
+        super(EEGRuns4D, self).__init__(
+            data=data, labels=labels, items=items,
+            major_axis=major_axis, minor_axis=minor_axis,
+            dtype=dtype, copy=copy)
+        if sampling_rate is not None:
+            self.major_axis = np.arange(
+                0, self.shape[2] / sampling_rate, 1 / sampling_rate)
+
+    @property
+    def sampling_rate(self):
+        """Return sampling rate.
+
+        Raises
+        ------
+        UnevenSamplingRateError
+
+        """
+        intervals = np.diff(self.major_axis.values)
+        interval = intervals.mean()
+        interval_variation = max(intervals - interval) / interval
+        if interval_variation > 10 ** -10:
+            raise UnevenSamplingRateError
+        return 1 / interval
+
+    @sampling_rate.setter
+    def sampling_rate(self, value):
+        """Set the major axis from the sampling rate.
+
+        Parameters
+        ----------
+        value : float
+            Sampling rate
+
+        """
+        self.major_axis = np.arange(0, self.shape[2] / value, 1 / value)
+
+    def fft(self):
+        """Fourier transform of data.
+
+        Returns
+        -------
+        spectra : Spectra4D
+            Panel4D-like with frequencies in major_axis
+
+        Examples
+        --------
+        >>> eeg_runs = EEGRuns4D([[[[1], [-1], [1], [-1]]]],
+        ...     labels=['baseline'], items=['Trial 1'],
+        ...     minor_axis=['Cz'])
+        >>> fourier = eeg_runs.fft()
+        >>> fourier['baseline', 'Trial 1', :, 'Cz'].real
+        array([ 0.,  0.,  4.,  0.])
+
+        """
+        fourier = np.fft.fft(self, axis=2)
+        frequencies = np.fft.fftfreq(self.shape[2], 1 / self.sampling_rate)
+        return Spectra4D(fourier, labels=self.labels, items=self.items,
+                         major_axis=frequencies, minor_axis=self.minor_axis)
 
 
 class EEGAuxRun(EEGRun):
@@ -332,13 +479,10 @@ class EEGAuxRun(EEGRun):
         return type(self)
 
     def __init__(self, data=None, index=None, columns=None, dtype=None,
-                 copy=False, sampling_rate=1.0, electrodes=None):
+                 copy=False, sampling_rate=None, electrodes=None):
         """Construct dataframe-like object."""
         EEGRun.__init__(self, data=data, index=index, columns=columns,
-                        dtype=dtype, copy=copy)
-
-        if sampling_rate is not None:
-            self.index = np.arange(0, len(self) * sampling_rate, sampling_rate)
+                        dtype=dtype, copy=copy, sampling_rate=sampling_rate)
 
         if electrodes is None:
             self.electrodes = [column for column in self.columns
@@ -346,8 +490,17 @@ class EEGAuxRun(EEGRun):
         else:
             self.electrodes = electrodes
 
+    def __getitem__(self, key):
+        """Get column or columns."""
+        value = super(EEGAuxRun, self).__getitem__(key)
+        if isinstance(value, EEGAuxRun):
+            new_electrodes = [electrode for electrode in key
+                              if electrode in self.electrodes]
+            value.electrodes = new_electrodes
+        return value
+
     def emotiv_to_emocap(self, check_all=True, change_qualities=True,
-                         inplace=True):
+                         inplace=False):
         """Change column names for Emotiv electrodes to Emocap.
 
         Specialized method to change the electrode names in the dataframe
@@ -355,15 +508,42 @@ class EEGAuxRun(EEGRun):
 
         """
         old_electrodes = self.electrodes
-        super(EEGAuxRun, self).emotiv_to_emocap(
+        new = super(EEGAuxRun, self).emotiv_to_emocap(
             check_all=check_all,
             change_qualities=change_qualities,
             inplace=inplace)
-        self.electrodes = [EMOTIV_TO_EMOCAP_MAP[electrode]
-                           for electrode in old_electrodes]
+        new_electrodes = [EMOTIV_TO_EMOCAP_MAP[electrode]
+                          for electrode in old_electrodes]
+        if inplace:
+            self.electrodes = new_electrodes
+            return self
+        else:
+            new.electrodes = new_electrodes
+            return new
+
+    def center(self, inplace=False):
+        """Center the electrode data.
+
+        The mean for each electrode column is computed and subtracted from the
+        relevant columns.
+
+        Returns
+        -------
+        new : EEGAuxRun
+            New DataFrame-like object with centered electrode data.
+
+        """
+        means = self.ix[:, self.electrodes].mean(axis=0)
+        if inplace:
+            self.ix[:, self.electrodes] -= means
+            return self
+        else:
+            new = EEGAuxRun(self)
+            new.ix[:, self.electrodes] -= means
+            return new
 
     def fft(self):
-        """Fourier transform of data.
+        """Fourier transform of electrode data.
 
         Returns
         -------
@@ -381,6 +561,61 @@ class EEGAuxRun(EEGRun):
         fourier = np.fft.fft(self.ix[:, self.electrodes], axis=0)
         frequencies = np.fft.fftfreq(self.shape[0], 1 / self.sampling_rate)
         return Spectra(fourier, index=frequencies, columns=self.electrodes)
+
+    def welch(self, window='hanning', nperseg=256):
+        """Return Welch periodogram of electrode data.
+
+        Parameters
+        ----------
+        window : str or tuple or array_like, optional
+            Desired window
+        nperseg : int, optional
+            Length of each segment.  Defaults to 256.
+
+        Returns
+        -------
+        periodogram : Spectra
+
+        """
+        frequencies, Pxx = welch(
+            self.ix[:, self.electrodes].T,
+            fs=self.sampling_rate, window=window, nperseg=nperseg)
+        periodogram = Spectra(Pxx.T, index=frequencies,
+                              columns=self.electrodes)
+        return periodogram
+
+    def peak_frequency(self, min_frequency=0.0, max_frequency=None,
+                       electrode=None):
+        """Return frequency with peak magnitude.
+
+        Parameters
+        ----------
+        min_frequency : float
+            Minimum frequency to search for peak from
+        max_frequency : float
+            Maximum frequency to search for peak from
+        electrode : str, optional
+            Electrode to use for finding peak. If None then the mean of the
+            magnitude across all electrodes is used.
+
+        Returns
+        -------
+        freq : float
+            Peak frequency
+
+        """
+        frequency = self.fft().peak_frequency(
+            min_frequency=min_frequency, max_frequency=max_frequency,
+            electrode=electrode)
+        return frequency
+
+    def plot_electrode_spectrum(self, electrode):
+        """Plot the spectrum of an electrode."""
+        self.fft().plot_electrode_spectrum(electrode)
+
+    def plot_mean_spectrum(self):
+        """Plot mean spectrum across electrodes."""
+        self.fft().plot_mean_spectrum()
 
 
 class Spectra(DataFrame):
@@ -419,6 +654,12 @@ class Spectra(DataFrame):
         plt.xlabel('Frequency')
         plt.ylabel('Magnitude')
         plt.title('Mean spectrum across {} electrodes'.format(self.shape[1]))
+
+    def plot_spectra(self, title=None, xlim=None, ylim=None):
+        """Plot multiple spectra."""
+        positive_frequencies = self.index >= 0
+        multi_plot = MultiPlot(self.ix[positive_frequencies, :].abs())
+        multi_plot.draw(title=title, xlim=xlim, ylim=ylim)
 
     def peak_frequency(self, min_frequency=0.0, max_frequency=None,
                        electrode=None):
@@ -464,7 +705,7 @@ class Spectra(DataFrame):
         plt.show()
 
 
-class Spectra3(Tensor):
+class Spectra3D(Tensor):
 
     """Represent spectra for an EEG signal as a Panel-like object.
 
@@ -527,7 +768,7 @@ class Spectra3(Tensor):
 
         Examples
         --------
-        >>> spectrum = Spectra3({'Trial 1':
+        >>> spectrum = Spectra3D({'Trial 1':
         ...                      {'Cz': [1, 2, 3, 1, 2, 10, 3, 4, 1]}})
         >>> spectrum.peak_frequency()
         5
@@ -547,6 +788,102 @@ class Spectra3(Tensor):
             magnitudes = np.abs(self[:, indices, electrode]).mean(axis=0)
         else:
             magnitudes = np.abs(self[run, indices, electrode])
+
+        peak_frequency = magnitudes.argmax()
+        return peak_frequency
+
+    def show(self):
+        """Show Matplotlib plot."""
+        plt.show()
+
+
+class Spectra4D(Tensor4D):
+
+    """Represent spectra for an EEG signal as a Panel4-like object.
+
+    Each run is in items, each frequency is in each major_axis, electrodes in
+    minor_axis.
+
+    """
+
+    def plot_electrode_label_run_spectrum(self, electrode, run, label):
+        """Plot the spectrum of an electrode.
+
+        Parameters
+        ----------
+        electrode : str
+            Electrode name associated with column
+        run : str or int
+            Index for run.
+
+        """
+        positive_frequencies = self.major_axis >= 0
+        plt.plot(self.major_axis[positive_frequencies],
+                 np.abs(self[label, run, positive_frequencies, electrode]))
+        plt.xlabel('Frequency')
+        plt.ylabel('Magnitude')
+        plt.title('Spectrum of {} for run {}'.format(electrode, run))
+
+    def plot_mean_spectrum(self):
+        """Plot the spectrum of the mean across electrodes and runs.
+
+        Only the positive part of the spectrum is shown.
+
+        """
+        positive_frequencies = self.major_axis >= 0
+        magnitudes = np.abs(self[:, :, positive_frequencies, :])
+        plt.plot(self.major_axis[positive_frequencies],
+                 magnitudes.values.mean(axis=(0, 1, 3)))
+        plt.xlabel('Frequency')
+        plt.ylabel('Magnitude')
+        plt.title(('Mean spectrum across {} labels, {} runs '
+                   'and {} electrodes').format(
+            self.shape[0], self.shape[1], self.shape[3]))
+
+    def peak_frequency(self, min_frequency=0.0, max_frequency=None,
+                       electrode=None, run=None, label=None):
+        """Return frequency with peak magnitude.
+
+        Parameters
+        ----------
+        min_frequency : float
+            Minimum frequency to search for peak from
+        max_frequency : float
+            Maximum frequency to search for peak from
+        electrode : str, optional
+            Electrode to use for finding peak. If None then the mean of the
+            magnitude across all electrodes is used.
+        run : Index, optional
+            Index for the run
+        label : Index, optional
+            Index for the label
+
+        Returns
+        -------
+        freq : float
+            Peak frequency
+
+        Examples
+        --------
+        >>> spectrum = Spectra4D({'baseline': {'Trial 1':
+        ...                      {'Cz': [1, 2, 3, 1, 2, 10, 3, 4, 1]}}})
+        >>> spectrum.peak_frequency()
+        5
+
+        """
+        min_frequency = max(0.0, min_frequency)
+        if max_frequency is None:
+            max_frequency = max(self.major_axis)
+
+        indices = ((self.major_axis >= min_frequency) &
+                   (self.major_axis <= max_frequency))
+        if electrode is None and run is None and label is None:
+            magnitudes = np.abs(self[:, :, indices, :]).values.mean(
+                axis=(0, 1, 3))
+            magnitudes = Series(magnitudes, index=self.major_axis[indices])
+        else:
+            magnitudes = np.abs(self[label, run, indices, electrode])
+        # TODO: Combination when some of the indices are not parameters.
 
         peak_frequency = magnitudes.argmax()
         return peak_frequency
