@@ -225,6 +225,7 @@ doral sma
 dorsal
 dorsal anterior
 dorsal anterior insula
+dorsal frontal
 dorsal frontopolar
 dorsal frontopolar cortex
 dorsal lateral
