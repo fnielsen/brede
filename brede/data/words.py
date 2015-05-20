@@ -20,11 +20,13 @@ Examples
 """
 
 
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function
 
 import re
 
-from os.path import join, split
+from os.path import dirname, join
+
+from pandas import read_csv
 
 
 class Words(set):
@@ -38,7 +40,7 @@ class Words(set):
 
     def data_dir(self):
         """Return directory where the text files are."""
-        return join(split(__file__)[0], 'words_data')
+        return join(dirname(__file__), 'words_data')
 
     def full_filename(self, filename):
         """Return filename with full with data directory."""
@@ -219,6 +221,66 @@ class NeuroimagingMethodWords(Words):
         """Read neuroimaging_method_words.txt file and setup set."""
         words = self.read_words('neuroimaging_method_words.txt')
         super(NeuroimagingMethodWords, self).__init__(words)
+
+
+class TaskToWords(object):
+
+    """Associate words with tasks.
+
+    Data is read from the comma-separated file called task_to_words.csv.
+
+    See also
+    --------
+    brede.data.brededatabase.TaskToCognitiveComponents
+
+    """
+
+    def __init__(self):
+        """Setup filename."""
+        self.filename = join(dirname(__file__),
+                             'words_data',
+                             'task_to_words.csv')
+        self._data = self.load_data()
+
+    def load_data(self):
+        """Load and return data from file."""
+        return read_csv(self.filename)
+
+    def scores_for_task(self, task):
+        """Return scores for word wrt. task.
+
+        Returns
+        -------
+        scores : dict
+            Dictionary with words as keys and scores as values
+
+        Examples
+        --------
+        >>> ttw = TaskToWords()
+        >>> scores = ttw.scores_for_task('Face viewing')
+        >>> scores['faces']
+        5
+
+        """
+        df = self._data.ix[self._data['Task'] == task, :]
+        return df.set_index('Word')['Score'].to_dict()
+
+    @property
+    def tasks(self):
+        """Return unique tasks.
+
+        Returns
+        -------
+        tasks : list of strings
+
+        Examples
+        --------
+        >>> ttw = TaskToWords()
+        >>> 'Left hand sequential finger tapping' in ttw.tasks
+        True
+
+        """
+        return list(self._data['Task'].unique())
 
 
 def main(args):
