@@ -1447,3 +1447,7 @@ ips
 vmpfc
 mid-dorsolateral prefrontal
 mpfc
+cortical patches
+premotor areas
+agranular insular
+contralateral thalamus
