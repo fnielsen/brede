@@ -1,18 +1,30 @@
-"""brede.data.sbs2 - Interface to SBS2 data.
+r"""brede.data.sbs2 - Interface to SBS2 data.
 
 Usage:
   brede.data.sbs2 [options]
 
 Options:
-  -h --help       Help
-  --model=<size>  Size of model large or small [default: large]
+  -h --help           Help
+  --coloring=<col>    Coloring of model: forward, backward or z [default: z]
+  --electrode=<elec>  Electrode name [default: O1]
+  --hardware=<hw>     EEG apparatus, either emotiv or emocap [default: emotiv]
+  --model=<size>      Size of model large or small [default: large]
 
-Smartphone brain scanner data. Presently a surface is plotted.
+Description:
+  Smartphone brain scanner data. Presently a surface is plotted.
+
+Examples:
+  $ python -m brede.data.sbs2 --model=small --coloring=backward
+
+  $ python -m brede.data.sbs2 --model=small --coloring=backward \
+       --hardward=emocap --electrode=C3
 
 """
 
 
 from __future__ import absolute_import, division, print_function
+
+import sys
 
 from os import chdir, getcwd, makedirs
 from os.path import exists, expanduser, join
@@ -105,7 +117,7 @@ class SBS2Data(object):
         rmtree(temp_dir)
 
     def unpack(self, redownload=False):
-        """Extract the downloaded compressed Neurosynth dump file.
+        """Extract SBS2 files.
 
         It tests if the relevant database file is already downloaded.
         If not call then the download method is called.
@@ -249,7 +261,7 @@ class SBS2Data(object):
         >>> sbs2_data = SBS2Data()
         >>> surface = sbs2_data.surface()
         >>> handle = surface.plot()
-        >>> surface.show()
+        >>> # surface.show() # Use this to interact with the plot
 
         """
         if model == 'small':
@@ -268,10 +280,10 @@ class SBS2Data(object):
 
         Arguments
         ---------
-        hardware : 'emotiv' or 'emocap'
-            Hardward type for forward model
-        method : 'LORETA' or 'minimumnorm'
-            Estimation type
+        hardware : 'emotiv' or 'emocap', optional
+            Hardward type for forward model.
+        method : 'LORETA' or 'minimumnorm', optional
+            Estimation type.
 
         Returns
         -------
@@ -332,8 +344,26 @@ class SBS2Data(object):
 def main(args):
     """Handle command-line interface."""
     sbs2_data = SBS2Data()
+
+    if args['--model'] != 'small' and args['--coloring'] != 'z':
+        sys.exit('Different coloring than z only supported for small model')
+
     surface = sbs2_data.surface(model=args['--model'])
+
+    if args['--coloring'] != 'z':
+        if args['--coloring'] == 'forward':
+            matrix = sbs2_data.forward_model(hardware=args['--hardware'])
+            values = matrix.ix[args['--electrode'], :].values
+        elif args['--coloring'] == 'backward':
+            matrix = sbs2_data.backward_model(hardware=args['--hardware'])
+            values = matrix.ix[:, args['--electrode']].values
+        else:
+            sys.exit('Wrong argument to --coloring')
+
+        surface.vertex_values = values
+
     surface.plot()
+    surface.colorbar()
     surface.show()
 
 
