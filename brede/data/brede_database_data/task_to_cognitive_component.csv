@@ -22,6 +22,8 @@ Left hand sequential finger tapping,Voice perception,0
 Left hand sequential finger tapping,Self-reflection,0
 Left hand sequential finger tapping,Happiness,0
 Left hand sequential finger tapping,Self/other processing,0
+Left hand sequential finger tapping,Unpleasantness,0
+Left hand sequential finger tapping,Pain,0
 Left hand sequential finger tapping,Memory,0
 Syllable counting of visually presented words,Awake resting with eyes closed,0
 Syllable counting of visually presented words,Cognition,2
@@ -42,6 +44,8 @@ Syllable counting of visually presented words,Somesthesis,0
 Syllable counting of visually presented words,Syllable counting,5
 Syllable counting of visually presented words,Vision (visual perception),1
 Syllable counting of visually presented words,Working memory,1
+Syllable counting of visually presented words,Unpleasantness,0
+Syllable counting of visually presented words,Pain,0
 Face viewing,Awake resting with eyes closed,0
 Face viewing,Cognition,0
 Face viewing,Emotion,0
@@ -62,3 +66,5 @@ Face viewing,Syllable counting,0
 Face viewing,Unpleasantness,0
 Face viewing,Vision (visual perception),3
 Face viewing,Voice perception,0
+Face viewing,Unpleasantness,0
+Face viewing,Pain,0
