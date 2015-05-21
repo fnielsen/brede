@@ -179,11 +179,6 @@ decision
 auditory motion
 executive demands
 caudate nuclei
-dorsal frontal
-cortical patches
-premotor areas
-agranular insular
-contralateral thalamus
 skill learning
 visual non-speech
 perceptual differentiation
