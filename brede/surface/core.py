@@ -143,6 +143,17 @@ class TriSurface(Surface):
                 *args, **kwargs)
         return handle
 
+    def colorbar(self, *args, **kwargs):
+        """Show colorbar for rendered surface."""
+        return self._colorbar_mayavi(*args, **kwargs)
+
+    def _colorbar_mayavi(self, *args, **kwargs):
+        """Show colorbar in Mayavi."""
+        # Delayed import of Mayavi
+        from mayavi.mlab import colorbar
+
+        colorbar()
+
     def show(self):
         """Show the plotted surface."""
         self._show_mayavi()
