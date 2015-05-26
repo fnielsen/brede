@@ -174,7 +174,7 @@ class Matrix(DataFrame):
         w, h = self._adjust_wh(w, h)
 
         # Convert to dataframes
-        component_names = ['Component %d' % (n + 1) 
+        component_names = ['Component %d' % (n + 1)
                            for n in range(n_components)]
         w = Matrix(w, index=self.index, columns=component_names)
         h = Matrix(h, index=component_names, columns=self.columns)
