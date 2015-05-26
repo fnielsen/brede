@@ -157,7 +157,7 @@ class Matrix(DataFrame):
         cost_old = np.finfo(float).max
         for n in range(0, max_iter):
             h = np.multiply(h, (w.T * x) / (w.T * w * h + small))
-            h = np.mat(np.where(h < 10**-100, 0, h))
+            h = np.mat(np.where(h < 10 ** -100, 0, h))
             whht = w * (h * h.T)
             xht = x * h.T
 
@@ -169,12 +169,12 @@ class Matrix(DataFrame):
                 break
 
             w = np.multiply(w, xht / (whht + small))
-            w = np.mat(np.where(w < 10**-100, 0, w))
+            w = np.mat(np.where(w < 10 ** -100, 0, w))
 
         w, h = self._adjust_wh(w, h)
 
         # Convert to dataframes
-        component_names = ['Component %d' % (n+1) for n in range(n_components)]
+        component_names = ['Component %d' % (n + 1) for n in range(n_components)]
         w = Matrix(w, index=self.index, columns=component_names)
         h = Matrix(h, index=component_names, columns=self.columns)
 
