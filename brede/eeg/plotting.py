@@ -331,7 +331,7 @@ class MultiPlot(TopoPlot):
         subaxes.yaxis.set_tick_params(labelsize=y_labelsize)
         return subaxes
 
-    def draw_data(self, type='plot', width=0.25, height=0.25,
+    def draw_data(self, type='plot', width=None, height=None,
                   xlim=None, ylim=None,
                   vmin=None, vmax=None,
                   axis=False):
@@ -366,6 +366,19 @@ class MultiPlot(TopoPlot):
 
             if vmin is None:
                 vmin = 0
+
+            # Determine a suitable width for subaxes
+            number_of_electrodes = len([
+                electrode
+                for electrode in self.data.columns
+                if electrode in ELECTRODES])
+            if width is None:
+                if number_of_electrodes > 32:
+                    width = 0.15
+                else:
+                    width = 0.25
+            if height is None:
+                height = 0.25
 
             for electrode in self.data.columns:
                 if electrode in ELECTRODES:
