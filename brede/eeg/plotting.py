@@ -313,7 +313,8 @@ class MultiPlot(TopoPlot):
         # https://stackoverflow.com/questions/17458580/
         box = ax.get_position()
         width, height = box.width, box.height
-        subaxes_box = [(rect[0], rect[1]), (rect[0]+rect[2], rect[1]+rect[3])]
+        subaxes_box = [(rect[0], rect[1]),
+                       (rect[0] + rect[2], rect[1] + rect[3])]
         subaxes_display_coords = ax.transData.transform(subaxes_box)
         trans_figure = self.figure.transFigure.inverted()
         subaxes_figure_coords = trans_figure.transform(subaxes_display_coords)
@@ -324,8 +325,8 @@ class MultiPlot(TopoPlot):
             [x, y, width, height], axis_bgcolor=axis_bgcolor)
         x_labelsize = subaxes.get_xticklabels()[0].get_size()
         y_labelsize = subaxes.get_yticklabels()[0].get_size()
-        x_labelsize *= rect[2]**0.5
-        y_labelsize *= rect[3]**0.5
+        x_labelsize *= rect[2] ** 0.5
+        y_labelsize *= rect[3] ** 0.5
         subaxes.xaxis.set_tick_params(labelsize=x_labelsize)
         subaxes.yaxis.set_tick_params(labelsize=y_labelsize)
         return subaxes
@@ -372,7 +373,8 @@ class MultiPlot(TopoPlot):
                     # Axes and position
                     x, y = ELECTRODES[electrode]
                     subaxes = self.add_subplot_axes(
-                        self.axes, [x - width/2, y - height/2, width, height],
+                        self.axes,
+                        [x - width / 2, y - height / 2, width, height],
                         axis_bgcolor='w')
 
                     # Actual data plot
