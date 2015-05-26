@@ -279,7 +279,7 @@ class KeirnAunon(Data):
                 trial = int(elements[4])
 
                 # Read EEG data
-                data[state_index, trial-1, :, :] = np.array(
+                data[state_index, trial - 1, :, :] = np.array(
                     zip(*[[float(elem)
                            for elem in fid.readline().split()]
                           for n in range(6)]))
