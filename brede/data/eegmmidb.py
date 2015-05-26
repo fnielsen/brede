@@ -48,11 +48,6 @@ from ..io.edf import read_edf
 URL_RECORDS = "http://physionet.nlm.nih.gov/pn4/eegmmidb/RECORDS"
 URL_BASE = "http://physionet.nlm.nih.gov/pn4/eegmmidb/"
 
-ELECTRODES = ['C3', 'C4', 'P3', 'P4', 'O1', 'O2']
-
-NUMBER_OF_SAMPLES = 2500
-
-
 # Stated on http://physionet.nlm.nih.gov/pn4/eegmmidb/
 SAMPLING_RATE = 160
 
