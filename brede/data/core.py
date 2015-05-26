@@ -38,6 +38,6 @@ class Data(object):
         """Download Neurosynth database file."""
         raise NotImplementedError
 
-    def unpack(self):
+    def unpack(self, redownload=False):
         """Extract the downloaded compressed Neurosynth dump file."""
         raise NotImplementedError
