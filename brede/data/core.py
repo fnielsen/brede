@@ -1,8 +1,8 @@
 """General data set."""
 
+import errno
 
 from os import makedirs
-from os.path import exists
 
 
 class Data(object):
@@ -24,10 +24,15 @@ class Data(object):
         """Return a descriptive string about the data."""
         raise NotImplementedError
 
-    def make_dir(self):
+    def make_dir(self, dir_name=None):
         """Make data directory."""
-        if not exists(self.data_dir):
-            makedirs(self.data_dir)
+        if dir_name is None:
+            dir_name = self.data_dir
+        try:
+            makedirs(dir_name)
+        except OSError as exception:
+            if exception.errno != errno.EEXIST:
+                raise
 
     def download(self):
         """Download Neurosynth database file."""
