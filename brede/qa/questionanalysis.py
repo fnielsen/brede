@@ -110,8 +110,7 @@ class Question(object):
             'pos_tags': self.pos_tags,
             'proper_nouns': self.proper_nouns,
             'proper_nouns_wikidata_entities':
-            self.proper_nouns_wikidata_entities
-            }
+                self.proper_nouns_wikidata_entities}
         return json.dumps(data)
 
 
