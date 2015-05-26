@@ -109,6 +109,31 @@ EMOTIV_TO_EMOCAP_MAP = {
 }
 
 
+def fix_electrode_name(electrode):
+    """Make electrode name canonical.
+
+    Parameters
+    ----------
+    electrode : str
+        Name of electrode in the 10-20 system
+
+    Returns
+    -------
+    name : str
+        New canonical name for electrode
+
+    Examples
+    --------
+    >>> fix_electrode_name('Fc5')
+    'FC5'
+
+    >>> fix_electrode_name('Poz')
+    'POz'
+
+    """
+    return electrode.upper().replace('Z', 'z')
+
+
 class UnevenSamplingRateError(Exception):
 
     """Exception for uneven sampling intervals."""
@@ -250,6 +275,33 @@ class EEGRun(Matrix):
             return self
         else:
             return EEGRun(self, columns=columns)
+
+    def fix_electrode_names(self, inplace=False):
+        """Make electrode names canonical.
+
+        Parameters
+        ----------
+        inplace : bool, optional
+            Determines if the object should be copied or modified
+
+        Returns
+        -------
+        eeg_run : EEGRun
+            Copy or modified data.
+
+        """
+        new_columns = []
+        for column in self.columns:
+            new_name = fix_electrode_name(column)
+            if new_name in ELECTRODES:
+                new_columns.append(new_name)
+            else:
+                new_columns.append(column)
+        if inplace:
+            self.columns = new_columns
+            return self
+        else:
+            return self._constructor(self, columns=new_columns)
 
     def fft(self):
         """Fourier transform of data.
