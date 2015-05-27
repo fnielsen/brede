@@ -18,7 +18,7 @@ import json
 
 from lazy import lazy
 
-from nltk import pos_tag, word_tokenize
+from nltk import ne_chunk, pos_tag, word_tokenize
 
 from ..api.wikidata import Wikidata
 
@@ -37,6 +37,14 @@ class Question(object):
         """Setup question and API connections."""
         self.question = question
         self.wikidata = Wikidata()
+
+    @lazy
+    def named_entities(self):
+        "Return list of named entities."""
+        tree = ne_chunk(self.pos_tags)
+        entities = [" ".join([text for text, label in subtree.leaves()]) 
+                    for subtree in tree.subtrees(lambda t: t.label() == 'NE')]
+        return entities
 
     @lazy
     def pos_tags(self):
@@ -106,6 +114,7 @@ class Question(object):
         """Convert data in object to a JSON string."""
         data = {
             'question': self.question,
+            'named_entities': self.named_entities,
             'token_list': self.token_list,
             'pos_tags': self.pos_tags,
             'proper_nouns': self.proper_nouns,
