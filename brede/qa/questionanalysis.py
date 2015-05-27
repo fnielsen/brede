@@ -40,9 +40,9 @@ class Question(object):
 
     @lazy
     def named_entities(self):
-        "Return list of named entities."""
+        """Return list of named entities."""
         tree = ne_chunk(self.pos_tags)
-        entities = [" ".join([text for text, label in subtree.leaves()]) 
+        entities = [" ".join([text for text, label in subtree.leaves()])
                     for subtree in tree.subtrees(lambda t: t.label() == 'NE')]
         return entities
 
