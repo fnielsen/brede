@@ -1,7 +1,7 @@
-"""brede.eeg.csp - common spatial patterns.
+"""Common spatial patterns.
 
 Usage:
-  brede.eeg.csp [options] [<file>]
+  brede.eeg.csp [options]
 
 Options:
   -h --help  Help
@@ -23,20 +23,25 @@ class CSP(base.BaseEstimator, base.TransformerMixin):
 
     References
     ----------
+    Christian Andreas Kothe,  Lecture 7.3 Common Spatial Patterns
+    https://www.youtube.com/watch?v=zsOULC16USU
+
     EEGTools
     https://github.com/breuderink/eegtools/
        blob/master/examples/ex_csp_motor_imagery.py
 
     """
 
-    def class_correlations(self, X, y):
+    @staticmethod
+    def class_correlations(X, y):
         """Return list of class correlations."""
         class_correlations = [
             np.corrcoef(X[y == class_indicator, :], rowvar=0)
             for class_indicator in np.unique(y)]
         return class_correlations
 
-    def class_covariances(self, X, y):
+    @staticmethod
+    def class_covariances(X, y):
         """Return list of class covariances."""
         class_covariances = [
             np.cov(X[y == class_indicator, :], rowvar=0)
@@ -56,7 +61,7 @@ class CSP(base.BaseEstimator, base.TransformerMixin):
         Parameters
         ----------
         X : array_like
-            Data matrix (time points x channels)
+            Data matrix (time points x channels) for training set
         y : 1D array_like
             Vector with class indicator variables
 
@@ -105,7 +110,7 @@ class CSP(base.BaseEstimator, base.TransformerMixin):
 
         Returns
         -------
-        Z : array_like
+        X_new : array_like
             Projected data matrix (time points x latent variables)
 
         """
