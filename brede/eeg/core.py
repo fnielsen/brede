@@ -13,8 +13,9 @@ import numpy as np
 from pandas import DataFrame, Series
 from pandas import read_csv as pandas_read_csv
 
-from scipy.signal import welch
+from scipy.signal import lfilter, welch
 
+from .filter import bandpass_filter_coefficients
 from .plotting import MultiPlot
 from ..core.matrix import Matrix
 from ..core.tensor import Tensor
@@ -302,6 +303,28 @@ class EEGRun(Matrix):
             return self
         else:
             return self._constructor(self, columns=new_columns)
+
+    def bandpass_filter(self, low_cutoff_frequency=1.0,
+                        high_cutoff_frequency=45.0, order=4):
+        """Filter eletrode data temporally with bandpass filter.
+
+        Parameters
+        ----------
+        low_cutoff_frequency : float
+            Frequency in Hertz
+        high_cutoff_frequency : float
+            Frequency in Hertz
+        order : int, optional
+            Order of filter [default: 4].
+
+        """
+        b, a = bandpass_filter_coefficients(
+            low_cutoff_frequency, high_cutoff_frequency,
+            sampling_rate=self.sampling_rate, order=order)
+        y = lfilter(b, a, self, axis=0)
+
+        return self._constructor(y, columns=self.columns,
+                                 sampling_rate=self.sampling_rate)
 
     def fft(self):
         """Fourier transform of data.
