@@ -1,7 +1,7 @@
 """Tests for brede.eeg.core submodule."""
 
 
-from __future__ import absolute_import
+from __future__ import absolute_import, division, print_function
 
 import numpy as np
 
@@ -41,6 +41,24 @@ def test_eegrun_constructor():
     eeg_run = core.EEGRun([[1, 2], [3, 4]], columns=['C3', 'C4'],
                           sampling_rate=2.0)
     assert isinstance(np.isnan(eeg_run), core.EEGRun)
+
+
+def test_eegrun_bandpass_filter():
+    """Test bandpass filtering."""
+    # Set up date
+    sampling_rate = 100
+    N = 60 * sampling_rate
+    sinus15 = np.sin(2 * np.pi * 15 / sampling_rate * np.arange(N))
+    sinus2 = np.sin(2 * np.pi * 2 / sampling_rate * np.arange(N))
+    eeg_run = core.EEGRun({'C3': sinus15, 'C4': sinus2},
+                          sampling_rate=sampling_rate)
+
+    # Filtering
+    filtered = eeg_run.bandpass_filter(10, 20)
+    assert isinstance(filtered, core.EEGRun)
+    assert filtered.shape == (N, 2)
+    assert filtered['C3'].max() > 0.9
+    assert filtered['C4'].max() < 0.1
 
 
 def test_eegruns():
