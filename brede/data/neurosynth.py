@@ -1,13 +1,22 @@
 """brede.data.neurosynth - Interface to Neurosynth data.
 
 Usage:
-  brede.data.neurosynth [options]
+  brede.data.neurosynth <command>
 
 Options:
   -h --help     Help
 
-Presently outputs the Neurosynth database as comma-separated values. This is
-a pretty long listing.
+Examples:
+   $ python -m brede.data.neurosynth featurenames
+
+If command=redownload the the database file is redownloaded from the Git
+repository. This command will also unpack the new data and overwrite the old.
+
+command=featurenames will return a comma-separated list of feature names, i.e.
+the first row of the features.txt file.
+
+Otherwise outputs the Neurosynth database as comma-separated values
+(This is a pretty long listing).
 
 """
 
@@ -30,8 +39,7 @@ from ..config import config
 
 NEUROSYNTH_DATABASE_URL = "http://old.neurosynth.org/data/current_data.tar.gz"
 NEUROSYNTH_DATABASE_URL = ("https://github.com/neurosynth/neurosynth-data/"
-                           "blob/master/archive/data_0.4.September_2014.tar.gz"
-                           "?raw=true")
+                           "blob/master/current_data.tar.gz?raw=true")
 
 
 class NeurosynthDatabase(Data):
@@ -92,10 +100,10 @@ class NeurosynthDatabase(Data):
         urlretrieve(self.neurosynth_database_url,
                     self.neurosynth_download_filename)
 
-    def unpack(self):
+    def unpack(self, reunpack=False):
         """Extract the downloaded compressed Neurosynth dump file."""
-        if (not exists(self.neurosynth_database_filename) and
-                not exists(self.neurosynth_features_filename)):
+        if reunpack or ((not exists(self.neurosynth_database_filename) and
+                         not exists(self.neurosynth_features_filename))):
             if not exists(self.neurosynth_download_filename):
                 self.download()
             cwd = getcwd()
@@ -143,6 +151,27 @@ class NeurosynthDatabase(Data):
                                index_col=0)
         return features
 
+    def feature_names(self):
+        """Return list of feature names.
+
+        Returns
+        -------
+        feature_names : list of strings
+            Words and phrases from first line of features.txt
+
+        Examples
+        --------
+        >>> nd = NeurosynthDatabase()
+        >>> 'attention' in nd.feature_names()
+        True
+
+        """
+        self.unpack()
+        features = pd.read_csv(self.neurosynth_features_filename,
+                               sep='\t', low_memory=False, nrows=2,
+                               index_col=0)
+        return features.columns.tolist()
+
     def medlines(self):
         """Return list of Medline structures for papers in Neurosynth.
 
@@ -168,8 +197,18 @@ class NeurosynthDatabase(Data):
 
 def main(args):
     """Handle command-line interface."""
-    nd = NeurosynthDatabase()
-    print(nd.database().to_csv())
+    command = args['<command>']
+    if command == 'redownload':
+        nd = NeurosynthDatabase()
+        nd.download()
+        nd.unpack(reunpack=True)
+    elif command == 'featurenames':
+        nd = NeurosynthDatabase()
+        print(",".join(nd.feature_names()))
+
+    else:
+        nd = NeurosynthDatabase()
+        print(nd.database().to_csv())
 
 
 if __name__ == '__main__':
