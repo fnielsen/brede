@@ -15,6 +15,7 @@ from pandas import read_csv as pandas_read_csv
 
 from scipy.signal import lfilter, welch
 
+from .csp import CSP
 from .filter import bandpass_filter_coefficients
 from .plotting import MultiPlot
 from ..core.matrix import Matrix
@@ -153,7 +154,7 @@ class EEGRun(Matrix):
 
     """Represent a EEG data set.
 
-    The 'run' should be a temporal-consecutive data set with a fixed sampling
+    The 'run' should be a temporally contiguous data set with a fixed sampling
     rate.
 
     The Pandas DataFrame class is reused and extended with, e.g., Fourier
@@ -561,8 +562,9 @@ class EEGAuxRun(EEGRun):
     def __init__(self, data=None, index=None, columns=None, dtype=None,
                  copy=False, sampling_rate=None, electrodes=None):
         """Construct dataframe-like object."""
-        EEGRun.__init__(self, data=data, index=index, columns=columns,
-                        dtype=dtype, copy=copy, sampling_rate=sampling_rate)
+        super(EEGAuxRun, self).__init__(
+            data=data, index=index, columns=columns,
+            dtype=dtype, copy=copy, sampling_rate=sampling_rate)
 
         if electrodes is None:
             self.electrodes = [column for column in self.columns
@@ -578,6 +580,22 @@ class EEGAuxRun(EEGRun):
                               if electrode in self.electrodes]
             value.electrodes = new_electrodes
         return value
+
+    @property
+    def not_electrodes(self):
+        """Return columns that are not electrodes.
+
+        Examples
+        --------
+        >>> from numpy.random import randn
+        >>> data = EEGAuxRun(randn(20, 3), columns=['C3', 'C4', 'State'])
+        >>> data.not_electrodes
+        ['State']
+
+        """
+        not_electrodes = [column for column in self.columns
+                          if column not in set(self.electrodes)]
+        return not_electrodes
 
     def emotiv_to_emocap(self, check_all=True, change_qualities=True,
                          inplace=False):
@@ -648,6 +666,36 @@ class EEGAuxRun(EEGRun):
             new = self._constructor(self)
             new.ix[:, self.electrodes] = Y
             return new
+
+    def csp(self, group_by, n_components=None):
+        """Common spatial patterns.
+
+        Parameters
+        ----------
+        group_by : str or it
+            Column to group samples
+
+        Returns
+        -------
+        Z : brede.eeg.core.EEGAuxRun
+            Projected data
+        W : brede.core.matrix.Matrix
+            Weights for projection
+
+        """
+        states = self[group_by].unique()
+        print(states)
+        state_to_dummy = {state: n for n, state in enumerate(states)}
+        y = self[group_by].apply(lambda state: state_to_dummy[state]).values
+        X = self.ix[:, self.electrodes].values
+
+        csp = CSP(n_components=n_components)
+
+        Z = csp.fit_transform(X, y)
+        csp_names = ['CSP {}'.format(n+1) for n in range(Z.shape[1])]
+
+        W = Matrix(csp.weights_, columns=csp_names, index=self.electrodes)
+        return Z, W
 
     def fft(self):
         """Fourier transform of electrode data.
