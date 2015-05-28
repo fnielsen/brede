@@ -1451,3 +1451,20 @@ cortical patches
 premotor areas
 agranular insular
 contralateral thalamus
+sulci
+precuneus posterior
+ba 44
+cortex vmpfc
+fasciculus
+ventral medial
+ba 47
+gyrus middle
+dorsal ventral
+amygdala insula
+anterior hippocampus
+anterior posterior
+gyrus ifg
+fronto temporal
+cortex posterior
+fronto striatal
+mesolimbic
