@@ -5,7 +5,7 @@ Usage:
 
 Options:
   -h --help           Help
-  --coloring=<col>    Coloring of model: forward, backward or z [default: z]
+  --coloring=<col>    Coloring of model: forward, inverse or z [default: z]
   --electrode=<elec>  Electrode name [default: O1]
   --hardware=<hw>     EEG apparatus, either emotiv or emocap [default: emotiv]
   --model=<size>      Size of model large or small [default: large]
@@ -14,9 +14,9 @@ Description:
   Smartphone brain scanner data. Presently a surface is plotted.
 
 Examples:
-  $ python -m brede.data.sbs2 --model=small --coloring=backward
+  $ python -m brede.data.sbs2 --model=small --coloring=inverse
 
-  $ python -m brede.data.sbs2 --model=small --coloring=backward \
+  $ python -m brede.data.sbs2 --model=small --coloring=inverse \
        --hardward=emocap --electrode=C3
 
 """
@@ -275,8 +275,8 @@ class SBS2Data(object):
         surface = read_obj(full_filename)
         return surface
 
-    def backward_model(self, hardware='emotiv', method='LORETA'):
-        """Compute and return backward model.
+    def inverse_model(self, hardware='emotiv', method='LORETA'):
+        """Compute and return inverse model.
 
         Arguments
         ---------
@@ -288,13 +288,13 @@ class SBS2Data(object):
         Returns
         -------
         matrix : brede.core.matrix.Matrix
-            Matrix with backward model size 1028 x 14
+            Matrix with inverse model size 1028 x 14
 
         Examples
         --------
         >>> sbs2_data = SBS2Data()
-        >>> backward_model = sbs2_data.backward_model()
-        >>> backward_model.shape
+        >>> inverse_model = sbs2_data.inverse_model()
+        >>> inverse_model.shape
         (1028, 14)
 
         References
@@ -324,7 +324,7 @@ class SBS2Data(object):
 
         if method == 'minimumnorm':
             # The spatial coherence is the identity matrix and disappears
-            backward = forward.T.dot(pinv(forward.dot(forward.T)
+            inverse = forward.T.dot(pinv(forward.dot(forward.T)
                                           + inv_beta / inv_alpha * identity))
         elif method == 'LORETA':
             # Spatial coherence, L matrix
@@ -334,13 +334,13 @@ class SBS2Data(object):
             sigma_inv = inv_alpha * \
                 forward_and_coherence.dot(forward.T) \
                 + inv_beta * identity
-            backward = inv_alpha * forward_and_coherence.T.dot(pinv(sigma_inv))
+            inverse = inv_alpha * forward_and_coherence.T.dot(pinv(sigma_inv))
         else:
             raise ValueError('Wrong method')
 
-        backward = Matrix(backward)
-        backward.columns = self.electrode_names(hardware)
-        return backward
+        inverse = Matrix(inverse)
+        inverse.columns = self.electrode_names(hardware)
+        return inverse
 
 
 def main(args):
@@ -356,8 +356,8 @@ def main(args):
         if args['--coloring'] == 'forward':
             matrix = sbs2_data.forward_model(hardware=args['--hardware'])
             values = matrix.ix[args['--electrode'], :].values
-        elif args['--coloring'] == 'backward':
-            matrix = sbs2_data.backward_model(hardware=args['--hardware'])
+        elif args['--coloring'] == 'inverse':
+            matrix = sbs2_data.inverse_model(hardware=args['--hardware'])
             values = matrix.ix[:, args['--electrode']].values
         else:
             sys.exit('Wrong argument to --coloring')
