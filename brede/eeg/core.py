@@ -691,7 +691,7 @@ class EEGAuxRun(EEGRun):
         csp = CSP(n_components=n_components)
 
         Z = csp.fit_transform(X, y)
-        csp_names = ['CSP {}'.format(n+1) for n in range(Z.shape[1])]
+        csp_names = ['CSP {}'.format(n + 1) for n in range(Z.shape[1])]
 
         W = Matrix(csp.weights_, columns=csp_names, index=self.electrodes)
         return Z, W
