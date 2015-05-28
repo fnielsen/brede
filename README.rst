@@ -35,6 +35,3 @@ Load more data:
 
     >>> move_fist = eegmmidb.run(run=3)
     >>> move_fist['state'] = 'Move fist'
-
-    >>> import pandas as pd
-    >>> eeg_data = pd.concat((eyes_open, move_fist))
