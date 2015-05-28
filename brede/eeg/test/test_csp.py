@@ -44,6 +44,7 @@ def test_csp(data):
 
 
 def test_csp_n_components(data):
+    """Test n_components parameter."""
     csp = CSP(n_components=1)
     csp.fit(data.X, data.y)
     assert csp.weights_.shape[1] == 1
