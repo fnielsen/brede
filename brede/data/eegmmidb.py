@@ -1,4 +1,4 @@
-"""brede.data.eegmmidb - Interface to eegmmidb data.
+"""Interface to eegmmidb data.
 
 Usage:
   brede.data.eegmmidb [options]
@@ -36,8 +36,6 @@ from __future__ import absolute_import, division, print_function
 from os.path import exists, expanduser, join
 
 from urllib import urlretrieve
-
-import pandas as pd
 
 from .core import Data
 from ..config import config
