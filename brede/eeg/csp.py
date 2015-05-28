@@ -32,6 +32,10 @@ class CSP(base.BaseEstimator, base.TransformerMixin):
 
     """
 
+    def __init__(self, n_components=None):
+        """Setup paramters."""
+        self.n_components = n_components
+
     @staticmethod
     def class_correlations(X, y):
         """Return list of class correlations."""
@@ -96,7 +100,10 @@ class CSP(base.BaseEstimator, base.TransformerMixin):
         eigenvectors = eigenvectors[:, indices]
 
         # The model parameters
-        self.weights_ = eigenvectors
+        if self.n_components is None:
+            self.weights_ = eigenvectors
+        else:
+            self.weights_ = eigenvectors[:, :self.n_components]
 
         return self
 
