@@ -1,6 +1,7 @@
-"""eegmmidb examples
+"""eegmmidb examples.
+
 Usage:
-  brede.data.examples.eegmmidb [options] 
+  brede.data.examples.eegmmidb [options]
 
 Options:
   -h --help       Help
