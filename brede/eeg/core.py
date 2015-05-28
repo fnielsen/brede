@@ -684,7 +684,6 @@ class EEGAuxRun(EEGRun):
 
         """
         states = self[group_by].unique()
-        print(states)
         state_to_dummy = {state: n for n, state in enumerate(states)}
         y = self[group_by].apply(lambda state: state_to_dummy[state]).values
         X = self.ix[:, self.electrodes].values
