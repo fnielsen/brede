@@ -41,7 +41,7 @@ import pandas as pd
 
 from .core import Data
 from ..config import config
-from ..eeg.core import EEGRun
+from ..eeg.core import EEGAuxRun
 from ..io.edf import read_edf
 
 
@@ -202,8 +202,8 @@ class EEGMMIDB(Data):
 
         Returns
         -------
-        eeg_run : brede.eeg.core.EEGRun
-            Data in a EEGRun DataFrame-like object.
+        eeg_run : brede.eeg.core.EEGAuxRun
+            Data in a EEGAuxRun DataFrame-like object.
 
         Examples
         --------
@@ -227,7 +227,7 @@ class EEGMMIDB(Data):
 
         filename = self.local_data_filename(data_filename)
         data = read_edf(filename)
-        eeg_run = EEGRun(data, sampling_rate=SAMPLING_RATE)
+        eeg_run = EEGAuxRun(data, sampling_rate=SAMPLING_RATE)
         eeg_run.fix_electrode_names(inplace=True)
         return eeg_run
 
@@ -246,11 +246,11 @@ class EEGMMIDB(Data):
 
         Returns
         -------
-        eeg_runs : dict of brede.eeg.core.EEGRun
+        eeg_runs : dict of brede.eeg.core.EEGAuxRun
             Dictionary indexed by run identifier.
 
         """
-        eeg_runs = {run: pd.DataFrame(self.run(subject=subject, run=run))
+        eeg_runs = {run: self.run(subject=subject, run=run)
                     for run in range(1, 15)}
 
         return eeg_runs
