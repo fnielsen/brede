@@ -12,6 +12,7 @@ from ..eegmmidb import EEGMMIDB
 
 @pytest.fixture
 def eegmmidb():
+    """Return instance of primary class."""
     eegmmidb = EEGMMIDB()
     return eegmmidb
 
@@ -29,6 +30,7 @@ def test_run(eegmmidb):
 
 
 def test_runs_for_subject(eegmmidb):
+    """Test of run_for_subject method."""
     runs = eegmmidb.runs_for_subject()
     assert isinstance(runs[1], EEGAuxRun)
     assert len(runs) == 14
