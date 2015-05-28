@@ -325,7 +325,7 @@ class SBS2Data(object):
         if method == 'minimumnorm':
             # The spatial coherence is the identity matrix and disappears
             inverse = forward.T.dot(pinv(forward.dot(forward.T)
-                                          + inv_beta / inv_alpha * identity))
+                                         + inv_beta / inv_alpha * identity))
         elif method == 'LORETA':
             # Spatial coherence, L matrix
             coherence = self.spatial_coherence(hardware).values
