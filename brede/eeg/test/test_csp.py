@@ -41,3 +41,12 @@ def test_csp(data):
 
     assert np.std(Z[data.indices0, 0]) > np.std(Z[data.indices1, 0])
     assert np.std(Z[data.indices0, 1]) < np.std(Z[data.indices1, 1])
+
+
+def test_csp_n_components(data):
+    csp = CSP(n_components=1)
+    csp.fit(data.X, data.y)
+    assert csp.weights_.shape[1] == 1
+
+    Z = csp.transform(data.X)
+    assert Z.shape == (100, 1)
