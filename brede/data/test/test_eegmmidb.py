@@ -26,3 +26,9 @@ def test_run(eegmmidb):
 
     run11 = eegmmidb.run(run=1, subject=1)
     assert (run11 == run).all().all()
+
+
+def test_runs_for_subject(eegmmidb):
+    runs = eegmmidb.runs_for_subject()
+    assert isinstance(runs[1], EEGAuxRun)
+    assert len(runs) == 14
