@@ -305,12 +305,14 @@ class SBS2Data(object):
         Marieta Georgieva Ivanova, Tobias S. Andersen, Lars Kai Hansen.
         Affective Computing and Intelligent Interaction 6975: 317-318. 2011
 
-        https://github.com/SmartphoneBrainScanner/smartphonebrainscanner2-core
-        /src/source_reconstruction/loreta/sbs2sourcereconstruction_loreta.cpp
+        https://github.com/SmartphoneBrainScanner/smartphonebrainscanner2-core/
+        blob/master/src/source_reconstruction/loreta/
+        sbs2sourcereconstruction_loreta.cpp
 
         """
-        # https://github.com/SmartphoneBrainScanner/smartphonebrainscanner2-core
-        # /src/source_reconstruction/loreta/sbs2sourcereconstruction_loreta.cpp
+        # https://github.com/SmartphoneBrainScanner/smartphonebrainscanner2-core/
+        # blob/master/src/source_reconstruction/loreta/
+        # sbs2sourcereconstruction_loreta.cpp
         # line 62-63!
         inv_alpha = 0.0100
         inv_beta = 0.3781
