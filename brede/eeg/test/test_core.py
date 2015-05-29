@@ -11,6 +11,15 @@ from .. import core
 
 
 @pytest.fixture
+def eeg_run_1d():
+    """Return an instance of EEGRun with data."""
+    eeg_run = core.EEGRun(
+        [[1, 2, 6]], columns=['C3', 'Cz', 'C4'],
+        sampling_rate=2.0)
+    return eeg_run
+
+
+@pytest.fixture
 def eeg_aux_run():
     """Return an instance of EEGAuxRun with data."""
     eeg_aux_run = core.EEGAuxRun(
@@ -41,6 +50,14 @@ def test_eegrun_constructor():
     eeg_run = core.EEGRun([[1, 2], [3, 4]], columns=['C3', 'C4'],
                           sampling_rate=2.0)
     assert isinstance(np.isnan(eeg_run), core.EEGRun)
+
+
+def test_eegrun_rereference(eeg_run_1d):
+    """Test rereference method."""
+    assert eeg_run_1d.rereference().ix[0, 'C3'] == -2.0
+    assert eeg_run_1d.rereference(mode='median').ix[0, 'C3'] == -1.0
+    elem = eeg_run_1d.rereference(mode='electrode', electrode='C4').ix[0, 'C3']
+    assert elem == -5.0
 
 
 def test_eegrun_bandpass_filter():
