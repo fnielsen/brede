@@ -162,7 +162,7 @@ class EEGRun(Matrix):
 
     """
 
-    _metadata = ['sampling_rate']
+    _metadata = ['_sampling_rate']
 
     @property
     def _constructor(self):
@@ -177,9 +177,11 @@ class EEGRun(Matrix):
         if sampling_rate is not None:
             self.index = np.arange(0, len(self) / sampling_rate,
                                    1 / sampling_rate)
+            self._sampling_rate = sampling_rate
+        else:
+            self._sampling_rate = 1.0
 
-    @property
-    def sampling_rate(self):
+    def sampling_rate_from_index(self):
         """Return sampling rate.
 
         Raises
@@ -194,6 +196,17 @@ class EEGRun(Matrix):
             raise UnevenSamplingRateError
         return 1 / interval
 
+    @property
+    def sampling_rate(self):
+        """Return sampling rate.
+
+        Raises
+        ------
+        UnevenSamplingRateError
+
+        """
+        return self._sampling_rate
+
     @sampling_rate.setter
     def sampling_rate(self, value):
         """Set the index from the sampling rate.
@@ -204,6 +217,7 @@ class EEGRun(Matrix):
             Sampling rate
 
         """
+        self._sampling_rate = value
         self.index = np.arange(0, len(self) / value, 1 / value)
 
     @classmethod
@@ -304,6 +318,52 @@ class EEGRun(Matrix):
             return self
         else:
             return self._constructor(self, columns=new_columns)
+
+    def rereference(self, mode='mean', electrode=None, inplace=False):
+        """Rereference electrode values.
+
+        Parameters
+        ----------
+        mode : mean, median or electrode, optional
+            Type of rereferencing
+        electrode : str, optional
+            Electrode name corresponding to column
+        inplace : bool, optional
+            Whether to copy or inplace modify
+
+        Returns
+        -------
+        new : EEGRun
+            New EEG data rereferenced.
+
+        Examples
+        --------
+        >>> eeg_run = EEGRun([[1, 2, 6]], columns=['C3', 'Cz', 'C4'])
+        >>> eeg_run.rereference().ix[0, 'C3']
+        -2.0
+
+        >>> eeg_run.rereference(mode='median').ix[0, 'C3']
+        -1.0
+
+        """
+        if mode == 'mean':
+            reference = self.mean(axis=1)
+        elif mode == 'median':
+            reference = self.median(axis=1)
+        elif mode == 'electrode':
+            if electrode is None:
+                raise ValueError('electrode parameter should be defined')
+            reference = self.ix[:, electrode]
+        else:
+            raise ValueError('Wrong mode parameter: {}'.format(mode))
+
+        if inplace:
+            self -= np.tile(reference, (self.shape[1], 1)).T
+            return self
+        else:
+            new = self._constructor(self)
+            new -= np.tile(reference, (self.shape[1], 1)).T
+            return new
 
     def bandpass_filter(self, low_cutoff_frequency=1.0,
                         high_cutoff_frequency=45.0, order=4, inplace=False):
