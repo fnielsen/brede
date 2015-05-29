@@ -177,7 +177,7 @@ class EEGRun(Matrix):
         if sampling_rate is not None:
             self.index = np.arange(0, len(self) / sampling_rate,
                                    1 / sampling_rate)
-            self._sampling_rate = sampling_rate
+            self._sampling_rate = float(sampling_rate)
         else:
             self._sampling_rate = 1.0
 
