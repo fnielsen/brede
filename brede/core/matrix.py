@@ -26,6 +26,10 @@ class Matrix(DataFrame):
     def _constructor(self):
         return Matrix
 
+    def nans(self):
+        """Return matrix with NaN of same size as original."""
+        return np.nan + self._constructor(self)
+
     def ica(self, n_components=None):
         """Return result from independent component analysis.
 
