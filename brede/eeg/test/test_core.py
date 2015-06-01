@@ -20,12 +20,41 @@ def eeg_run_1d():
 
 
 @pytest.fixture
+def eeg_run_emotiv():
+    """Return EEG data set with emotiv electrodes."""
+    emotiv_electrodes = [
+        'F3', 'FC6', 'P7', 'T8', 'F7', 'F8', 'T7',
+        'P8', 'AF4', 'F4', 'AF3', 'O2', 'O1', 'FC5']
+
+    eeg_run = core.EEGRun(
+        [range(14)], columns=emotiv_electrodes,
+        sampling_rate=2.0)
+
+    return eeg_run
+
+
+@pytest.fixture
 def eeg_aux_run():
     """Return an instance of EEGAuxRun with data."""
     eeg_aux_run = core.EEGAuxRun(
         [[1, 2, 'yes'], [3, 4, 'no']],
         columns=['C3', 'C4', 'label'],
         sampling_rate=2.0)
+    return eeg_aux_run
+
+
+@pytest.fixture
+def eeg_aux_run_emotiv():
+    """Return EEG data set with emotiv electrodes and auxillary."""
+    columns = [
+        'F3', 'FC6', 'P7', 'T8', 'F7', 'F8', 'T7',
+        'P8', 'AF4', 'F4', 'AF3', 'O2', 'O1', 'FC5',
+        'extra1', 'extra2']
+
+    eeg_aux_run = core.EEGAuxRun(
+        [range(16)], columns=columns,
+        sampling_rate=2.0)
+
     return eeg_aux_run
 
 
@@ -50,6 +79,16 @@ def test_eegrun_constructor():
     eeg_run = core.EEGRun([[1, 2], [3, 4]], columns=['C3', 'C4'],
                           sampling_rate=2.0)
     assert isinstance(np.isnan(eeg_run), core.EEGRun)
+
+
+def test_eegrun_emotiv_to_emocap(eeg_run_emotiv):
+    """Test emotiv_to_emocap method."""
+    translated = eeg_run_emotiv.emotiv_to_emocap()
+    assert 'C3' in translated.columns
+    assert 'Cz' in translated.columns
+    assert 'C4' in translated.columns
+    assert translated.columns[eeg_run_emotiv.columns == 'T8'] == 'C3'
+    assert translated.ix[0, 'P4'] == 0
 
 
 def test_eegrun_rereference(eeg_run_1d):
@@ -137,3 +176,15 @@ def test_eeg_aux_run_getitem(eeg_aux_run):
     """Test indexing in EEGAuxRun."""
     new_eeg_aux_run = eeg_aux_run[['C3']]
     assert new_eeg_aux_run.electrodes == ['C3']
+
+
+def test_eegauxrun_emotiv_to_emocap(eeg_aux_run_emotiv):
+    """Test emotiv_to_emocap method."""
+    translated = eeg_aux_run_emotiv.emotiv_to_emocap()
+    assert 'C3' in translated.columns
+    assert 'Cz' in translated.columns
+    assert 'C4' in translated.columns
+    assert translated.columns[eeg_aux_run_emotiv.columns == 'T8'] == 'C3'
+    assert 'extra1' in translated.columns
+    assert 'extra2' in translated.columns
+    assert translated.ix[0, 'P4'] == 0
