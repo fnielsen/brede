@@ -32,6 +32,8 @@ subject_id,Instruction,Time
 
 
 def test_read_xpe():
+    """Test read_xpe function."""
     df = expyriment.read_xpe(StringIO(DATA))
+
     assert 'subject_id' in df.columns
     assert df.ix[1400858107.173556, 'Instruction'] == 'Relax'
