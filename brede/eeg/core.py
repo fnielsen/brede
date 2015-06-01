@@ -16,7 +16,7 @@ from pandas import read_csv as pandas_read_csv
 from scipy.signal import lfilter, welch
 
 from .csp import CSP
-from .filter import bandpass_filter_coefficients
+from .filter import bandpass_filter_coefficients, lowpass_filter_coefficients
 from .plotting import MultiPlot
 from ..core.matrix import Matrix
 from ..core.tensor import Tensor
@@ -179,7 +179,13 @@ class EEGRun(Matrix):
                                    1 / sampling_rate)
             self._sampling_rate = float(sampling_rate)
         else:
-            self._sampling_rate = 1.0
+            if self.shape[0] == 1:
+                self._sampling_rate = 1.0
+            else:
+                try:
+                    self._sampling_rate = self.sampling_rate_from_index()
+                except UnevenSamplingRateError:
+                    self._sampling_rate = 1.0
 
     def sampling_rate_from_index(self):
         """Return sampling rate.
@@ -221,7 +227,7 @@ class EEGRun(Matrix):
         self.index = np.arange(0, len(self) / value, 1 / value)
 
     @classmethod
-    def read_csv(cls, filename, sampling_rate=1.0, *args, **kwargs):
+    def read_csv(cls, filename, sampling_rate=None, *args, **kwargs):
         """Read comma-separated file.
 
         Parameters
@@ -235,8 +241,9 @@ class EEGRun(Matrix):
             EEGRun dataframe with read data.
 
         """
-        return cls(pandas_read_csv(filename, *args, **kwargs),
-                   sampling_rate=sampling_rate)
+        # TODO: This will not instance in derived class.
+        return EEGRun(pandas_read_csv(filename, *args, **kwargs),
+                      sampling_rate=sampling_rate)
 
     @classmethod
     def read_edf(cls, filename):
@@ -290,7 +297,9 @@ class EEGRun(Matrix):
             self.columns = columns
             return self
         else:
-            return EEGRun(self, columns=columns)
+            return self._constructor(
+                self.values, index=self.index, columns=columns,
+                sampling_rate=self.sampling_rate)
 
     def fix_electrode_names(self, inplace=False):
         """Make electrode names canonical.
@@ -319,6 +328,55 @@ class EEGRun(Matrix):
         else:
             return self._constructor(self, columns=new_columns)
 
+    def merge_events(self, events, left_on=None, right_on=None,
+                     fill_method='pad'):
+        """Merge event data with eeg data.
+
+        Parameters
+        ----------
+        events : brede.core.matrix.Matrix
+            Data frame with events
+        left_on : str, optional
+            Column to match on. If None uses the index
+        right_on : str, optional
+            Column to match on. If None uses the index
+        fill_method : 'pad' or None
+            Parameter forwarded to fillna's method parameter
+
+        Returns
+        -------
+        new : EEGAuxRun
+
+        See also
+        --------
+        pandas.DataFrame.fillna
+
+        """
+        if left_on is None:
+            left = self.index.values
+        else:
+            left = self.ix[:, left_on].values
+        if right_on is None:
+            right = events.index.values
+        else:
+            right = events.ix[:, right_on].values
+
+        matrix_events = Matrix(
+            np.zeros((self.shape[0], events.shape[1])) * np.nan,
+            index=self.index,
+            columns=events.columns)
+
+        for event_index in right:
+            nearest_index = np.argmin(abs(left - event_index))
+            matrix_events.iloc[nearest_index, :] = events.ix[event_index, :]
+
+        if fill_method is not None:
+            matrix_events = matrix_events.fillna(method='pad')
+
+        new = EEGAuxRun(self)
+        new = new.combine_first(matrix_events)
+        return new
+
     def rereference(self, mode='mean', electrode=None, inplace=False):
         """Rereference electrode values.
 
@@ -339,10 +397,10 @@ class EEGRun(Matrix):
         Examples
         --------
         >>> eeg_run = EEGRun([[1, 2, 6]], columns=['C3', 'Cz', 'C4'])
-        >>> eeg_run.rereference().ix[0, 'C3']
+        >>> float(eeg_run.rereference().ix[0, 'C3'])
         -2.0
 
-        >>> eeg_run.rereference(mode='median').ix[0, 'C3']
+        >>> float(eeg_run.rereference(mode='median').ix[0, 'C3'])
         -1.0
 
         """
@@ -381,6 +439,33 @@ class EEGRun(Matrix):
         """
         b, a = bandpass_filter_coefficients(
             low_cutoff_frequency, high_cutoff_frequency,
+            sampling_rate=self.sampling_rate, order=order)
+        Y = lfilter(b, a, self, axis=0)
+
+        if inplace:
+            self.ix[:, :] = Y
+            return self
+        else:
+            new = self._constructor(Y, columns=self.columns,
+                                    sampling_rate=self.sampling_rate)
+            return new
+
+    def lowpass_filter(self, cutoff_frequency=1.0,
+                       order=4, inplace=False):
+        """Filter electrode data temporally with lowpass filter.
+
+        Parameters
+        ----------
+        cutoff_frequency : float
+            Frequency in Hertz
+        order : int, optional
+            Order of filter [default: 4].
+        inplace : bool, optional
+            Whether to make a new object or an overwrite
+
+        """
+        b, a = lowpass_filter_coefficients(
+            cutoff_frequency,
             sampling_rate=self.sampling_rate, order=order)
         Y = lfilter(b, a, self, axis=0)
 
@@ -657,6 +742,25 @@ class EEGAuxRun(EEGRun):
                           if column not in set(self.electrodes)]
         return not_electrodes
 
+    @classmethod
+    def read_csv(cls, filename, sampling_rate=None, *args, **kwargs):
+        """Read comma-separated file.
+
+        Parameters
+        ----------
+        filename : str
+            Filename for the csv file
+
+        Returns
+        -------
+        eeg_run : EEGAuxRun
+            EEGAuxRun dataframe with read data.
+
+        """
+        # TODO: This will not instance in derived class.
+        return EEGAuxRun(pandas_read_csv(filename, *args, **kwargs),
+                         sampling_rate=sampling_rate)
+
     def emotiv_to_emocap(self, check_all=True, change_qualities=True,
                          inplace=False):
         """Change column names for Emotiv electrodes to Emocap.
@@ -672,11 +776,29 @@ class EEGAuxRun(EEGRun):
             inplace=inplace)
         new_electrodes = [EMOTIV_TO_EMOCAP_MAP[electrode]
                           for electrode in old_electrodes]
+
         if inplace:
             self.electrodes = new_electrodes
             return self
         else:
             new.electrodes = new_electrodes
+            return new
+
+    def abser(self, inplace=False):
+        """Compute the absolute value for the electrode data.
+
+        Returns
+        -------
+        new : EEGAuxRun
+            New DataFrame-like object with absolute electrode data.
+
+        """
+        if inplace:
+            self.ix[:, self.electrodes] = self.ix[:, self.electrodes].abs()
+            return self
+        else:
+            new = self._constructor(self)
+            new.ix[:, self.electrodes] = new.ix[:, self.electrodes].abs()
             return new
 
     def center(self, inplace=False):
@@ -700,6 +822,92 @@ class EEGAuxRun(EEGRun):
             new.ix[:, self.electrodes] -= means
             return new
 
+    def rereference(self, mode='mean', electrode=None, inplace=False):
+        """Rereference electrode values.
+
+        Parameters
+        ----------
+        mode : mean, median or electrode, optional
+            Type of rereferencing
+        electrode : str, optional
+            Electrode name corresponding to column
+        inplace : bool, optional
+            Whether to copy or inplace modify
+
+        Returns
+        -------
+        new : EEGAuxRun
+            New EEG data rereferenced.
+
+        Examples
+        --------
+        >>> eeg_run = EEGAuxRun([[1, 2, 6]], columns=['C3', 'Cz', 'C4'])
+        >>> float(eeg_run.rereference().ix[0, 'C3'])
+        -2.0
+
+        >>> float(eeg_run.rereference(mode='median').ix[0, 'C3'])
+        -1.0
+
+        """
+        if mode == 'mean':
+            reference = self.ix[:, self.electrodes].mean(axis=1)
+        elif mode == 'median':
+            reference = self.ix[:, self.electrodes].median(axis=1)
+        elif mode == 'electrode':
+            if electrode is None:
+                raise ValueError('electrode parameter should be defined')
+            reference = self.ix[:, electrode]
+        else:
+            raise ValueError('Wrong mode parameter: {}'.format(mode))
+
+        if inplace:
+            self.ix[:, self.electrodes] -= np.tile(reference,
+                                                   (len(self.electrodes), 1)).T
+            return self
+        else:
+            new = self._constructor(self)
+            new.ix[:, self.electrodes] -= np.tile(
+                reference, (len(self.electrodes), 1)).T
+            return new
+
+    def power(self, inplace=False):
+        """Compute the power for the electrode data.
+
+        Returns
+        -------
+        new : EEGAuxRun
+            New DataFrame-like object with standardized electrode data.
+
+        """
+        if inplace:
+            self.ix[:, self.electrodes] **= 2
+            return self
+        else:
+            new = self._constructor(self)
+            new.ix[:, self.electrodes] **= 2
+            return new
+
+    def standardize(self, inplace=False):
+        """Standardize the electrode data.
+
+        Standardize means to devide with the standard deviation of the time
+        series of each electrode.
+
+        Returns
+        -------
+        new : EEGAuxRun
+            New DataFrame-like object with standardized electrode data.
+
+        """
+        stds = self.ix[:, self.electrodes].std(axis=0)
+        if inplace:
+            self.ix[:, self.electrodes] /= stds
+            return self
+        else:
+            new = self._constructor(self)
+            new.ix[:, self.electrodes] /= stds
+            return new
+
     def bandpass_filter(self, low_cutoff_frequency=1.0,
                         high_cutoff_frequency=45.0, order=4, inplace=False):
         """Filter electrode data with a temporal bandpass filter.
@@ -713,9 +921,46 @@ class EEGAuxRun(EEGRun):
         order : int, optional
             Order of filter [default: 4].
 
+        Returns
+        -------
+        new : EEGAuxRun
+            New DataFrame-like object with bandpass filtered electrode data.
+
         """
         b, a = bandpass_filter_coefficients(
             low_cutoff_frequency, high_cutoff_frequency,
+            sampling_rate=self.sampling_rate, order=order)
+        Y = lfilter(b, a, self.ix[:, self.electrodes], axis=0)
+
+        if inplace:
+            self.ix[:, self.electrodes] = Y
+            return self
+        else:
+            new = self._constructor(self)
+            new.ix[:, self.electrodes] = Y
+            return new
+
+    def lowpass_filter(self, cutoff_frequency=1.0,
+                       order=4, inplace=False):
+        """Filter electrode data temporally with lowpass filter.
+
+        Parameters
+        ----------
+        cutoff_frequency : float
+            Frequency in Hertz
+        order : int, optional
+            Order of filter [default: 4].
+        inplace : bool, optional
+            Whether to make a new object or an overwrite
+
+        Returns
+        -------
+        new : EEGAuxRun
+            New DataFrame-like object with bandpass filtered electrode data.
+
+        """
+        b, a = lowpass_filter_coefficients(
+            cutoff_frequency,
             sampling_rate=self.sampling_rate, order=order)
         Y = lfilter(b, a, self.ix[:, self.electrodes], axis=0)
 
