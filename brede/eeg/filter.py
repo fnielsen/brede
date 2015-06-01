@@ -13,7 +13,7 @@ from __future__ import absolute_import, division, print_function
 from scipy.signal import butter
 
 
-def lowpass_filter_coefficients(cutoff_frequency, sampling_rate, order=20):
+def lowpass_filter_coefficients(cutoff_frequency, sampling_rate, order=5):
     """Return lowpass filter coefficients.
 
     Parameters
@@ -40,7 +40,7 @@ def lowpass_filter_coefficients(cutoff_frequency, sampling_rate, order=20):
 
 
 def bandpass_filter_coefficients(low_cutoff_frequency, high_cutoff_frequency,
-                                 sampling_rate, order=20):
+                                 sampling_rate, order=5):
     """Return bandpass filter coefficients.
 
     Parameters
