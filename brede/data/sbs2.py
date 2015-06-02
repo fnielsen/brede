@@ -1,4 +1,4 @@
-r"""brede.data.sbs2 - Interface to SBS2 data.
+r"""Interface to SBS2 data.
 
 Usage:
   brede.data.sbs2 [options]
@@ -17,7 +17,7 @@ Examples:
   $ python -m brede.data.sbs2 --model=small --coloring=inverse
 
   $ python -m brede.data.sbs2 --model=small --coloring=inverse \
-       --hardward=emocap --electrode=C3
+       --hardware=emocap --electrode=C3
 
 """
 
@@ -156,12 +156,15 @@ class SBS2Data(object):
         Returns
         -------
         matrix : brede.core.matrix.Matrix
-            Matrix with forward model returned channels x vertices
+            Matrix with forward model returned vertices x channels
 
         Examples
         --------
         >>> sbs2_data = SBS2Data()
         >>> forward_model = sbs2_data.forward_model()
+        >>> forward_model.shape
+        (1028, 14)
+
         >>> forward_model.index[0]
         'P7'
 
@@ -173,7 +176,7 @@ class SBS2Data(object):
 
         # void Sbs2SourceReconstrucionLoreta::setupModel() line 41
         matrix *= 1000000
-        return matrix
+        return matrix.T
 
     def spatial_coherence(self, hardware='emotiv'):
         """Return spatial coherence matrix.
@@ -278,6 +281,14 @@ class SBS2Data(object):
     def inverse_model(self, hardware='emotiv', method='LORETA'):
         """Compute and return inverse model.
 
+        The LORETA method is:
+
+        Sigma_inv = inv_alpha * F' * L' * L * F + inv_beta * I
+        V         = X * inv_alpha * Sigma * F' * L' * L
+
+        where V is the sources and X is the electrode data, see equation (3)
+        and (4) in [1].
+
         Arguments
         ---------
         hardware : 'emotiv' or 'emocap', optional
@@ -295,12 +306,12 @@ class SBS2Data(object):
         >>> sbs2_data = SBS2Data()
         >>> inverse_model = sbs2_data.inverse_model()
         >>> inverse_model.shape
-        (1028, 14)
+        (14, 1028)
 
         References
         ----------
-        Smartphones as pocketable labs: Visions for mobile brain imaging and
-        neurofeedback. Arkadiusz Stopczynski, Carsten Stahlhut,
+        [1] Smartphones as pocketable labs: Visions for mobile brain imaging
+        and neurofeedback. Arkadiusz Stopczynski, Carsten Stahlhut,
         Michael Kai Petersen, Jakob Eg Larsen, Camilla Falk Jensen,
         Marieta Georgieva Ivanova, Tobias S. Andersen, Lars Kai Hansen.
         Affective Computing and Intelligent Interaction 6975: 317-318. 2011
@@ -320,26 +331,27 @@ class SBS2Data(object):
         # Forward model, F matrix
         forward = self.forward_model(hardware).values
 
-        identity = eye(forward.shape[0])
+        identity = eye(forward.shape[1])
 
         if method == 'minimumnorm':
             # The spatial coherence is the identity matrix and disappears
-            inverse = forward.T.dot(pinv(forward.dot(forward.T)
-                                         + inv_beta / inv_alpha * identity))
+            inverse = pinv(forward.T.dot(forward) +
+                           inv_beta / inv_alpha * identity).dot(forward.T)
+
         elif method == 'LORETA':
             # Spatial coherence, L matrix
             coherence = self.spatial_coherence(hardware).values
 
-            forward_and_coherence = forward.dot(coherence)
+            forward_and_coherence = coherence.dot(forward)
             sigma_inv = inv_alpha * \
-                forward_and_coherence.dot(forward.T) \
+                forward.T.dot(forward_and_coherence) \
                 + inv_beta * identity
-            inverse = inv_alpha * forward_and_coherence.T.dot(pinv(sigma_inv))
+            inverse = inv_alpha * pinv(sigma_inv).dot(forward_and_coherence.T)
         else:
             raise ValueError('Wrong method')
 
         inverse = Matrix(inverse)
-        inverse.columns = self.electrode_names(hardware)
+        inverse.index = self.electrode_names(hardware)
         return inverse
 
 
@@ -355,10 +367,10 @@ def main(args):
     if args['--coloring'] != 'z':
         if args['--coloring'] == 'forward':
             matrix = sbs2_data.forward_model(hardware=args['--hardware'])
-            values = matrix.ix[args['--electrode'], :].values
+            values = matrix.ix[:, args['--electrode']].values
         elif args['--coloring'] == 'inverse':
             matrix = sbs2_data.inverse_model(hardware=args['--hardware'])
-            values = matrix.ix[:, args['--electrode']].values
+            values = matrix.ix[args['--electrode'], :].values
         else:
             sys.exit('Wrong argument to --coloring')
 
