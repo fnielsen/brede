@@ -165,7 +165,7 @@ class SBS2Data(object):
         >>> forward_model.shape
         (1028, 14)
 
-        >>> forward_model.index[0]
+        >>> forward_model.columns[0]
         'P7'
 
         """
