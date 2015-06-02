@@ -717,13 +717,17 @@ class EEGAuxRun(EEGRun):
             dtype=dtype, copy=copy, sampling_rate=sampling_rate)
 
         if eeg_columns is None:
-            self._eeg_columns = []
+            if hasattr(data, '_eeg_columns'):
+                self._eeg_columns = data._eeg_columns
+            else:
+                self._eeg_columns = []
         else:
             self._eeg_columns = eeg_columns
 
     def __getitem__(self, key):
         """Get column or columns."""
         value = super(EEGAuxRun, self).__getitem__(key)
+
         if isinstance(value, EEGAuxRun):
             new_columns = [column for column in key
                            if column in self._eeg_columns]
