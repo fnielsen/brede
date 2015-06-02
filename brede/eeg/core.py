@@ -716,7 +716,10 @@ class EEGAuxRun(EEGRun):
             data=data, index=index, columns=columns,
             dtype=dtype, copy=copy, sampling_rate=sampling_rate)
 
-        self._eeg_columns = eeg_columns
+        if eeg_columns is None:
+            self._eeg_columns = []
+        else:
+            self._eeg_columns = eeg_columns
 
     def __getitem__(self, key):
         """Get column or columns."""
@@ -739,7 +742,8 @@ class EEGAuxRun(EEGRun):
         Examples
         --------
         >>> from numpy.random import randn
-        >>> data = EEGAuxRun(randn(20, 3), columns=['C3', 'C4', 'State'])
+        >>> data = EEGAuxRun(randn(20, 3), columns=['C3', 'C4', 'State'],
+        ...     eeg_columns=['C3', 'C4'])
         >>> data.not_eeg_columns
         ['State']
 
@@ -824,7 +828,8 @@ class EEGAuxRun(EEGRun):
 
         Examples
         --------
-        >>> eeg_run = EEGAuxRun([[1, 2, 6]], columns=['C3', 'Cz', 'C4'])
+        >>> eeg_run = EEGAuxRun([[1, 2, 6]], columns=['C3', 'Cz', 'C4'],
+        ...     eeg_columns=['C3', 'Cz', 'C4'])
         >>> float(eeg_run.rereference().ix[0, 'C3'])
         -2.0
 
