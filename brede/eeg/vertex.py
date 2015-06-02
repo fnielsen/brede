@@ -16,6 +16,8 @@ class EEGAuxVertexRun(EEGAuxRun):
 
     """
 
+    _metadata = ['_eeg_columns', '_sampling_rate']
+
     @property
     def _constructor(self):
         return type(self)
@@ -27,7 +29,7 @@ class EEGAuxVertexRun(EEGAuxRun):
         super(EEGAuxVertexRun, self).__init__(
             data=data, index=index, columns=columns,
             dtype=dtype, copy=copy,
-            sampling_rate=None, eeg_columns=None)
+            sampling_rate=sampling_rate, eeg_columns=eeg_columns)
 
         self._surface = surface
 
