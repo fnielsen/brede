@@ -177,8 +177,12 @@ def test_eeg_aux_run(eeg_aux_run):
 
 def test_eeg_aux_run_getitem(eeg_aux_run):
     """Test indexing in EEGAuxRun."""
-    new_eeg_aux_run = eeg_aux_run[['C3']]
-    assert new_eeg_aux_run.eeg_columns == ['C3']
+    new = eeg_aux_run[['C3']]
+    assert new.eeg_columns == ['C3']
+
+    new = eeg_aux_run.ix[:1, :]
+    # TODO
+    # assert new.eeg_columns == ['C3', 'C4']
 
 
 def test_eegauxrun_emotiv_to_emocap(eeg_aux_run_emotiv):
