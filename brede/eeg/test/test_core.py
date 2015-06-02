@@ -39,6 +39,7 @@ def eeg_aux_run():
     eeg_aux_run = core.EEGAuxRun(
         [[1, 2, 'yes'], [3, 4, 'no']],
         columns=['C3', 'C4', 'label'],
+        eeg_columns=['C3', 'C4'],
         sampling_rate=2.0)
     return eeg_aux_run
 
@@ -53,6 +54,8 @@ def eeg_aux_run_emotiv():
 
     eeg_aux_run = core.EEGAuxRun(
         [range(16)], columns=columns,
+        eeg_columns=['F3', 'FC6', 'P7', 'T8', 'F7', 'F8', 'T7',
+                     'P8', 'AF4', 'F4', 'AF3', 'O2', 'O1', 'FC5'],
         sampling_rate=2.0)
 
     return eeg_aux_run
@@ -169,13 +172,13 @@ def test_eeg_aux_run(eeg_aux_run):
     assert len(eeg_aux_run.shape) == 2
     assert eeg_aux_run.shape[1] == 3
     assert eeg_aux_run.shape[0] == 2
-    assert eeg_aux_run.electrodes == ['C3', 'C4']
+    assert eeg_aux_run.eeg_columns == ['C3', 'C4']
 
 
 def test_eeg_aux_run_getitem(eeg_aux_run):
     """Test indexing in EEGAuxRun."""
     new_eeg_aux_run = eeg_aux_run[['C3']]
-    assert new_eeg_aux_run.electrodes == ['C3']
+    assert new_eeg_aux_run.eeg_columns == ['C3']
 
 
 def test_eegauxrun_emotiv_to_emocap(eeg_aux_run_emotiv):
