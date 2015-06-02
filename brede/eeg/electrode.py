@@ -483,7 +483,7 @@ class EEGAuxElectrodeRun(EEGAuxRun):
     ----------
     sampling_rate : float
         Sampling rate in Hertz
-    electrodes : list of str
+    eeg_columns : list of str
         Names for columns that are electrodes
 
     """
@@ -516,7 +516,7 @@ class EEGAuxElectrodeRun(EEGAuxRun):
         column from Emotiv electrode names to Emocap electrode names.
 
         """
-        old_electrodes = self.electrodes
+        old_electrodes = self._eeg_columns
         new = super(EEGAuxRun, self).emotiv_to_emocap(
             check_all=check_all,
             change_qualities=change_qualities,
@@ -525,11 +525,31 @@ class EEGAuxElectrodeRun(EEGAuxRun):
                           for electrode in old_electrodes]
 
         if inplace:
-            self.electrodes = new_electrodes
+            self._eeg_columns = new_electrodes
             return self
         else:
-            new.electrodes = new_electrodes
+            new._eeg_columns = new_electrodes
             return new
+
+    @classmethod
+    def read_csv(cls, filename, sampling_rate=None, *args, **kwargs):
+        """Read comma-separated file.
+
+        Parameters
+        ----------
+        filename : str
+            Filename for the csv file
+
+        Returns
+        -------
+        eeg_run : EEGAuxRun
+            EEGAuxRun dataframe with read data.
+
+        """
+        # TODO: This will not instance in derived class.
+        return EEGAuxElectrodeRun(
+            pandas_read_csv(filename, *args, **kwargs),
+            sampling_rate=sampling_rate)
 
     def csp(self, group_by, n_components=None):
         """Common spatial patterns.
