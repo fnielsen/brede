@@ -341,7 +341,7 @@ class EEGRun(Matrix):
         Parameters
         ----------
         columns : str
-            Column(s) to look for transitions
+            Column or columns to look for transitions
 
         Returns
         -------
@@ -361,16 +361,25 @@ class EEGRun(Matrix):
         [1, 2]
 
         """
+        assert not np.any(np.isnan(self.ix[:, columns]))
+        # >>> np.nan == np.nan
+        # False
+        # >>> (np.nan, 2) == (np.nan, 2)
+        # True
+
         previous = None
         indices = []
         series = self.ix[:, columns]
         if isinstance(series, DataFrame):
-            series = self.ix[:, columns].iterrows()
-        for index, element in enumerate(series):
-            if element != previous:
-                if previous is not None:
-                    indices.append(index)
-                previous = element
+            series = (value for key, value in self.ix[:, columns].iterrows())
+        for index, elements in enumerate(series):
+            if index == 0:
+                previous = elements
+                continue
+
+            if np.any(elements != previous):
+                indices.append(index)
+                previous = elements
         return indices
 
     def merge_events(self, events, left_on=None, right_on=None,
