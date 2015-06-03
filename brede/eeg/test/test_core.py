@@ -94,6 +94,19 @@ def test_eegrun_emotiv_to_emocap(eeg_run_emotiv):
     assert translated.ix[0, 'P4'] == 0
 
 
+def test_eegrun_find_transitions():
+    """Test of EEGRun find_transitions method."""
+    run = core.EEGRun([[1, 2], [1, 3], [2, 3]], columns=['C3', 'C4'])
+    assert run.find_transitions('C3') == [2]
+    assert run.find_transitions('C4') == [1]
+    assert run.find_transitions(['C3', 'C4']) == [1, 2]
+
+    run = core.EEGRun([[np.nan, 2], [np.nan, 3], [1, 3], [1, 3]],
+                      columns=['C3', 'C4'])
+    # TODO
+    # assert run.find_transitions('C3') == [2]
+
+
 def test_eegrun_rereference(eeg_run_1d):
     """Test rereference method."""
     assert eeg_run_1d.rereference().ix[0, 'C3'] == -2.0
