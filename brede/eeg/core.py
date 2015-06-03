@@ -333,6 +333,46 @@ class EEGRun(Matrix):
         else:
             return self._constructor(self, columns=new_columns, copy=True)
 
+    def find_transitions(self, columns):
+        """Return integer-location row indices with transisitions.
+
+        The first index is not returned.
+
+        Parameters
+        ----------
+        columns : str
+            Column(s) to look for transitions
+
+        Returns
+        -------
+        indices : list of int
+             List of integer-location indices
+
+        Examples
+        --------
+        >>> eeg_run = EEGRun([[1, 2], [1, 3], [2, 3]], columns=['C3', 'C4'])
+        >>> eeg_run.find_transitions('C3')
+        [2]
+
+        >>> eeg_run.find_transitions('C4')
+        [1]
+
+        >>> eeg_run.find_transitions(['C3', 'C4'])
+        [1, 2]
+
+        """
+        previous = None
+        indices = []
+        series = self.ix[:, columns]
+        if isinstance(series, DataFrame):
+            series = self.ix[:, columns].iterrows()
+        for index, element in enumerate(series):
+            if element != previous:
+                if previous is not None:
+                    indices.append(index)
+                previous = element
+        return indices
+
     def merge_events(self, events, left_on=None, right_on=None,
                      fill_method='pad'):
         """Merge event data with eeg data.
