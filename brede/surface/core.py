@@ -150,7 +150,16 @@ class TriSurface(Surface):
         return cls(np.array(vertices), np.array(faces) - 1)
 
     def plot(self, *args, **kwargs):
-        """Plot surface."""
+        """Plot surface.
+
+        Presently Mayavi plots the surface.
+
+        Parameters
+        ----------
+        title : str
+            String to use as title in the plot
+
+        """
         return self._plot_mayavi(*args, **kwargs)
 
     def _plot_mayavi(self, *args, **kwargs):
@@ -159,9 +168,16 @@ class TriSurface(Surface):
         The x-axis is switched to account for the Mayavi's right-handed
         coordinate system and Talairach's left-handed coordinate system.
 
+        Parameters
+        ----------
+        title : str
+            String to use as title in the plot
+
         """
         # Delayed import of Mayavi
-        from mayavi.mlab import triangular_mesh
+        from mayavi.mlab import title as mlab_title, triangular_mesh
+
+        title = kwargs.pop('title', None)
 
         if self._vertex_values is None:
             handle = triangular_mesh(
@@ -179,6 +195,10 @@ class TriSurface(Surface):
                 self._faces,
                 scalars=self._vertex_values,
                 *args, **kwargs)
+
+        if title is not None:
+            mlab_title(title)
+
         return handle
 
     def colorbar(self, *args, **kwargs):
