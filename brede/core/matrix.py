@@ -1,7 +1,7 @@
 """Dataframe object."""
 
 
-from __future__ import division
+from __future__ import absolute_import, division, print_function
 
 import numpy as np
 
@@ -29,6 +29,61 @@ class Matrix(DataFrame):
     def nans(self):
         """Return matrix with NaN of same size as original."""
         return np.nan + self._constructor(self)
+
+    def collapse_to_two_by_two(self, first_rows, first_columns,
+                               second_rows=None, second_columns=None):
+        """Collapse a matrix to a two-by-two matrix.
+
+        Elements that are merged are added together.
+
+        Examples
+        --------
+        >>> A = Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]],
+        ...            index=['a', 'b', 'c'], columns=['x', 'y', 'z'])
+        >>> B = A.collapse_to_two_by_two(first_rows=['a'], first_columns=['y'])
+        >>> B.values
+        array([[  2.,   4.],
+               [ 13.,  26.]])
+
+        """
+        two_by_two = np.zeros((2, 2))
+
+        for n, column in enumerate(self):
+            if column in first_columns:
+                j = 0
+            elif second_columns is None:
+                j = 1
+            elif column in second_columns:
+                j = 1
+            else:
+                j = -1
+            for m, row in enumerate(self.index):
+                if row in first_rows:
+                    i = 0
+                elif second_rows is None:
+                    i = 1
+                elif row in second_rows:
+                    i = 1
+                else:
+                    i = -1
+                if i != -1 and j != -1:
+                    two_by_two[i, j] += self.iloc[m, n]
+        return Matrix(two_by_two)
+
+    def accuracy(self):
+        """Compute accuracy.
+
+        The accuracy is computed as the sum of the diagonal divided
+        by the sum of the total matrix.
+
+        Examples
+        --------
+        >>> matrix = Matrix([[33, 10], [15, 42]])
+        >>> matrix.accuracy()
+        0.75
+
+        """
+        return np.sum(np.diag(self)) / np.sum(np.sum(self))
 
     def ica(self, n_components=None):
         """Return result from independent component analysis.
