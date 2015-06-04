@@ -127,7 +127,7 @@ class EmocapVertexRun(EEGAuxVertexRun):
 
     """Represent a Emocap data set at the vertex level."""
 
-    _metadata = ['_eeg_columns', '_sampling_rate']
+    _metadata = ['_eeg_columns', '_sampling_rate', '_surface']
 
     @property
     def _constructor(self):
