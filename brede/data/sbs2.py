@@ -123,7 +123,8 @@ class SBS2Data(object):
         If not call then the download method is called.
 
         """
-        if redownload or not exists(self.sbs2_dir):
+        if (redownload or not exists(self.sbs2_dir)
+                or not exists(join(self.sbs2_dir, 'sbs2_data'))):
             self.download()
             # no need for extraction
 
@@ -169,6 +170,7 @@ class SBS2Data(object):
         'P7'
 
         """
+        self.unpack()
         filename = join(self.sbs2_dir, 'sbs2_data', 'hardware', hardware,
                         'forwardmodel_spheres_reduced.txt')
         matrix = Matrix(read_csv(filename, sep='\t', header=None))
@@ -210,6 +212,7 @@ class SBS2Data(object):
         (1028, 1028)
 
         """
+        self.unpack()
         filename = join(self.sbs2_dir, 'sbs2_data', 'hardware', hardware,
                         'spatialCoherenceSmooth0-2_reduced.txt')
         matrix = Matrix(read_csv(filename, sep='\t', header=None))
@@ -243,6 +246,7 @@ class SBS2Data(object):
         (1028, 1028)
 
         """
+        self.unpack()
         filename = join(self.sbs2_dir, 'sbs2_data', 'hardware', hardware,
                         'spatialCoherenceSmooth0-2_reduced_inverse.txt')
         matrix = Matrix(read_csv(filename, sep='\t', header=None))
@@ -267,6 +271,7 @@ class SBS2Data(object):
         >>> # surface.show() # Use this to interact with the plot
 
         """
+        self.unpack()
         if model == 'small':
             filename = 'vertface_brain_reduced.obj'
         elif model == 'large':
@@ -321,6 +326,8 @@ class SBS2Data(object):
         sbs2sourcereconstruction_loreta.cpp
 
         """
+        self.unpack()
+
         # https://github.com/SmartphoneBrainScanner/smartphonebrainscanner2-core/
         # blob/master/src/source_reconstruction/loreta/
         # sbs2sourcereconstruction_loreta.cpp
