@@ -1,22 +1,27 @@
 #!/usr/bin/env python
-"""edf.py.
+"""Interface to EDF files.
 
 Usage:
   edf.py [options] <file>
 
 Options:
-  -h --help  Help
+  -h --help       Help
+  -i --index=<i>  Time index to plot spatially
+
+Description:
+  This module acts both as a module and as a script. As a script it will read
+  a EDF file and plot it.
+
+Examples:
+  $ python -m brede.io.edf S001R01.edf
 
 """
 
 from __future__ import absolute_import, division, print_function
 
-# Absolute path here because of circular dependency
-import brede.eeg
-
 from eegtools.io import edfplus
 
-import pandas as pd
+from pandas import DataFrame
 
 
 def edf_to_df(edf):
@@ -26,7 +31,7 @@ def edf_to_df(edf):
 
     """
     labels = [label.replace('.', '') for label in edf.chan_lab]
-    df = pd.DataFrame(edf.X.T, columns=labels, index=edf.time)
+    df = DataFrame(edf.X.T, columns=labels, index=edf.time)
     return df
 
 
@@ -51,15 +56,31 @@ def read_edf(filename):
 
 
 def main(args):
-    """Run script."""
+    """Run script.
+
+    Parameters
+    ----------
+    args : dict
+        Command-line interface arguments in Docopt format.
+
+    """
+    import matplotlib.pyplot as plt
+
+    from ..eeg.plotting import topoplot
+
     if args['<file>'] is not None:
         filename = args['<file>']
         df = read_edf(filename)
-        sample = df.ix[0, :]
-        brede.eeg.topoplot(sample)
+        if args['--index']:
+            index = int(args['--index'])
+            sample = df.ix[index, :]
+            topoplot(sample)
+        else:
+            topoplot(df)
+        plt.show()
 
 
 if __name__ == '__main__':
-    import docopt
+    from docopt import docopt
 
-    main(docopt.docopt(__doc__))
+    main(docopt(__doc__))
