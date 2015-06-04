@@ -1,7 +1,7 @@
 """Dataframe object."""
 
 
-from __future__ import division
+from __future__ import absolute_import, division, print_function
 
 import numpy as np
 
@@ -25,6 +25,65 @@ class Matrix(DataFrame):
     @property
     def _constructor(self):
         return Matrix
+
+    def nans(self):
+        """Return matrix with NaN of same size as original."""
+        return np.nan + self._constructor(self)
+
+    def collapse_to_two_by_two(self, first_rows, first_columns,
+                               second_rows=None, second_columns=None):
+        """Collapse a matrix to a two-by-two matrix.
+
+        Elements that are merged are added together.
+
+        Examples
+        --------
+        >>> A = Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]],
+        ...            index=['a', 'b', 'c'], columns=['x', 'y', 'z'])
+        >>> B = A.collapse_to_two_by_two(first_rows=['a'], first_columns=['y'])
+        >>> B.values
+        array([[  2.,   4.],
+               [ 13.,  26.]])
+
+        """
+        two_by_two = np.zeros((2, 2))
+
+        for n, column in enumerate(self):
+            if column in first_columns:
+                j = 0
+            elif second_columns is None:
+                j = 1
+            elif column in second_columns:
+                j = 1
+            else:
+                j = -1
+            for m, row in enumerate(self.index):
+                if row in first_rows:
+                    i = 0
+                elif second_rows is None:
+                    i = 1
+                elif row in second_rows:
+                    i = 1
+                else:
+                    i = -1
+                if i != -1 and j != -1:
+                    two_by_two[i, j] += self.iloc[m, n]
+        return Matrix(two_by_two)
+
+    def accuracy(self):
+        """Compute accuracy.
+
+        The accuracy is computed as the sum of the diagonal divided
+        by the sum of the total matrix.
+
+        Examples
+        --------
+        >>> matrix = Matrix([[33, 10], [15, 42]])
+        >>> matrix.accuracy()
+        0.75
+
+        """
+        return np.sum(np.diag(self)) / np.sum(np.sum(self))
 
     def ica(self, n_components=None):
         """Return result from independent component analysis.
@@ -157,7 +216,7 @@ class Matrix(DataFrame):
         cost_old = np.finfo(float).max
         for n in range(0, max_iter):
             h = np.multiply(h, (w.T * x) / (w.T * w * h + small))
-            h = np.mat(np.where(h < 10**-100, 0, h))
+            h = np.mat(np.where(h < 10 ** -100, 0, h))
             whht = w * (h * h.T)
             xht = x * h.T
 
@@ -169,12 +228,13 @@ class Matrix(DataFrame):
                 break
 
             w = np.multiply(w, xht / (whht + small))
-            w = np.mat(np.where(w < 10**-100, 0, w))
+            w = np.mat(np.where(w < 10 ** -100, 0, w))
 
         w, h = self._adjust_wh(w, h)
 
         # Convert to dataframes
-        component_names = ['Component %d' % (n+1) for n in range(n_components)]
+        component_names = ['Component %d' % (n + 1)
+                           for n in range(n_components)]
         w = Matrix(w, index=self.index, columns=component_names)
         h = Matrix(h, index=component_names, columns=self.columns)
 

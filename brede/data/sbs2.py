@@ -1,18 +1,30 @@
-"""brede.data.sbs2 - Interface to SBS2 data.
+r"""Interface to SBS2 data.
 
 Usage:
   brede.data.sbs2 [options]
 
 Options:
-  -h --help       Help
-  --model=<size>  Size of model large or small [default: large]
+  -h --help           Help
+  --coloring=<col>    Coloring of model: forward, inverse or z [default: z]
+  --electrode=<elec>  Electrode name [default: O1]
+  --hardware=<hw>     EEG apparatus, either emotiv or emocap [default: emotiv]
+  --model=<size>      Size of model large or small [default: large]
 
-Smartphone brain scanner data. Presently a surface is plotted.
+Description:
+  Smartphone brain scanner data. Presently a surface is plotted.
+
+Examples:
+  $ python -m brede.data.sbs2 --model=small --coloring=inverse
+
+  $ python -m brede.data.sbs2 --model=small --coloring=inverse \
+       --hardware=emocap --electrode=C3
 
 """
 
 
 from __future__ import absolute_import, division, print_function
+
+import sys
 
 from os import chdir, getcwd, makedirs
 from os.path import exists, expanduser, join
@@ -105,13 +117,14 @@ class SBS2Data(object):
         rmtree(temp_dir)
 
     def unpack(self, redownload=False):
-        """Extract the downloaded compressed Neurosynth dump file.
+        """Extract SBS2 files.
 
         It tests if the relevant database file is already downloaded.
         If not call then the download method is called.
 
         """
-        if redownload or not exists(self.sbs2_dir):
+        if (redownload or not exists(self.sbs2_dir)
+                or not exists(join(self.sbs2_dir, 'sbs2_data'))):
             self.download()
             # no need for extraction
 
@@ -144,16 +157,20 @@ class SBS2Data(object):
         Returns
         -------
         matrix : brede.core.matrix.Matrix
-            Matrix with forward model returned channels x vertices
+            Matrix with forward model returned vertices x channels
 
         Examples
         --------
         >>> sbs2_data = SBS2Data()
         >>> forward_model = sbs2_data.forward_model()
-        >>> forward_model.index[0]
+        >>> forward_model.shape
+        (1028, 14)
+
+        >>> forward_model.columns[0]
         'P7'
 
         """
+        self.unpack()
         filename = join(self.sbs2_dir, 'sbs2_data', 'hardware', hardware,
                         'forwardmodel_spheres_reduced.txt')
         matrix = Matrix(read_csv(filename, sep='\t', header=None))
@@ -161,7 +178,7 @@ class SBS2Data(object):
 
         # void Sbs2SourceReconstrucionLoreta::setupModel() line 41
         matrix *= 1000000
-        return matrix
+        return matrix.T
 
     def spatial_coherence(self, hardware='emotiv'):
         """Return spatial coherence matrix.
@@ -195,6 +212,7 @@ class SBS2Data(object):
         (1028, 1028)
 
         """
+        self.unpack()
         filename = join(self.sbs2_dir, 'sbs2_data', 'hardware', hardware,
                         'spatialCoherenceSmooth0-2_reduced.txt')
         matrix = Matrix(read_csv(filename, sep='\t', header=None))
@@ -228,6 +246,7 @@ class SBS2Data(object):
         (1028, 1028)
 
         """
+        self.unpack()
         filename = join(self.sbs2_dir, 'sbs2_data', 'hardware', hardware,
                         'spatialCoherenceSmooth0-2_reduced_inverse.txt')
         matrix = Matrix(read_csv(filename, sep='\t', header=None))
@@ -249,9 +268,10 @@ class SBS2Data(object):
         >>> sbs2_data = SBS2Data()
         >>> surface = sbs2_data.surface()
         >>> handle = surface.plot()
-        >>> surface.show()
+        >>> # surface.show() # Use this to interact with the plot
 
         """
+        self.unpack()
         if model == 'small':
             filename = 'vertface_brain_reduced.obj'
         elif model == 'large':
@@ -263,42 +283,54 @@ class SBS2Data(object):
         surface = read_obj(full_filename)
         return surface
 
-    def backward_model(self, hardware='emotiv', method='LORETA'):
-        """Compute and return backward model.
+    def inverse_model(self, hardware='emotiv', method='LORETA'):
+        """Compute and return inverse model.
+
+        The LORETA method is:
+
+        Sigma_inv = inv_alpha * F' * L' * L * F + inv_beta * I
+        V         = X * inv_alpha * Sigma * F' * L' * L
+
+        where V is the sources and X is the electrode data, see equation (3)
+        and (4) in [1].
 
         Arguments
         ---------
-        hardware : 'emotiv' or 'emocap'
-            Hardward type for forward model
-        method : 'LORETA' or 'minimumnorm'
-            Estimation type
+        hardware : 'emotiv' or 'emocap', optional
+            Hardward type for forward model.
+        method : 'LORETA' or 'minimumnorm', optional
+            Estimation type.
 
         Returns
         -------
         matrix : brede.core.matrix.Matrix
-            Matrix with backward model size 1028 x 14
+            Matrix with inverse model size 1028 x 14
 
         Examples
         --------
         >>> sbs2_data = SBS2Data()
-        >>> backward_model = sbs2_data.backward_model()
-        >>> backward_model.shape
-        (1028, 14)
+        >>> inverse_model = sbs2_data.inverse_model()
+        >>> inverse_model.shape
+        (14, 1028)
 
         References
         ----------
-        Smartphones as pocketable labs: Visions for mobile brain imaging and
-        neurofeedback. Arkadiusz Stopczynski, Carsten Stahlhut,
+        [1] Smartphones as pocketable labs: Visions for mobile brain imaging
+        and neurofeedback. Arkadiusz Stopczynski, Carsten Stahlhut,
         Michael Kai Petersen, Jakob Eg Larsen, Camilla Falk Jensen,
         Marieta Georgieva Ivanova, Tobias S. Andersen, Lars Kai Hansen.
         Affective Computing and Intelligent Interaction 6975: 317-318. 2011
 
-        https://github.com/SmartphoneBrainScanner/smartphonebrainscanner2-core
-        /src/source_reconstruction/loreta/sbs2sourcereconstruction_loreta.cpp
+        https://github.com/SmartphoneBrainScanner/smartphonebrainscanner2-core/
+        blob/master/src/source_reconstruction/loreta/
+        sbs2sourcereconstruction_loreta.cpp
 
         """
-        # https://github.com/SmartphoneBrainScanner/smartphonebrainscanner2-core
-        # /src/source_reconstruction/loreta/sbs2sourcereconstruction_loreta.cpp
+        self.unpack()
+
+        # https://github.com/SmartphoneBrainScanner/smartphonebrainscanner2-core/
+        # blob/master/src/source_reconstruction/loreta/
+        # sbs2sourcereconstruction_loreta.cpp
         # line 62-63!
         inv_alpha = 0.0100
         inv_beta = 0.3781
@@ -306,34 +338,53 @@ class SBS2Data(object):
         # Forward model, F matrix
         forward = self.forward_model(hardware).values
 
-        identity = eye(forward.shape[0])
+        identity = eye(forward.shape[1])
 
         if method == 'minimumnorm':
             # The spatial coherence is the identity matrix and disappears
-            backward = forward.T.dot(pinv(forward.dot(forward.T)
-                                          + inv_beta/inv_alpha * identity))
+            inverse = pinv(forward.T.dot(forward) +
+                           inv_beta / inv_alpha * identity).dot(forward.T)
+
         elif method == 'LORETA':
             # Spatial coherence, L matrix
             coherence = self.spatial_coherence(hardware).values
 
-            forward_and_coherence = forward.dot(coherence)
+            forward_and_coherence = coherence.dot(forward)
             sigma_inv = inv_alpha * \
-                forward_and_coherence.dot(forward.T) \
+                forward.T.dot(forward_and_coherence) \
                 + inv_beta * identity
-            backward = inv_alpha * forward_and_coherence.T.dot(pinv(sigma_inv))
+            inverse = inv_alpha * pinv(sigma_inv).dot(forward_and_coherence.T)
         else:
             raise ValueError('Wrong method')
 
-        backward = Matrix(backward)
-        backward.columns = self.electrode_names(hardware)
-        return backward
+        inverse = Matrix(inverse)
+        inverse.index = self.electrode_names(hardware)
+        return inverse
 
 
 def main(args):
     """Handle command-line interface."""
     sbs2_data = SBS2Data()
+
+    if args['--model'] != 'small' and args['--coloring'] != 'z':
+        sys.exit('Different coloring than z only supported for small model')
+
     surface = sbs2_data.surface(model=args['--model'])
+
+    if args['--coloring'] != 'z':
+        if args['--coloring'] == 'forward':
+            matrix = sbs2_data.forward_model(hardware=args['--hardware'])
+            values = matrix.ix[:, args['--electrode']].values
+        elif args['--coloring'] == 'inverse':
+            matrix = sbs2_data.inverse_model(hardware=args['--hardware'])
+            values = matrix.ix[args['--electrode'], :].values
+        else:
+            sys.exit('Wrong argument to --coloring')
+
+        surface.vertex_values = values
+
     surface.plot()
+    surface.colorbar()
     surface.show()
 
 

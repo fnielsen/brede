@@ -125,7 +125,7 @@ class WatsonResponse(dict):
                 text = ' - ' + evidence['text'][:40]
             else:
                 text = ''
-            print('{:5} : {}{}'.format(int(float(evidence['value'])*1000),
+            print('{:5} : {}{}'.format(int(float(evidence['value']) * 1000),
                                        evidence['title'],
                                        text))
 

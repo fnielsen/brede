@@ -225,6 +225,7 @@ doral sma
 dorsal
 dorsal anterior
 dorsal anterior insula
+dorsal frontal
 dorsal frontopolar
 dorsal frontopolar cortex
 dorsal lateral
@@ -1446,3 +1447,24 @@ ips
 vmpfc
 mid-dorsolateral prefrontal
 mpfc
+cortical patches
+premotor areas
+agranular insular
+contralateral thalamus
+sulci
+precuneus posterior
+ba 44
+cortex vmpfc
+fasciculus
+ventral medial
+ba 47
+gyrus middle
+dorsal ventral
+amygdala insula
+anterior hippocampus
+anterior posterior
+gyrus ifg
+fronto temporal
+cortex posterior
+fronto striatal
+mesolimbic

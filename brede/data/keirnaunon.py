@@ -220,6 +220,13 @@ class KeirnAunon(Data):
         eeg_runs : brede.eeg.core.EEGRuns
             3D Panel-like structure with (trial x time x electrode).
 
+        Examples
+        --------
+        >>> ka = KeirnAunon()
+        >>> trials = ka.trials_for_subject_state()
+        >>> trials.shape
+        (10, 2500, 6)
+
         """
         self.unpack()
         number_of_trials = NUMBER_OF_TRIALS[subject]
@@ -279,7 +286,7 @@ class KeirnAunon(Data):
                 trial = int(elements[4])
 
                 # Read EEG data
-                data[state_index, trial-1, :, :] = np.array(
+                data[state_index, trial - 1, :, :] = np.array(
                     zip(*[[float(elem)
                            for elem in fid.readline().split()]
                           for n in range(6)]))

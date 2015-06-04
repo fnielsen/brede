@@ -379,7 +379,6 @@ benzodiazepine withdrawal
 bereavement
 bibliomania
 binge eating disorder
-bipolar disorder
 bipolar i disorder
 bipolar ii disorder
 body dysmorphic disorder
@@ -626,3 +625,5 @@ mdd
 pd
 disease
 depressed
+memory deficits
+addiction
