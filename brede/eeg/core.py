@@ -361,7 +361,7 @@ class EEGRun(Matrix):
         [1, 2]
 
         """
-        assert not np.any(np.isnan(self.ix[:, columns]))
+        assert not np.any(self.ix[:, columns].isnull())
         # >>> np.nan == np.nan
         # False
         # >>> (np.nan, 2) == (np.nan, 2)
