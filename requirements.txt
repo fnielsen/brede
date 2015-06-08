@@ -4,10 +4,12 @@ EEGtools
 lazy
 matplotlib
 mayavi
+nltk
 numpy
 pandas
 requests
 scikits.audiolab
+scikit-learn
 scipy
 PyYAML
 

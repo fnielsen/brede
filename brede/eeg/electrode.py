@@ -1,14 +1,12 @@
 """Core data structures for EEG data.
 
-Representing EEG data on the vertex level.
+Representing EEG data on the electrode level.
 
 """
 
 
 from __future__ import absolute_import, division, print_function
 
-# Absolute path here because of circular dependency
-import brede.io
 
 import matplotlib.pyplot as plt
 
@@ -19,6 +17,7 @@ from pandas import read_csv as pandas_read_csv
 from .core import EEGAuxRun, EEGRun, EEGRuns, EEGRuns4D, Spectra3D, Spectra4D
 from .csp import CSP
 from ..core import Matrix
+from ..io import read_edf
 
 
 ELECTRODES = {
@@ -239,7 +238,7 @@ class EEGElectrodeRun(EEGRun):
             EEGElectrodeRun dataframe with read data.
 
         """
-        return cls(brede.io.read_edf(filename))
+        return cls(read_edf(filename))
 
     def emotiv_to_emocap(self, check_all=True, change_qualities=True,
                          inplace=False):
