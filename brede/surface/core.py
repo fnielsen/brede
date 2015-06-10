@@ -90,6 +90,13 @@ class TriSurface(Surface):
 
     """Representation of a triangularized surface with faces and vertices.
 
+    Attributes
+    ----------
+    vertices : numpy.array
+        N x 3 array with vertex coordinates
+    faces : numpy.array
+        M x 3 array with indices to vertice.
+
     Examples
     --------
     >>> vertices = [[0, 1, 0], [1, 0, 0], [0, 0, -1], [-1, 0, 0],
