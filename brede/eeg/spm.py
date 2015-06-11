@@ -16,8 +16,8 @@ class SPMException(Exception):
 def read_electrode_positions(filename):
     """Read eletrode positions from SPM EEG file.
 
-    Arguments
-    ---------
+    Parameters
+    ----------
     filename : str
         Filename for SPM with spm_eeg_* data.
 
