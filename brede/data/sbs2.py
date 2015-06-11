@@ -149,8 +149,8 @@ class SBS2Data(object):
         1000000 is multipled on the values in the file before the values are
         returned.
 
-        Arguments
-        ---------
+        Parameters
+        ----------
         hardware : 'emotiv' or 'emocap'
             Hardward type for forward model
 
@@ -194,8 +194,8 @@ class SBS2Data(object):
         It returns a matrix sized vertices-by-vertices compatible with the
         small surface model.
 
-        Arguments
-        ---------
+        Parameters
+        ----------
         hardware : 'emotiv' or 'emocap'
             Hardward type for forward model
 
@@ -228,8 +228,8 @@ class SBS2Data(object):
         It returns a matrix sized vertices-by-vertices compatible with the
         small surface model.
 
-        Arguments
-        ---------
+        Parameters
+        ----------
         hardware : 'emotiv' or 'emocap'
             Hardward type for forward model
 
@@ -258,8 +258,8 @@ class SBS2Data(object):
         Read a surface from mesh_ctx_5124_normals.obj (large) or
         vertface_brain_reduced.obj (small).
 
-        Arguments
-        ---------
+        Parameters
+        ----------
         model : 'small' or 'large'
             Indicate which model should be read.
 
@@ -294,8 +294,8 @@ class SBS2Data(object):
         where V is the sources and X is the electrode data, see equation (3)
         and (4) in [1].
 
-        Arguments
-        ---------
+        Parameters
+        ----------
         hardware : 'emotiv' or 'emocap', optional
             Hardward type for forward model.
         method : 'LORETA' or 'minimumnorm', optional
