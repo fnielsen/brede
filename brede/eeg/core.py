@@ -843,7 +843,7 @@ class EEGAuxRun(EEGRun):
         reference = self.ix[:, self._eeg_columns].mean(axis=1)
         centered = self.ix[:, self._eeg_columns] - np.tile(
             reference, (len(self._eeg_columns), 1)).T
-        gfp = (centered ** 2).mean(axis=1)
+        gfp = np.sqrt((centered ** 2).mean(axis=1))
         return gfp
 
     def abser(self, inplace=False):
