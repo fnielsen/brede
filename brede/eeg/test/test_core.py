@@ -198,7 +198,18 @@ def test_eeg_aux_run(eeg_aux_run):
     assert eeg_aux_run.eeg_columns == ['C3', 'C4']
 
 
-def test_eeg_aux_run_index_indexing():
+def test_eeg_aux_run_iloc():
+    """Test indexing with EEGAuxRun."""
+    eeg_run = core.EEGAuxRun(np.ones((10, 2)), columns=['C3', 'C4'],
+                             sampling_rate=4.0)
+    assert eeg_run.index[0] == 0.0
+    assert eeg_run.index[4] == 1.0
+    indexed = eeg_run.iloc[4:, :]
+    assert indexed.index[0] == 1.0
+    assert indexed.shape == (6, 2)
+
+
+def test_eeg_aux_run_ix():
     """Test indexing with EEGAuxRun."""
     eeg_run = core.EEGAuxRun(np.ones((10, 2)), columns=['C3', 'C4'],
                              sampling_rate=4.0)
