@@ -84,6 +84,16 @@ def test_eegrun_constructor():
     assert isinstance(np.isnan(eeg_run), core.EEGRun)
 
 
+def test_eeg_run_index_indexing():
+    """Test indexing with EEGRun."""
+    eeg_run = core.EEGRun(np.ones((10, 2)), columns=['C3', 'C4'],
+                          sampling_rate=4.0)
+    assert eeg_run.index[0] == 0.0
+    assert eeg_run.index[4] == 1.0
+    eeg_run_indexed = eeg_run.ix[1.0:, :]
+    assert eeg_run_indexed.index[0] == 1.0
+
+
 def test_eegrun_emotiv_to_emocap(eeg_run_emotiv):
     """Test emotiv_to_emocap method."""
     translated = eeg_run_emotiv.emotiv_to_emocap()
@@ -186,6 +196,17 @@ def test_eeg_aux_run(eeg_aux_run):
     assert eeg_aux_run.shape[1] == 3
     assert eeg_aux_run.shape[0] == 2
     assert eeg_aux_run.eeg_columns == ['C3', 'C4']
+
+
+def test_eeg_aux_run_index_indexing():
+    """Test indexing with EEGAuxRun."""
+    eeg_run = core.EEGAuxRun(np.ones((10, 2)), columns=['C3', 'C4'],
+                             sampling_rate=4.0)
+    assert eeg_run.index[0] == 0.0
+    assert eeg_run.index[4] == 1.0
+    eeg_run_indexed = eeg_run.ix[1.0:, :]
+    assert eeg_run_indexed.index[0] == 1.0
+    assert eeg_run_indexed.shape == (6, 2)
 
 
 def test_eeg_aux_run_getitem(eeg_aux_run):
