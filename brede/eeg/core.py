@@ -16,6 +16,7 @@ import numpy as np
 
 from pandas import DataFrame, Series
 from pandas import read_csv as pandas_read_csv
+from pandas.core.internals import BlockManager
 
 from scipy.signal import lfilter, welch
 
@@ -178,8 +179,9 @@ class EEGRun(Matrix):
         super(EEGRun, self).__init__(
             data=data, index=index, columns=columns,
             dtype=dtype, copy=copy)
+
         if sampling_rate is not None:
-            if index is None:
+            if index is None and not isinstance(data, BlockManager):
                 self.index = np.arange(
                     0, len(self) / sampling_rate, 1 / sampling_rate)
             self._sampling_rate = float(sampling_rate)
@@ -823,6 +825,26 @@ class EEGAuxRun(EEGRun):
         # TODO: This will not instance in derived class.
         return EEGAuxRun(pandas_read_csv(filename, *args, **kwargs),
                          sampling_rate=sampling_rate)
+
+    def global_field_power(self):
+        """Compute global field power.
+
+        Returns
+        -------
+        gfp : pandas.Series
+            Global field power
+
+        References
+        ----------
+        Reference-free identification of components of checkerboard-evoked
+        multichannel potential fields
+
+        """
+        reference = self.ix[:, self._eeg_columns].mean(axis=1)
+        centered = self.ix[:, self._eeg_columns] - np.tile(
+            reference, (len(self._eeg_columns), 1)).T
+        gfp = np.sqrt((centered ** 2).mean(axis=1))
+        return gfp
 
     def abser(self, inplace=False):
         """Compute the absolute value for the electrode data.
