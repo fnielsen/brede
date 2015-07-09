@@ -48,12 +48,14 @@ def test_emocap_electrode_run(emocap_electrode_run_aux):
 
 
 def test_emocap_electrode_run_iloc(emocap_electrode_run_aux):
+    """Test integer indexing."""
     indexed = emocap_electrode_run_aux.iloc[1:, :]
     assert isinstance(indexed, emocap.EmocapElectrodeRun)
     assert indexed.index[0] == 1 / 128
 
 
 def test_emocap_electrode_run_ix(emocap_electrode_run_aux):
+    """Test mixed indexing."""
     indexed = emocap_electrode_run_aux.ix[(1 / 128):, :]
     assert isinstance(indexed, emocap.EmocapElectrodeRun)
     assert indexed.index[0] == 1 / 128
