@@ -5,6 +5,8 @@ from __future__ import absolute_import, division, print_function
 
 from StringIO import StringIO
 
+import numpy as np
+
 from .. import electrode
 
 
@@ -20,3 +22,27 @@ def test_read_csv():
     """Test read_csv."""
     run = electrode.read_csv(StringIO(FILE))
     assert isinstance(run, electrode.EEGAuxElectrodeRun)
+
+
+def test_eeg_aux_electrode_run_iloc():
+    """Test indexing with EEGAuxlectrodeRun."""
+    eeg_run = electrode.EEGAuxElectrodeRun(np.ones((10, 2)),
+                                           columns=['C3', 'C4'],
+                                           sampling_rate=4.0)
+    assert eeg_run.index[0] == 0.0
+    assert eeg_run.index[4] == 1.0
+    eeg_run_indexed = eeg_run.iloc[4:, :]
+    assert eeg_run_indexed.index[0] == 1.0
+    assert eeg_run_indexed.shape == (6, 2)
+
+
+def test_eeg_aux_electrode_run_ix():
+    """Test indexing with EEGAuxElectrodeRun."""
+    eeg_run = electrode.EEGAuxElectrodeRun(np.ones((10, 2)),
+                                           columns=['C3', 'C4'],
+                                           sampling_rate=4.0)
+    assert eeg_run.index[0] == 0.0
+    assert eeg_run.index[4] == 1.0
+    eeg_run_indexed = eeg_run.ix[1.0:, :]
+    assert eeg_run_indexed.index[0] == 1.0
+    assert eeg_run_indexed.shape == (6, 2)

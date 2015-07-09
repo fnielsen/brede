@@ -4,6 +4,7 @@ EEGtools
 lazy
 matplotlib
 mayavi
+nibabel
 nltk
 numpy
 pandas

@@ -3,6 +3,8 @@
 
 from __future__ import absolute_import, division, print_function
 
+from nibabel.freesurfer.io import read_geometry
+
 import numpy as np
 
 
@@ -88,6 +90,13 @@ class TriSurface(Surface):
 
     """Representation of a triangularized surface with faces and vertices.
 
+    Attributes
+    ----------
+    vertices : numpy.array
+        N x 3 array with vertex coordinates
+    faces : numpy.array
+        M x 3 array with indices to vertice.
+
     Examples
     --------
     >>> vertices = [[0, 1, 0], [1, 0, 0], [0, 0, -1], [-1, 0, 0],
@@ -110,13 +119,30 @@ class TriSurface(Surface):
             self._vertices.shape[0], self._faces.shape[0])
 
     @classmethod
+    def read_freesurfer(cls, filename):
+        """Read a triangular format Freesurfer surface mesh.
+
+        Parameters
+        ----------
+        filename : str
+            Filename for the file with the triangular data
+
+        Returns
+        -------
+        surface : TriSurface
+
+        """
+        vertices, faces = read_geometry(filename)
+        return cls(vertices=vertices, faces=faces)
+
+    @classmethod
     def read_obj(cls, filename):
         """Read Wavefront obj file.
 
         Only faces and vertices are read from the Wavefront file.
 
-        Arguments
-        ---------
+        Parameters
+        ----------
         filename : str
             Filename for Wavefront file.
 
