@@ -17,7 +17,7 @@ Examples:
   $ python -m brede.data.sbs2 --model=small --coloring=inverse
 
   $ python -m brede.data.sbs2 --model=small --coloring=inverse \
-       --hardware=emocap --electrode=C3
+  .    --hardware=emocap --electrode=C3
 
 """
 
