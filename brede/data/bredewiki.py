@@ -43,6 +43,13 @@ class BredeWikiTemplates(db.DB):
     >>> 11227136 in set(papers._pmid.dropna().astype(int))
     True
 
+    >>> # Brain regions from LPBA40 brain atlas
+    >>> brain_regions = bwt.tables.brede_brain_region.all()
+    >>> lpba_regions = brain_regions.ix[brain_regions._lpba.notnull(), 
+                                        ['_name', '_lpba']]
+    >>> 'Brain stem' in set(lpba_regions._name)
+    True
+
     """
 
     def __init__(self, redownload=False):
