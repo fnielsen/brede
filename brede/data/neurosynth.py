@@ -43,7 +43,6 @@ NEUROSYNTH_DATABASE_URL = ("https://github.com/neurosynth/neurosynth-data/"
 
 
 class NeurosynthDatabase(Data):
-
     """Interface to dump of Neurosynth.
 
     Data from the Neurosynth website will be downloaded to a local directory.
