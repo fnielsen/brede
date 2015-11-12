@@ -130,7 +130,6 @@ class Words(set):
 
 
 class CognitiveWords(Words):
-
     """Set of cognitive words and phrases.
 
     The cognitive words contain both dashes and parentheses.
@@ -153,7 +152,6 @@ class CognitiveWords(Words):
 
 
 class NeuroanatomyWords(Words):
-
     r"""Set of neuroanatomical words and phrases.
 
     Examples
@@ -181,7 +179,6 @@ class NeuroanatomyWords(Words):
 
 
 class NeurodisorderWords(Words):
-
     """Set of neuro- and psychiatry disorder and condition words and phrases.
 
     Examples
@@ -202,7 +199,6 @@ class NeurodisorderWords(Words):
 
 
 class NeuroimagingMethodWords(Words):
-
     """Set of neuroimaging method words and phrases.
 
     Examples
@@ -223,7 +219,6 @@ class NeuroimagingMethodWords(Words):
 
 
 class TaskToWords(object):
-
     """Associate words with tasks.
 
     Data is read from the comma-separated file called task_to_words.csv.
