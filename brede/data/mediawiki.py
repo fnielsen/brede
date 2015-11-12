@@ -28,14 +28,12 @@ URL_BASE_WIKIPEDIA = "https://en.wikipedia.org/w/"
 
 
 class WikiError(Exception):
-
     """Exception for misspecified wiki."""
 
     pass
 
 
 class Wiki(object):
-
     """Represents an interface to a MediaWiki instance."""
 
     def __init__(self, wiki=None, url=None):
