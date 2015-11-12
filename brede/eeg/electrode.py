@@ -135,21 +135,18 @@ def fix_electrode_name(electrode):
 
 
 class UnevenSamplingRateError(Exception):
-
     """Exception for uneven sampling intervals."""
 
     pass
 
 
 class ElectrodeNameError(Exception):
-
     """Exception for wrong electrode name."""
 
     pass
 
 
 class EEGElectrodeRun(EEGRun):
-
     """Represent a EEG data set.
 
     The 'run' should be a temporally contiguous data set with a fixed sampling
@@ -311,7 +308,6 @@ class EEGElectrodeRun(EEGRun):
 
 
 class EEGElectrodeRuns(EEGRuns):
-
     """Multiple EEGRuns of the same length."""
 
     _metadata = ['_sampling_rate']
@@ -382,7 +378,6 @@ class EEGElectrodeRuns(EEGRuns):
 
 
 class EEGElectrodeRuns4D(EEGRuns4D):
-
     """Multiple EEGRuns of the same length."""
 
     _metadata = ['_sampling_rate']
@@ -456,7 +451,6 @@ class EEGElectrodeRuns4D(EEGRuns4D):
 
 
 class EEGAuxElectrodeRun(EEGAuxRun):
-
     """Represent a EEG data set with auxilliary data.
 
     The Pandas DataFrame class is reused and extended with, e.g., Fourier
