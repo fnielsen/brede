@@ -9,7 +9,6 @@ import numpy as np
 
 
 class Surface(object):
-
     """Representation of a surface with faces and vertices."""
 
     def __init__(self, vertices=None, faces=None, vertex_values=None):
@@ -87,7 +86,6 @@ class Surface(object):
 
 
 class TriSurface(Surface):
-
     """Representation of a triangularized surface with faces and vertices.
 
     Attributes
