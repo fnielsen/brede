@@ -7,7 +7,6 @@ from pandas import Panel4D
 
 
 class Tensor4D(Panel4D):
-
     """Extended panel4D object."""
 
     @property
