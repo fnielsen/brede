@@ -142,21 +142,18 @@ def fix_electrode_name(electrode):
 
 
 class UnevenSamplingRateError(Exception):
-
     """Exception for uneven sampling intervals."""
 
     pass
 
 
 class ElectrodeNameError(Exception):
-
     """Exception for wrong electrode name."""
 
     pass
 
 
 class EEGRun(Matrix):
-
     """Represent a EEG data set.
 
     The 'run' should be a temporally contiguous data set with a fixed sampling
@@ -594,7 +591,6 @@ class EEGRun(Matrix):
 
 
 class EEGRuns(Tensor):
-
     """Multiple EEGRuns of the same length."""
 
     _metadata = ['sampling_rate']
@@ -665,7 +661,6 @@ class EEGRuns(Tensor):
 
 
 class EEGRuns4D(Tensor4D):
-
     """Multiple EEGRuns of the same length."""
 
     _metadata = ['sampling_rate']
@@ -739,7 +734,6 @@ class EEGRuns4D(Tensor4D):
 
 
 class EEGAuxRun(EEGRun):
-
     """Represent a EEG data set with auxilliary data.
 
     The Pandas DataFrame class is reused and extended with, e.g., Fourier
@@ -1149,7 +1143,6 @@ class EEGAuxRun(EEGRun):
 
 
 class Spectra(DataFrame):
-
     """Represent spectra for an EEG signal as a dataframe-like object.
 
     Each frequency is in each row, electrodes in columns
@@ -1236,7 +1229,6 @@ class Spectra(DataFrame):
 
 
 class Spectra3D(Tensor):
-
     """Represent spectra for an EEG signal as a Panel-like object.
 
     Each run is in items, each frequency is in each major_axis, electrodes in
@@ -1328,7 +1320,6 @@ class Spectra3D(Tensor):
 
 
 class Spectra4D(Tensor4D):
-
     """Represent spectra for an EEG signal as a Panel4-like object.
 
     Each run is in items, each frequency is in each major_axis, electrodes in
