@@ -17,7 +17,6 @@ from brede.config import config
 
 
 class Pubmed(object):
-
     """Interface to Pubmed bibliographic information.
 
     PubMed data in the form of MEDLINE records are cache on the local
