@@ -16,7 +16,6 @@ from pandas import read_csv
 
 
 class TaskToCognitiveComponent(object):
-
     """Represents cognitive components of tasks.
 
     Data is read from a comma-separated file.
