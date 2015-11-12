@@ -55,7 +55,6 @@ SBS2_ELECTRODES_EMOCAP = ['TP10', 'Fz', 'P3', 'Cz', 'C4', 'TP9', 'Pz', 'P4',
 
 
 class SBS2Data(object):
-
     """Interface to SBS2 (Smartphone Brain Scanner) data.
 
     Examples
