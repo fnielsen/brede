@@ -7,7 +7,6 @@ from pandas import Panel
 
 
 class Tensor(Panel):
-
     """Extended panel object."""
 
     @property
