@@ -24,7 +24,6 @@ from ..api.wikidata import Wikidata
 
 
 class Question(object):
-
     """Represent a question and its analysis.
 
     Examples
