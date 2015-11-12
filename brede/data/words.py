@@ -30,7 +30,6 @@ from pandas import read_csv
 
 
 class Words(set):
-
     """Abstract set to load words."""
 
     def __init__(self, *args, **kwargs):
