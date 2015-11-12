@@ -7,7 +7,6 @@ from pandas import Series
 
 
 class Vector(Series):
-
     """Extended series object."""
 
     @property
