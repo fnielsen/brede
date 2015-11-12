@@ -115,7 +115,6 @@ ELECTRODES = {
 
 
 class TopoPlot(object):
-
     """Topographic plot."""
 
     def __init__(self, data=None, axes=None):
@@ -254,7 +253,6 @@ class TopoPlot(object):
 
 
 class MultiPlot(TopoPlot):
-
     """Multiple plots organized topographically.
 
     References
