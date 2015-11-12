@@ -58,7 +58,6 @@ STATES = ['Baseline, eyes open',
 
 
 class EEGMMIDB(Data):
-
     """EEG Motor Movement/Imagery Dataset.
 
     This class can be viewed as a singleton class. There are no instance
