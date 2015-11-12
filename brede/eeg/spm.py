@@ -7,7 +7,6 @@ from scipy.io import loadmat
 
 
 class SPMException(Exception):
-
     """General exception for this module."""
 
     pass
