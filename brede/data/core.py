@@ -6,7 +6,6 @@ from os import makedirs
 
 
 class Data(object):
-
     """Abstract class for data."""
 
     def __str__(self):
