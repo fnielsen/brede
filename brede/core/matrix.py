@@ -15,7 +15,6 @@ from .vector import Vector
 
 
 class Matrix(DataFrame):
-
     """Extended dataframe object.
 
     This object corresponds to a Pandas DataFrame object.
