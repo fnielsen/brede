@@ -38,7 +38,7 @@ class Video(object):
 class CheckerboardVideo(Video):
     """Checkerboard stimulus video."""
 
-    def __init__(self, filename, frame_size=(768, 480), fps=30):
+    def __init__(self, filename, frame_size=(720, 480), fps=30):
         """Setup variables.
 
         Parameters
@@ -66,7 +66,7 @@ class CheckerboardVideo(Video):
         """Close file."""
         self._video_writer.release()
 
-    def write_frames(self, length=10, change_frequency=6.0, checker_size=32):
+    def write_frames(self, length=10, change_frequency=6.0, checker_size=48):
         """Write video frames to file.
 
         Parameters
