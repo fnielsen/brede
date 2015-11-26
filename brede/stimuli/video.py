@@ -9,6 +9,7 @@ Usage:
 
 Options:
   -o <outfile>, --output <outfile>  Output filename.
+  -i <infile>, --input <infile>     Input filename(s).
   --length <seconds>                Length of sample in seconds [default: 10.0]
   --fps <fps>                       Frames per second [default: 30]
   --stimulus-type <type>            Stimulus type [default: checkerboard]
@@ -26,17 +27,23 @@ import sys
 
 import numpy as np
 
+from glob import glob
+
+from itertools import cycle
+
+from PIL import Image
+
 from skvideo.io import VideoWriter
 
 
-class Video(object):
-    """General video class."""
+class WriteError(Exception):
+    """Writing error."""
 
     pass
 
 
-class CheckerboardVideo(Video):
-    """Checkerboard stimulus video."""
+class VideoFile(object):
+    """General video class."""
 
     def __init__(self, filename, frame_size=(720, 480), fps=30):
         """Setup variables.
@@ -66,6 +73,22 @@ class CheckerboardVideo(Video):
         """Close file."""
         self._video_writer.release()
 
+    @property
+    def frame_size(self):
+        """Return width and height of video frame.
+
+        Returns
+        -------
+        size : 2-tuple
+            Width and height of frame.
+
+        """
+        return self._frame_size
+
+
+class CheckerboardVideoFile(VideoFile):
+    """Checkerboard stimulus video."""
+
     def write_frames(self, length=10, change_frequency=6.0, checker_size=48):
         """Write video frames to file.
 
@@ -74,7 +97,7 @@ class CheckerboardVideo(Video):
         length : float
             Length in seconds of the written frames
         change_frequency : float
-            Frequency of change in the stimulus
+            Frequency of change in the stimulus in Hz
         checker_size : int
             Number of pixels for each checker field
 
@@ -97,6 +120,81 @@ class CheckerboardVideo(Video):
             self._video_writer.write(image)
 
 
+class ImagesVideoFile(VideoFile):
+    """Writer for video film consistenting of a series of images."""
+
+    def absolute_scale_image(self, image, new_width=100):
+        """Scale image to a fixed width within the frame.
+
+        The image is centered in the frame.
+
+        Parameters
+        ----------
+        image : numpy.ndarray
+            Numpy array with color image
+        new_width : int
+            New width of image in pixels within the frame.
+
+        Returns
+        -------
+        frame : numpy.ndarray
+            Numpy array representing a frame with the scaled image at the
+            center.
+
+        """
+        new_image = np.zeros((self.frame_size[1], self.frame_size[0], 3))
+        new_height = int(image.shape[0] * (new_width / image.shape[1]))
+        x_offset = int((new_image.shape[1] - new_width) / 2)
+        y_offset = int((new_image.shape[0] - new_height) / 2)
+        x_indices = np.linspace(0, image.shape[1] - 1, new_width).astype(int)
+        y_indices = np.linspace(0, image.shape[0] - 1, new_height).astype(int)
+        new_image[y_offset:y_offset + new_height,
+                  x_offset:x_offset + new_width,
+                  :] = image[y_indices, :, :][:, x_indices, :]
+        return new_image
+
+    def write_frames(self, images, length=10, change_frequency=6.0,
+                     new_width=100):
+        """Write video frames to file.
+
+        Parameters
+        ----------
+        images : iterable
+            Iterable of images (filenames).
+        length : float
+            Length in seconds of the written frames.
+        change_frequency : float
+            Frequency of change in the stimulus.
+
+        """
+        frame_change = self._fps // change_frequency
+        assert frame_change == int(frame_change)
+
+        infinite_images = cycle(images)
+
+        # Write frames
+        for frame_num in range(int(length * self._fps)):
+            if frame_num % frame_change == 0:
+                item = next(infinite_images)
+                if type(item) == str:
+                    # Assume filename
+                    image = np.array(Image.open(item))
+                else:
+                    raise ValueError('images should be a list of strings')
+                if image.ndim == 2:
+                    # Convert black and white image to color
+                    image = np.tile(np.reshape(
+                        image, (image.shape[0], image.shape[1], 1)),
+                        (1, 1, 3))
+                resized_image = self.absolute_scale_image(
+                    image, new_width=new_width)
+            try:
+                # Write frame to file
+                self._video_writer.write(resized_image)
+            except IndexError:
+                raise WriteError('Error with file %s' % str(item))
+
+
 def main(args):
     """Read and dispatch command line arguments."""
     if args['makefile']:
@@ -106,8 +204,12 @@ def main(args):
         stimulus_type = args['--stimulus-type']
 
         if stimulus_type == 'checkerboard':
-            with CheckerboardVideo(filename) as video:
+            with CheckerboardVideoFile(filename) as video:
                 video.write_frames(length, frequency)
+        elif stimulus_type == 'images':
+            images = glob(args['--input'])
+            with ImagesVideoFile(filename) as video:
+                    video.write_frames(images, length, frequency)
         else:
             sys.exit(1)
 
