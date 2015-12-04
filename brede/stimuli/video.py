@@ -10,10 +10,12 @@ Usage:
 Options:
   -o <outfile>, --output <outfile>  Output filename.
   -i <infile>, --input <infile>     Input filename(s).
-  --length <seconds>                Length of sample in seconds [default: 10.0]
-  --fps <fps>                       Frames per second [default: 30]
-  --stimulus-type <type>            Stimulus type [default: checkerboard]
   --change-frequency <freq>         Stimulus frequency in Hz [default: 6.0]
+  --fps <fps>                       Frames per second [default: 30]
+  --frame-height <height>           Height of frame in pixels [default: 720]
+  --frame-width <width>             Width of frame in pixels [default: 480]
+  --length <seconds>                Length of sample in seconds [default: 10.0]
+  --stimulus-type <type>            Stimulus type [default: checkerboard]
 
 Example:
   python -m brede.stimuli.video makefile --output \
@@ -25,13 +27,13 @@ from __future__ import division, print_function
 
 import sys
 
-import numpy as np
-
 from glob import glob
 
 from itertools import cycle
 
 from PIL import Image
+
+import numpy as np
 
 from skvideo.io import VideoWriter
 
@@ -202,13 +204,17 @@ def main(args):
         length = float(args['--length'])
         frequency = float(args['--change-frequency'])
         stimulus_type = args['--stimulus-type']
+        frame_size = (int(args['--frame-width']),
+                      int(args['--frame-height']))
 
         if stimulus_type == 'checkerboard':
-            with CheckerboardVideoFile(filename) as video:
+            with CheckerboardVideoFile(
+                    filename, frame_size=frame_size) as video:
                 video.write_frames(length, frequency)
         elif stimulus_type == 'images':
             images = glob(args['--input'])
-            with ImagesVideoFile(filename) as video:
+            with ImagesVideoFile(
+                    filename, frame_size=frame_size) as video:
                     video.write_frames(images, length, frequency)
         else:
             sys.exit(1)
