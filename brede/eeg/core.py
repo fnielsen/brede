@@ -857,11 +857,20 @@ class EEGAuxRun(EEGRun):
             new.ix[:, self._eeg_columns] = new.ix[:, self._eeg_columns].abs()
             return new
 
-    def center(self, inplace=False):
+    def center(self, inplace=False, method='mean'):
         """Center the EEG data.
 
         The mean for each EEG column is computed and subtracted from the
         relevant columns.
+
+        Parameters
+        ----------
+        inplace : bool
+            Whether to copy or replace element values, default False
+        method : mean or first
+            Value to subjects from the column values. 'mean' is the ordinary
+            mean, while 'first' takes the first element in the dataframe and
+            subtract that from the values, default mean.
 
         Returns
         -------
@@ -869,7 +878,11 @@ class EEGAuxRun(EEGRun):
             New DataFrame-like object with centered EEG data.
 
         """
-        means = self.ix[:, self._eeg_columns].mean(axis=0)
+        if method == 'mean':
+            means = self.ix[:, self._eeg_columns].mean(axis=0)
+        elif method == 'first':
+            means = self.loc[:, self._eeg_columns].iloc[0, :]
+
         if inplace:
             self.ix[:, self._eeg_columns] -= means
             return self
@@ -1129,17 +1142,31 @@ class EEGAuxRun(EEGRun):
     def plot_column_spectrum(self, column):
         """Plot the spectrum of an electrode.
 
-        Parameter
-        ---------
+        Parameters
+        ----------
         column : str
             Column in the data frame containing the spectrum
 
         """
         self.fft().plot_column_spectrum(column)
 
-    def plot_mean_spectrum(self):
-        """Plot mean spectrum across electrodes."""
-        self.fft().plot_mean_spectrum()
+    def plot_mean_spectrum(self, method='fft'):
+        """Plot mean spectrum across electrodes.
+
+        The spectrum is computed and then plotted.
+
+        Parameters
+        ----------
+        method : fft or welch, optional
+            Method to compute the spectrum, default fft.
+
+        """
+        if method == 'fft':
+            spectrum = self.fft()
+        elif method == 'welch':
+            spectrum = self.welch()
+
+        spectrum.plot_mean_spectrum()
 
 
 class Spectra(DataFrame):
