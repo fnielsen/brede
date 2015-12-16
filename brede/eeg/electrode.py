@@ -575,9 +575,5 @@ class EEGAuxElectrodeRun(EEGAuxRun):
         """Plot the spectrum of an electrode."""
         self.fft().plot_electrode_spectrum(electrode)
 
-    def plot_mean_spectrum(self):
-        """Plot mean spectrum across electrodes."""
-        self.fft().plot_mean_spectrum()
-
 
 read_csv = EEGAuxElectrodeRun.read_csv
