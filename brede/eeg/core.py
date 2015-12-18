@@ -1150,7 +1150,8 @@ class EEGAuxRun(EEGRun):
         """
         self.fft().plot_column_spectrum(column)
 
-    def plot_mean_spectrum(self, method='fft'):
+    def plot_mean_spectrum(self, method='fft', window='hanning',
+                           nperseg=256):
         """Plot mean spectrum across electrodes.
 
         The spectrum is computed and then plotted.
@@ -1159,12 +1160,13 @@ class EEGAuxRun(EEGRun):
         ----------
         method : fft or welch, optional
             Method to compute the spectrum, default fft.
+        window : str
 
         """
         if method == 'fft':
             spectrum = self.fft()
         elif method == 'welch':
-            spectrum = self.welch()
+            spectrum = self.welch(window=window, nperseg=nperseg)
 
         spectrum.plot_mean_spectrum()
 
