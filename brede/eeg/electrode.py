@@ -573,7 +573,7 @@ class EEGAuxElectrodeRun(EEGAuxRun):
 
     def plot_electrode_spectrum(self, electrode):
         """Plot the spectrum of an electrode."""
-        self.fft().plot_electrode_spectrum(electrode)
+        self.fft().plot_column_spectrum(electrode)
 
 
 read_csv = EEGAuxElectrodeRun.read_csv
