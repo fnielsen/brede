@@ -484,7 +484,6 @@ class MultiPlot(TopoPlot):
             ax.set_yscale(value)
         self.figure.canvas.draw()
 
-
     def auto_ylim(self, xlim=None, yscale='linear'):
         """Return an estimate for a good ylim.
 
