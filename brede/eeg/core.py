@@ -1151,7 +1151,7 @@ class EEGAuxRun(EEGRun):
         self.fft().plot_column_spectrum(column)
 
     def plot_mean_spectrum(self, method='fft', window='hanning',
-                           nperseg=256):
+                           nperseg=256, yscale='linear'):
         """Plot mean spectrum across electrodes.
 
         The spectrum is computed and then plotted.
@@ -1160,7 +1160,12 @@ class EEGAuxRun(EEGRun):
         ----------
         method : fft or welch, optional
             Method to compute the spectrum, default fft.
-        window : str
+        window : hannding or other window types, optional
+            Window type
+        nperseg : int, optional
+            Number of spectral components
+        yscale : linear, log, symlog, optional
+            Scaling on y-axis
 
         """
         if method == 'fft':
@@ -1168,7 +1173,37 @@ class EEGAuxRun(EEGRun):
         elif method == 'welch':
             spectrum = self.welch(window=window, nperseg=nperseg)
 
-        spectrum.plot_mean_spectrum()
+        spectrum.plot_mean_spectrum(yscale=yscale)
+
+    def plot_spectra(self, method='fft', window='hanning',
+                     nperseg=256, yscale='linear', title=None, 
+                     xlim=None, ylim=None):
+        """Plot multiple spectra.
+
+        Parameters
+        ----------
+        method : fft or welch, optional
+            Method to compute the spectrum, default fft.
+        window : hannding or other window types, optional
+            Window type for welch spectrum.
+        nperseg : int, optional
+            Number of spectral components for welch spectrum
+        yscale : linear, log, symlog, optional
+            Scaling on y-axis.
+        title : str, optional
+            Overall title for the plot.
+        xlim : 2-tuple, optional
+            Limits for x-axis.
+        ylim : 2-tuple, optional
+            Limites for y-axis.
+
+        """
+        if method == 'fft':
+            spectrum = self.fft()
+        elif method == 'welch':
+            spectrum = self.welch(window=window, nperseg=nperseg)
+            
+        spectrum.plot_spectra(title=title, xlim=xlim, ylim=ylim, yscale=yscale)
 
 
 class Spectra(DataFrame):
@@ -1194,24 +1229,43 @@ class Spectra(DataFrame):
         plt.ylabel('Magnitude')
         plt.title('Spectrum of {}'.format(column))
 
-    def plot_mean_spectrum(self):
+    def plot_mean_spectrum(self, yscale='linear'):
         """Plot the spectrum of the mean across all electrodes.
 
         Only the positive part of the spectrum is shown.
+
+        Parameters
+        ----------
+        yscale : linear, log or symlog
+            Scaling for the y-axis
 
         """
         positive_frequencies = self.index >= 0
         plt.plot(self.index[positive_frequencies],
                  np.mean(np.abs(self.ix[positive_frequencies, :]), axis=1))
+        plt.yscale(yscale)
         plt.xlabel('Frequency')
         plt.ylabel('Magnitude')
         plt.title('Mean spectrum across {} electrodes'.format(self.shape[1]))
 
-    def plot_spectra(self, title=None, xlim=None, ylim=None):
-        """Plot multiple spectra."""
+    def plot_spectra(self, title=None, xlim=None, ylim=None, yscale='linear'):
+        """Plot multiple spectra.
+
+        Parameters
+        ----------
+        title : str, optional
+            Overall title for the plots
+        xlim : 2-tuple with floats, optional
+            Limits for x-axis
+        ylim : 2-tuple with floats, optional
+            Limites for y-axis
+        yscale : linear, log or symlog, optional
+            Scaling for th y-axis
+
+        """
         positive_frequencies = self.index >= 0
         multi_plot = MultiPlot(self.ix[positive_frequencies, :].abs())
-        multi_plot.draw(title=title, xlim=xlim, ylim=ylim)
+        multi_plot.draw(title=title, xlim=xlim, ylim=ylim, yscale=yscale)
 
     def peak_frequency(self, min_frequency=0.0, max_frequency=None,
                        column=None):
