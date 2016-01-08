@@ -7,6 +7,8 @@ Representing EEG data on the vertex level.
 
 from __future__ import absolute_import, division, print_function
 
+from math import sqrt
+
 # Absolute path here because of circular dependency
 import brede.io
 
@@ -20,12 +22,15 @@ from pandas.core.internals import BlockManager
 
 from scipy.signal import lfilter, welch
 
+from sklearn.decomposition import FastICA
+
 from .csp import CSP
 from .filter import bandpass_filter_coefficients, lowpass_filter_coefficients
 from .plotting import MultiPlot
 from ..core.matrix import Matrix
 from ..core.tensor import Tensor
 from ..core.tensor4d import Tensor4D
+from ..core.vector import Vector
 
 
 ELECTRODES = {
@@ -891,6 +896,45 @@ class EEGAuxRun(EEGRun):
             new.ix[:, self._eeg_columns] -= means
             return new
 
+    def ica(self, n_components=None):
+        """Return result from independent component analysis.
+
+        X = SA + m
+
+        Sklearn's FastICA implementation is used.
+
+        Parameters
+        ----------
+        n_components : int, optional
+            Number of ICA components.
+
+        Returns
+        -------
+        sources : Matrix
+            Estimated source matrix (S)
+        mixing_matrix : Matrix
+            Estimated mixing matrix (A)
+        mean_vector : brede.core.vector.Vector
+            Estimated mean vector
+
+        References
+        ----------
+        http://scikit-learn.org/stable/modules/decomposition.html#ica
+
+        """
+        if n_components is None:
+            min_shape = min(self.shape[0], len(self._eeg_columns))
+            n_components = int(np.ceil(sqrt(float(min_shape) / 2)))
+
+        ica = FastICA(n_components=n_components)
+        sources = Matrix(ica.fit_transform(
+            self.ix[:, self._eeg_columns].values),
+            index=self.index)
+        mixing_matrix = Matrix(ica.mixing_.T, columns=self._eeg_columns)
+        mean_vector = Vector(ica.mean_, index=self._eeg_columns)
+
+        return sources, mixing_matrix, mean_vector
+
     def rereference(self, mode='mean', column=None, inplace=False):
         """Rereference EEG values.
 
@@ -1176,7 +1220,7 @@ class EEGAuxRun(EEGRun):
         spectrum.plot_mean_spectrum(yscale=yscale)
 
     def plot_spectra(self, method='fft', window='hanning',
-                     nperseg=256, yscale='linear', title=None, 
+                     nperseg=256, yscale='linear', title=None,
                      xlim=None, ylim=None):
         """Plot multiple spectra.
 
@@ -1202,7 +1246,7 @@ class EEGAuxRun(EEGRun):
             spectrum = self.fft()
         elif method == 'welch':
             spectrum = self.welch(window=window, nperseg=nperseg)
-            
+
         spectrum.plot_spectra(title=title, xlim=xlim, ylim=ylim, yscale=yscale)
 
 
