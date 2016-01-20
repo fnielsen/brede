@@ -896,24 +896,33 @@ class EEGAuxRun(EEGRun):
             new.ix[:, self._eeg_columns] -= means
             return new
 
-    def ica(self, n_components=None):
+    def ica(self, n_components=None, sources='left'):
         """Return result from independent component analysis.
 
         X = SA + m
 
         Sklearn's FastICA implementation is used.
 
+        When sources=left the sources are returned in the first (left) matrix
+        and the mixing matrix is returned in the second (right) matrix,
+        corresponding to X = SA.
+
+        When sources=right the sources are returned in the second matrix while
+        the mixing matrix is returned in the first, corresponding to X = AS.
+
         Parameters
         ----------
         n_components : int, optional
             Number of ICA components.
+        sources : left or right, optional
+            Indicates whether the sources should be the left or right matrix.
 
         Returns
         -------
-        sources : Matrix
-            Estimated source matrix (S)
-        mixing_matrix : Matrix
-            Estimated mixing matrix (A)
+        first : Matrix
+            Estimated source matrix (S) if sources=left.
+        second : Matrix
+            Estimated mixing matrix (A) if sources=right.
         mean_vector : brede.core.vector.Vector
             Estimated mean vector
 
@@ -927,13 +936,25 @@ class EEGAuxRun(EEGRun):
             n_components = int(np.ceil(sqrt(float(min_shape) / 2)))
 
         ica = FastICA(n_components=n_components)
-        sources = Matrix(ica.fit_transform(
-            self.ix[:, self._eeg_columns].values),
-            index=self.index)
-        mixing_matrix = Matrix(ica.mixing_.T, columns=self._eeg_columns)
-        mean_vector = Vector(ica.mean_, index=self._eeg_columns)
 
-        return sources, mixing_matrix, mean_vector
+        if sources == 'left':
+            sources = Matrix(ica.fit_transform(
+                self.ix[:, self._eeg_columns].values),
+                index=self.index)
+            mixing_matrix = Matrix(ica.mixing_.T, columns=self._eeg_columns)
+            mean_vector = Vector(ica.mean_, index=self._eeg_columns)
+            return sources, mixing_matrix, mean_vector
+
+        elif sources == 'right':
+            sources = Matrix(ica.fit_transform(
+                self.ix[:, self._eeg_columns].values.T).T,
+                columns=self._eeg_columns)
+            mixing_matrix = Matrix(ica.mixing_, index=self.index)
+            mean_vector = Vector(ica.mean_, index=self.index)
+            return mixing_matrix, sources, mean_vector
+
+        else:
+            raise ValueError('Wrong argument to "sources"')
 
     def rereference(self, mode='mean', column=None, inplace=False):
         """Rereference EEG values.
