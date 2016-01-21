@@ -5,6 +5,8 @@ from __future__ import absolute_import, division, print_function
 
 import numpy as np
 
+from matplotlib.pyplot import matshow, pause
+
 from pandas import DataFrame
 
 from scipy.sparse import csr_matrix
@@ -161,6 +163,19 @@ class Matrix(DataFrame):
 
         scaled = self * term_weights
         return scaled
+
+    def matshow(self, fignum=None, **kw):
+        """Plot matrix as a in a matrix-like color plot.
+        
+        """
+        axes_image = matshow(self)
+        ax = axes_image.get_axes()
+        if len(self.columns) < 25:
+            ax.set_xticks(range(len(self.columns)))
+        ax.set_xticklabels(self.columns)
+
+        # Necessary for update of drawing
+        pause(0.001)
 
     def nmf(self, n_components=None, tol=None, max_iter=200,
             random_state=None):
