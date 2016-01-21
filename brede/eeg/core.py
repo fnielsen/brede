@@ -768,11 +768,11 @@ class EEGAuxRun(EEGRun):
 
         if eeg_columns is None:
             if hasattr(data, '_eeg_columns'):
-                self._eeg_columns = data._eeg_columns
+                self.eeg_columns = data._eeg_columns
             else:
-                self._eeg_columns = []
+                self.eeg_columns = []
         else:
-            self._eeg_columns = eeg_columns
+            self.eeg_columns = eeg_columns
 
     def __getitem__(self, key):
         """Get column or columns."""
@@ -780,14 +780,43 @@ class EEGAuxRun(EEGRun):
 
         if isinstance(value, EEGAuxRun):
             new_columns = [column for column in key
-                           if column in self._eeg_columns]
+                           if column in self.eeg_columns]
             value._eeg_columns = new_columns
         return value
 
     @property
     def eeg_columns(self):
-        """Return columns that contain EEG data."""
+        """Return column names that contain EEG data.
+
+        The `eeg_columns` are the columns that are usually used for
+        computational processing while the other columns are left
+        unprocessed.
+
+        `eeg_columns` should be a subset of `columns`.
+
+        Examples
+        --------
+        >>> eeg = EEGAuxRun([[1, 2], [3, 4]], columns=['C3', 'C4'],
+        ...                 eeg_columns=['C3'])
+        >>> eeg.eeg_columns
+        ['C3']
+
+        >>> eeg.eeg_columns = ['C3', 'C4']
+        >>> eeg.eeg_columns
+        ['C3', 'C4']
+
+        """
         return self._eeg_columns
+
+    @eeg_columns.setter
+    def eeg_columns(self, value):
+        """Set column names that contain EEG data."""
+        self._eeg_columns = []
+        for column in value:
+            if column in self.columns:
+                self._eeg_columns.append(column)
+            else:
+                raise ValueError('{} not a column name'.format(column))
 
     @property
     def not_eeg_columns(self):
@@ -803,7 +832,7 @@ class EEGAuxRun(EEGRun):
 
         """
         not_eeg_columns = [column for column in self.columns
-                           if column not in set(self._eeg_columns)]
+                           if column not in set(self.eeg_columns)]
         return not_eeg_columns
 
     @classmethod
@@ -821,7 +850,6 @@ class EEGAuxRun(EEGRun):
             EEGAuxRun dataframe with read data.
 
         """
-        # TODO: This will not instance in derived class.
         return EEGAuxRun(pandas_read_csv(filename, *args, **kwargs),
                          sampling_rate=sampling_rate)
 
@@ -839,9 +867,9 @@ class EEGAuxRun(EEGRun):
         multichannel potential fields
 
         """
-        reference = self.ix[:, self._eeg_columns].mean(axis=1)
-        centered = self.ix[:, self._eeg_columns] - np.tile(
-            reference, (len(self._eeg_columns), 1)).T
+        reference = self.ix[:, self.eeg_columns].mean(axis=1)
+        centered = self.ix[:, self.eeg_columns] - np.tile(
+            reference, (len(self.eeg_columns), 1)).T
         gfp = np.sqrt((centered ** 2).mean(axis=1))
         return gfp
 
@@ -1047,6 +1075,8 @@ class EEGAuxRun(EEGRun):
                         high_cutoff_frequency=45.0, order=4, inplace=False):
         """Filter EEG data with a temporal bandpass filter.
 
+        Only columns specified in the `eeg_columns` property are filtered.
+
         Parameters
         ----------
         low_cutoff_frequency : float
@@ -1078,6 +1108,8 @@ class EEGAuxRun(EEGRun):
     def lowpass_filter(self, cutoff_frequency=1.0,
                        order=4, inplace=False):
         """Filter EEG data temporally with lowpass filter.
+
+        Only columns specified in the `eeg_columns` property are filtered.
 
         Parameters
         ----------
