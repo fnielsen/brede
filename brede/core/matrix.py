@@ -3,9 +3,10 @@
 
 from __future__ import absolute_import, division, print_function
 
-import numpy as np
 
 from matplotlib.pyplot import matshow, pause
+
+import numpy as np
 
 from pandas import DataFrame
 
@@ -165,9 +166,7 @@ class Matrix(DataFrame):
         return scaled
 
     def matshow(self, fignum=None, **kw):
-        """Plot matrix as a in a matrix-like color plot.
-        
-        """
+        """Plot matrix as a in a matrix-like color plot."""
         axes_image = matshow(self)
         ax = axes_image.get_axes()
         if len(self.columns) < 25:
