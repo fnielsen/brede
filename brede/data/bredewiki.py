@@ -44,7 +44,7 @@ class BredeWikiTemplates(db.DB):
     >>> # Brain regions from LPBA40 brain atlas
     >>> brain_regions = bwt.tables.brede_brain_region.all()
     >>> lpba_regions = brain_regions.ix[brain_regions._lpba.notnull(),
-                                        ['_name', '_lpba']]
+    ...                                 ['_name', '_lpba']]
     >>> 'Brain stem' in set(lpba_regions._name)
     True
 
