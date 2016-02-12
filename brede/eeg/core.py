@@ -482,7 +482,8 @@ class EEGRun(Matrix):
             return new
 
     def bandpass_filter(self, low_cutoff_frequency=1.0,
-                        high_cutoff_frequency=45.0, order=4, inplace=False):
+                        high_cutoff_frequency=45.0, order=4, inplace=False,
+                        dtype=None):
         """Filter electrode data temporally with bandpass filter.
 
         Parameters
@@ -498,7 +499,13 @@ class EEGRun(Matrix):
         b, a = bandpass_filter_coefficients(
             low_cutoff_frequency, high_cutoff_frequency,
             sampling_rate=self.sampling_rate, order=order)
-        Y = lfilter(b, a, self, axis=0)
+
+        if dtype is None:
+            Y = lfilter(b, a, self, axis=0)
+        else:
+            Y = lfilter(np.asarray(b, dtype=dtype),
+                        np.asarray(a, dtype=dtype),
+                        self.astype(dtype), axis=0)
 
         if inplace:
             self.ix[:, :] = Y
@@ -873,6 +880,70 @@ class EEGAuxRun(EEGRun):
         gfp = np.sqrt((centered ** 2).mean(axis=1))
         return gfp
 
+    def set_eeg_columns_from_array(self, a):
+        """Set eeg_columns from array.
+
+        This basically does: `self.ix[:, self._eeg_columns] = a`
+        However, this assignment can have performance and type casting
+        problems, see https://stackoverflow.com/questions/35230388/
+
+        A for-loop implements the assignment instead.
+
+        Parameters
+        ----------
+        a : array-like
+            Input array to assign from.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> eeg = EEGAuxRun([[1., 2., 'a'], [3., 4., 'b']], dtype=np.float32)
+        >>> a = np.array([[5., 6.], [7., 8.]], dtype=np.float32)
+        >>> eeg.set_eeg_columns_from_array(a)
+        >>> eeg.iloc[0, 0]
+        5
+        >>> eeg.iloc[0, 0].dtype
+        dtype('float32')
+
+        """
+        assert len(self._eeg_columns) == a.shape[1]
+
+        for n, column in enumerate(self._eeg_columns):
+            self.ix[:, column] = a[:, n]
+
+    def set_df_eeg_columns_from_array(self, df, a):
+        """Set eeg_columns from array in new dataframe.
+
+        This basically does: `df.ix[:, df._eeg_columns] = a`
+        However, this assignment can have performance and type casting
+        problems, see https://stackoverflow.com/questions/35230388/
+
+        A for-loop implements the assignment instead.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            DataFrame which are assigned to
+        a : array-like
+            Input array to assign from.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> eeg = EEGAuxRun([[1., 2., 'a'], [3., 4., 'b']], dtype=np.float32)
+        >>> a = np.array([[5., 6.], [7., 8.]], dtype=np.float32)
+        >>> eeg.set_eeg_columns_from_array(a)
+        >>> eeg.iloc[0, 0]
+        5
+        >>> eeg.iloc[0, 0].dtype
+        dtype('float32')
+
+        """
+        assert len(df._eeg_columns) == a.shape[1]
+
+        for n, column in enumerate(df._eeg_columns):
+            df.ix[:, column] = a[:, n]
+
     def abser(self, inplace=False):
         """Compute the absolute value for the electrode data.
 
@@ -1080,9 +1151,9 @@ class EEGAuxRun(EEGRun):
         Parameters
         ----------
         low_cutoff_frequency : float
-            Frequency in Hertz
+            Frequency in Hertz.
         high_cutoff_frequency : float
-            Frequency in Hertz
+            Frequency in Hertz.
         order : int, optional
             Order of filter [default: 4].
 
@@ -1097,12 +1168,16 @@ class EEGAuxRun(EEGRun):
             sampling_rate=self.sampling_rate, order=order)
         Y = lfilter(b, a, self.ix[:, self._eeg_columns], axis=0)
 
+        dtype = self.ix[0, self.eeg_columns[0]].dtype
+        if dtype != np.float64:
+            Y = Y.astype(dtype)
+
         if inplace:
-            self.ix[:, self._eeg_columns] = Y
+            self.set_eeg_columns_from_array(Y)
             return self
         else:
             new = self._constructor(self, copy=True)
-            new.ix[:, self._eeg_columns] = Y
+            new.set_eeg_columns_from_array(Y)
             return new
 
     def lowpass_filter(self, cutoff_frequency=1.0,
@@ -1131,12 +1206,16 @@ class EEGAuxRun(EEGRun):
             sampling_rate=self.sampling_rate, order=order)
         Y = lfilter(b, a, self.ix[:, self._eeg_columns], axis=0)
 
+        dtype = self.ix[0, self.eeg_columns[0]].dtype
+        if dtype != np.float64:
+            Y = Y.astype(dtype)
+
         if inplace:
-            self.ix[:, self._eeg_columns] = Y
+            self.set_eeg_columns_from_array(Y)
             return self
         else:
             new = self._constructor(self, copy=True)
-            new.ix[:, self._eeg_columns] = Y
+            new.set_eeg_columns_from_array(Y)
             return new
 
     def csp(self, group_by, n_components=None):
