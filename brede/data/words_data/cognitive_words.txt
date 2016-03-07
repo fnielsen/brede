@@ -855,7 +855,6 @@ face processing
 negative emotions
 default mode
 reward processing
-cingulate cortices
 visual search
 incongruent
 visual word
