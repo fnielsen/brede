@@ -178,7 +178,6 @@ semantically encoded
 decision
 auditory motion
 executive demands
-caudate nuclei
 skill learning
 visual non-speech
 perceptual differentiation
@@ -856,7 +855,6 @@ face processing
 negative emotions
 default mode
 reward processing
-cingulate cortices
 visual search
 incongruent
 visual word
