@@ -221,7 +221,8 @@ class NeuroimagingMethodWords(Words):
 class TaskToWords(object):
     """Associate words with tasks.
 
-    Data is read from the comma-separated file called task_to_words.csv.
+    Data is read from the comma-separated file called task_to_words.csv 
+    available in the `words_data` subdirectory. 
 
     See also
     --------
@@ -230,18 +231,30 @@ class TaskToWords(object):
     """
 
     def __init__(self):
-        """Setup filename."""
+        """Setup filename and load data."""
         self.filename = join(dirname(__file__),
                              'words_data',
                              'task_to_words.csv')
         self._data = self.load_data()
 
     def load_data(self):
-        """Load and return data from file."""
+        """Load and return data from file.
+
+        Returns
+        -------
+        data : pandas.DataFrame
+            Dataframe with task, word and scores as columns.
+            
+        """
         return read_csv(self.filename)
 
     def scores_for_task(self, task):
         """Return scores for word wrt. task.
+
+        Parameters
+        ----------
+        task : str
+            String correspond to a word/phrase associated with a task.
 
         Returns
         -------
@@ -265,7 +278,8 @@ class TaskToWords(object):
 
         Returns
         -------
-        tasks : list of strings
+        tasks : list of str
+            List with names of tasks.
 
         Examples
         --------
