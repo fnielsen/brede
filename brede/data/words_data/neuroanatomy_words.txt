@@ -122,6 +122,7 @@ caudolateral
 caudomedial
 caudate
 caudate head
+caudate nuclei
 caudate nucleus
 caudatum
 caudatus
@@ -170,6 +171,7 @@ cingilate gyrus
 cingular
 cingulate
 cingulate cortex
+cingulate cortices
 cingulate gyrus
 cingulate gyrus retrosplenial
 cingulate motor
