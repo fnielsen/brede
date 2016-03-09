@@ -1,57 +1,4 @@
 Task,Word,Score
-Left hand sequential finger tapping,antisaccade,0
-Left hand sequential finger tapping,auditory,0
-Left hand sequential finger tapping,auditory sentence comprehension,0
-Left hand sequential finger tapping,emotional,0
-Left hand sequential finger tapping,faces,0
-Left hand sequential finger tapping,finger,4
-Left hand sequential finger tapping,foot,0
-Left hand sequential finger tapping,gaze,0
-Left hand sequential finger tapping,hand,3
-Left hand sequential finger tapping,houses,0
-Left hand sequential finger tapping,impulsivity,0
-Left hand sequential finger tapping,intention,0
-Left hand sequential finger tapping,irony,0
-Left hand sequential finger tapping,jaw,0
-Left hand sequential finger tapping,language,0
-Left hand sequential finger tapping,languages,0
-Left hand sequential finger tapping,lower limb,0
-Left hand sequential finger tapping,memory,0
-Left hand sequential finger tapping,mentalizing,0
-Left hand sequential finger tapping,mind wandering,0
-Left hand sequential finger tapping,moral,0
-Left hand sequential finger tapping,motion,2
-Left hand sequential finger tapping,motor,2
-Left hand sequential finger tapping,motor control,2
-Left hand sequential finger tapping,movements,2
-Left hand sequential finger tapping,music,0
-Left hand sequential finger tapping,navigation,0
-Left hand sequential finger tapping,odors,0
-Left hand sequential finger tapping,pain,0
-Left hand sequential finger tapping,phonological,0
-Left hand sequential finger tapping,picture naming,0
-Left hand sequential finger tapping,retrieval,0
-Left hand sequential finger tapping,reward,0
-Left hand sequential finger tapping,risk,0
-Left hand sequential finger tapping,risk assessment,0
-Left hand sequential finger tapping,saccade,0
-Left hand sequential finger tapping,sentences,0
-Left hand sequential finger tapping,single-subtraction,0
-Left hand sequential finger tapping,social,0
-Left hand sequential finger tapping,somatosensory,1
-Left hand sequential finger tapping,sounds,0
-Left hand sequential finger tapping,speech,0
-Left hand sequential finger tapping,taste,0
-Left hand sequential finger tapping,voice,0
-Left hand sequential finger tapping,words,0
-Left hand sequential finger tapping,encoding,0
-Left hand sequential finger tapping,tactile attention,0
-Left hand sequential finger tapping,self,0
-Left hand sequential finger tapping,hand movement,3
-Left hand sequential finger tapping,motor imagery,1
-Left hand sequential finger tapping,movement,1
-Left hand sequential finger tapping,odor,0
-Left hand sequential finger tapping,cognitive,0
 Syllable counting of visually presented words,antisaccade,0
 Syllable counting of visually presented words,auditory,0
 Syllable counting of visually presented words,auditory sentence comprehension,0
@@ -5787,3 +5734,1132 @@ Open eyes fixation versus closed eyes,action observation,0
 Open eyes fixation versus closed eyes,facial pain,0
 Open eyes fixation versus closed eyes,social interest,0
 Open eyes fixation versus closed eyes,lower limb,0
+Left hand sequential finger tapping,position-sensitive encoding,0
+Left hand sequential finger tapping,concept,0
+Left hand sequential finger tapping,semantic,0
+Left hand sequential finger tapping,psychomotor performance,1
+Left hand sequential finger tapping,word rhyming,0
+Left hand sequential finger tapping,silent lip-reading,0
+Left hand sequential finger tapping,sign language,0
+Left hand sequential finger tapping,neutral words,0
+Left hand sequential finger tapping,pleasurable stimuli,0
+Left hand sequential finger tapping,explicit memory,0
+Left hand sequential finger tapping,neutral cue,0
+Left hand sequential finger tapping,sleep,0
+Left hand sequential finger tapping,emotion recognition,0
+Left hand sequential finger tapping,negative arousal,0
+Left hand sequential finger tapping,conflict detection,0
+Left hand sequential finger tapping,interpersonal behaviour,0
+Left hand sequential finger tapping,emotion expression,0
+Left hand sequential finger tapping,meditation,0
+Left hand sequential finger tapping,decisions,0
+Left hand sequential finger tapping,attentional control,0
+Left hand sequential finger tapping,aggression,0
+Left hand sequential finger tapping,sentence processing,0
+Left hand sequential finger tapping,divergent thinking,0
+Left hand sequential finger tapping,perceptual similarity,0
+Left hand sequential finger tapping,emotional stress,0
+Left hand sequential finger tapping,auditory spatial orienting of attention,0
+Left hand sequential finger tapping,non-alphabetical,0
+Left hand sequential finger tapping,mental representation,0
+Left hand sequential finger tapping,languages,0
+Left hand sequential finger tapping,emotional memory,0
+Left hand sequential finger tapping,rhythm,0
+Left hand sequential finger tapping,tool manipulation,0
+Left hand sequential finger tapping,numerosities,0
+Left hand sequential finger tapping,social behavior,0
+Left hand sequential finger tapping,mystical experience,0
+Left hand sequential finger tapping,implicit learning,0
+Left hand sequential finger tapping,resting state,0
+Left hand sequential finger tapping,risk,0
+Left hand sequential finger tapping,grapheme,0
+Left hand sequential finger tapping,odor mixtures,0
+Left hand sequential finger tapping,word form,0
+Left hand sequential finger tapping,reading skills,0
+Left hand sequential finger tapping,face recognition,0
+Left hand sequential finger tapping,unfamiliar,0
+Left hand sequential finger tapping,choice,0
+Left hand sequential finger tapping,social situational,0
+Left hand sequential finger tapping,temporal attention,0
+Left hand sequential finger tapping,artificial odors,0
+Left hand sequential finger tapping,surprise,0
+Left hand sequential finger tapping,mental rotation,0
+Left hand sequential finger tapping,affect,0
+Left hand sequential finger tapping,somatosensation,1
+Left hand sequential finger tapping,syntax,0
+Left hand sequential finger tapping,verbal memory,0
+Left hand sequential finger tapping,button press,0
+Left hand sequential finger tapping,word repetition,0
+Left hand sequential finger tapping,negative social feedback,0
+Left hand sequential finger tapping,visual cueing of attention,0
+Left hand sequential finger tapping,object recognition,0
+Left hand sequential finger tapping,cognitive tasks,0
+Left hand sequential finger tapping,risk assessment,0
+Left hand sequential finger tapping,wisconsin card sorting test,0
+Left hand sequential finger tapping,moral behaviour,0
+Left hand sequential finger tapping,odorants,0
+Left hand sequential finger tapping,action selection,1
+Left hand sequential finger tapping,approach-avoidance,0
+Left hand sequential finger tapping,simon task,0
+Left hand sequential finger tapping,spatial behavior,0
+Left hand sequential finger tapping,tool naming,0
+Left hand sequential finger tapping,visual dominance,0
+Left hand sequential finger tapping,repetition suppression,0
+Left hand sequential finger tapping,perceptual,0
+Left hand sequential finger tapping,purchase decisions,0
+Left hand sequential finger tapping,lip-reading,0
+Left hand sequential finger tapping,subtraction task,0
+Left hand sequential finger tapping,finger tapping,5
+Left hand sequential finger tapping,visuomotor sequences,0
+Left hand sequential finger tapping,gripping,0
+Left hand sequential finger tapping,regret,0
+Left hand sequential finger tapping,semantic decision,0
+Left hand sequential finger tapping,personal space,0
+Left hand sequential finger tapping,sensation,1
+Left hand sequential finger tapping,saccadic eye movement,0
+Left hand sequential finger tapping,speech processing,0
+Left hand sequential finger tapping,attended,0
+Left hand sequential finger tapping,focused attention,0
+Left hand sequential finger tapping,emotional suppression,0
+Left hand sequential finger tapping,achievement motivation,0
+Left hand sequential finger tapping,intrinsic motivation,0
+Left hand sequential finger tapping,stroop test,0
+Left hand sequential finger tapping,melody,0
+Left hand sequential finger tapping,negative evaluative,0
+Left hand sequential finger tapping,tactile,0
+Left hand sequential finger tapping,temperature sensation,0
+Left hand sequential finger tapping,language processing,0
+Left hand sequential finger tapping,articulatory planning,0
+Left hand sequential finger tapping,masked fearful,0
+Left hand sequential finger tapping,monetary incentive,0
+Left hand sequential finger tapping,visuo-constructive,0
+Left hand sequential finger tapping,number comparison,0
+Left hand sequential finger tapping,fingers,4
+Left hand sequential finger tapping,emotions,0
+Left hand sequential finger tapping,reasoning,0
+Left hand sequential finger tapping,moral pictures,0
+Left hand sequential finger tapping,reward processing,0
+Left hand sequential finger tapping,incidental learning,0
+Left hand sequential finger tapping,micturition,0
+Left hand sequential finger tapping,somatosensory perception,1
+Left hand sequential finger tapping,mirror-reading,0
+Left hand sequential finger tapping,sound localization,0
+Left hand sequential finger tapping,visual associative,0
+Left hand sequential finger tapping,biological motion perception,0
+Left hand sequential finger tapping,motor preparation,3
+Left hand sequential finger tapping,movement,3
+Left hand sequential finger tapping,body,0
+Left hand sequential finger tapping,sequential stimuli,0
+Left hand sequential finger tapping,pain-related words,0
+Left hand sequential finger tapping,response suppression,0
+Left hand sequential finger tapping,desires,0
+Left hand sequential finger tapping,leg,0
+Left hand sequential finger tapping,socioemotional,0
+Left hand sequential finger tapping,choice task,0
+Left hand sequential finger tapping,phonograms,0
+Left hand sequential finger tapping,attentional set,0
+Left hand sequential finger tapping,motion processing,0
+Left hand sequential finger tapping,visual forms,0
+Left hand sequential finger tapping,movement planning,3
+Left hand sequential finger tapping,objects,0
+Left hand sequential finger tapping,clenching,0
+Left hand sequential finger tapping,left hand,4
+Left hand sequential finger tapping,motor control,3
+Left hand sequential finger tapping,auditory stimuli,0
+Left hand sequential finger tapping,social context,0
+Left hand sequential finger tapping,negative emotional,0
+Left hand sequential finger tapping,spatial working memory,0
+Left hand sequential finger tapping,moral issues,0
+Left hand sequential finger tapping,colored,0
+Left hand sequential finger tapping,houses,0
+Left hand sequential finger tapping,go/no-go task,0
+Left hand sequential finger tapping,visually presented,0
+Left hand sequential finger tapping,pain sensation,0
+Left hand sequential finger tapping,phonological encoding,0
+Left hand sequential finger tapping,set shifting,0
+Left hand sequential finger tapping,multisensory information,0
+Left hand sequential finger tapping,pain intensity,0
+Left hand sequential finger tapping,verbal retrieval,0
+Left hand sequential finger tapping,social,0
+Left hand sequential finger tapping,locomotion,0
+Left hand sequential finger tapping,semantic memory,0
+Left hand sequential finger tapping,navigation,0
+Left hand sequential finger tapping,punishment,0
+Left hand sequential finger tapping,numerosity,0
+Left hand sequential finger tapping,love,0
+Left hand sequential finger tapping,kana words,0
+Left hand sequential finger tapping,speech perception,0
+Left hand sequential finger tapping,memory encoding,0
+Left hand sequential finger tapping,motor planning,3
+Left hand sequential finger tapping,conflicting multisensory information,0
+Left hand sequential finger tapping,morphological processing,0
+Left hand sequential finger tapping,impulsivity,0
+Left hand sequential finger tapping,feelings,0
+Left hand sequential finger tapping,social identification,0
+Left hand sequential finger tapping,saccade,0
+Left hand sequential finger tapping,voluntary orienting,0
+Left hand sequential finger tapping,neuroticism,0
+Left hand sequential finger tapping,moral,0
+Left hand sequential finger tapping,self-relevant,0
+Left hand sequential finger tapping,motor,3
+Left hand sequential finger tapping,limb,0
+Left hand sequential finger tapping,social emotion,0
+Left hand sequential finger tapping,unpleasantness,0
+Left hand sequential finger tapping,cognitive processes,0
+Left hand sequential finger tapping,visual cue,0
+Left hand sequential finger tapping,stereotyped response,0
+Left hand sequential finger tapping,risk-dependent,0
+Left hand sequential finger tapping,eye,0
+Left hand sequential finger tapping,stimulus presentation,0
+Left hand sequential finger tapping,working,0
+Left hand sequential finger tapping,gabor stimuli,0
+Left hand sequential finger tapping,angry,0
+Left hand sequential finger tapping,intentional learning,0
+Left hand sequential finger tapping,shifting attention,0
+Left hand sequential finger tapping,time interval cues,0
+Left hand sequential finger tapping,percept,0
+Left hand sequential finger tapping,music,0
+Left hand sequential finger tapping,performance task,0
+Left hand sequential finger tapping,memory,0
+Left hand sequential finger tapping,mental state,0
+Left hand sequential finger tapping,attentional/cognitive,0
+Left hand sequential finger tapping,skill acquisition,0
+Left hand sequential finger tapping,emotional decision,0
+Left hand sequential finger tapping,hallux,0
+Left hand sequential finger tapping,risk-seeking,0
+Left hand sequential finger tapping,trait,0
+Left hand sequential finger tapping,episodic memory,0
+Left hand sequential finger tapping,nonsocial,0
+Left hand sequential finger tapping,self-criticism,0
+Left hand sequential finger tapping,grief,0
+Left hand sequential finger tapping,visual,0
+Left hand sequential finger tapping,memory task,0
+Left hand sequential finger tapping,spatial orienting,0
+Left hand sequential finger tapping,emotional face,0
+Left hand sequential finger tapping,distractors,0
+Left hand sequential finger tapping,facial emotion,0
+Left hand sequential finger tapping,visual change,0
+Left hand sequential finger tapping,creative thinking,0
+Left hand sequential finger tapping,spatial location,0
+Left hand sequential finger tapping,taste encoding,0
+Left hand sequential finger tapping,good/bad judgments,0
+Left hand sequential finger tapping,hayling test,0
+Left hand sequential finger tapping,imagined movement,0
+Left hand sequential finger tapping,fear acquisition,0
+Left hand sequential finger tapping,multisensory integration,0
+Left hand sequential finger tapping,motor response,3
+Left hand sequential finger tapping,episodic memory encoding,0
+Left hand sequential finger tapping,shame,0
+Left hand sequential finger tapping,recall,0
+Left hand sequential finger tapping,monetary gains,0
+Left hand sequential finger tapping,self-face,0
+Left hand sequential finger tapping,coherent visual motion,0
+Left hand sequential finger tapping,emotional valence,0
+Left hand sequential finger tapping,memory capacity,0
+Left hand sequential finger tapping,categorical perception,0
+Left hand sequential finger tapping,narrative comprehension,0
+Left hand sequential finger tapping,hand movements,4
+Left hand sequential finger tapping,vibrotactile,0
+Left hand sequential finger tapping,spatial orienting of attention,0
+Left hand sequential finger tapping,visual-speech,0
+Left hand sequential finger tapping,body image,0
+Left hand sequential finger tapping,successful encoding,0
+Left hand sequential finger tapping,hedonic,0
+Left hand sequential finger tapping,theory of mind,0
+Left hand sequential finger tapping,successful retrieval,0
+Left hand sequential finger tapping,face categorization,0
+Left hand sequential finger tapping,calculation,0
+Left hand sequential finger tapping,incentive delay,0
+Left hand sequential finger tapping,phoneme perception,0
+Left hand sequential finger tapping,object detection,0
+Left hand sequential finger tapping,imitation,0
+Left hand sequential finger tapping,lexical meaning,0
+Left hand sequential finger tapping,risk taking,0
+Left hand sequential finger tapping,altruism,0
+Left hand sequential finger tapping,counting,0
+Left hand sequential finger tapping,risk-taking,0
+Left hand sequential finger tapping,non-verbal,0
+Left hand sequential finger tapping,divided attention,0
+Left hand sequential finger tapping,allocentric spatial,0
+Left hand sequential finger tapping,episodic processing,0
+Left hand sequential finger tapping,autobiographical memory,0
+Left hand sequential finger tapping,long-term memory,0
+Left hand sequential finger tapping,airpuff stimuli,0
+Left hand sequential finger tapping,verb generation,0
+Left hand sequential finger tapping,spatial cue,0
+Left hand sequential finger tapping,prepulse inhibition,0
+Left hand sequential finger tapping,semantically encoded,0
+Left hand sequential finger tapping,language learning,0
+Left hand sequential finger tapping,context memory,0
+Left hand sequential finger tapping,openness to experience,0
+Left hand sequential finger tapping,panic,0
+Left hand sequential finger tapping,cognitive function,0
+Left hand sequential finger tapping,time perception,0
+Left hand sequential finger tapping,n-back,0
+Left hand sequential finger tapping,incongruent,0
+Left hand sequential finger tapping,visual object processing,0
+Left hand sequential finger tapping,attend,0
+Left hand sequential finger tapping,chunking,0
+Left hand sequential finger tapping,visual processing,0
+Left hand sequential finger tapping,speechreading fluency,0
+Left hand sequential finger tapping,wrist,0
+Left hand sequential finger tapping,learning task,0
+Left hand sequential finger tapping,pleasantness,0
+Left hand sequential finger tapping,lifting,0
+Left hand sequential finger tapping,emotional processing,0
+Left hand sequential finger tapping,social attitudes,0
+Left hand sequential finger tapping,ankle dorsiflexion,0
+Left hand sequential finger tapping,stress,0
+Left hand sequential finger tapping,imagery,0
+Left hand sequential finger tapping,negative facial affect,0
+Left hand sequential finger tapping,skin conductance,0
+Left hand sequential finger tapping,angry faces,0
+Left hand sequential finger tapping,acoustic oddball,0
+Left hand sequential finger tapping,syntactic,0
+Left hand sequential finger tapping,fluent speech production,0
+Left hand sequential finger tapping,auditory motion,0
+Left hand sequential finger tapping,stimulus-response incompatibility,0
+Left hand sequential finger tapping,explicit learning,0
+Left hand sequential finger tapping,mental arithmetic,0
+Left hand sequential finger tapping,social exclusion,0
+Left hand sequential finger tapping,decision task,0
+Left hand sequential finger tapping,motion perception,0
+Left hand sequential finger tapping,retrieval,0
+Left hand sequential finger tapping,memory consolidation,0
+Left hand sequential finger tapping,self-recognition,0
+Left hand sequential finger tapping,nogo,0
+Left hand sequential finger tapping,social cognition,0
+Left hand sequential finger tapping,mystical experiences,0
+Left hand sequential finger tapping,acoustic stimulation,0
+Left hand sequential finger tapping,pseudoword rhyming,0
+Left hand sequential finger tapping,prepotent response,0
+Left hand sequential finger tapping,imitative,0
+Left hand sequential finger tapping,attitude,0
+Left hand sequential finger tapping,reversal learning,0
+Left hand sequential finger tapping,monetary reward,0
+Left hand sequential finger tapping,pain-related,0
+Left hand sequential finger tapping,delay conditioning,0
+Left hand sequential finger tapping,pitch contours,0
+Left hand sequential finger tapping,priming,0
+Left hand sequential finger tapping,delay,0
+Left hand sequential finger tapping,thumb,0
+Left hand sequential finger tapping,romantic love,0
+Left hand sequential finger tapping,auditory,0
+Left hand sequential finger tapping,tool usage,0
+Left hand sequential finger tapping,eye movement,0
+Left hand sequential finger tapping,writing,0
+Left hand sequential finger tapping,retention delay,0
+Left hand sequential finger tapping,olfactory processing,0
+Left hand sequential finger tapping,thermal comfort,0
+Left hand sequential finger tapping,cooperative behavior,0
+Left hand sequential finger tapping,agreeableness,0
+Left hand sequential finger tapping,contextual,0
+Left hand sequential finger tapping,semantic priming,0
+Left hand sequential finger tapping,mentalizing,0
+Left hand sequential finger tapping,mental images,0
+Left hand sequential finger tapping,pleasurable,0
+Left hand sequential finger tapping,joystick movement,0
+Left hand sequential finger tapping,moral judgment,0
+Left hand sequential finger tapping,moral task,0
+Left hand sequential finger tapping,visual search,0
+Left hand sequential finger tapping,articulation,0
+Left hand sequential finger tapping,fixation,0
+Left hand sequential finger tapping,time task,0
+Left hand sequential finger tapping,echolocation,0
+Left hand sequential finger tapping,perceptual binding,0
+Left hand sequential finger tapping,cognitive effort,0
+Left hand sequential finger tapping,directed attention,0
+Left hand sequential finger tapping,lexical retrieval,0
+Left hand sequential finger tapping,rotation,0
+Left hand sequential finger tapping,famous persons,0
+Left hand sequential finger tapping,monetary betting task,0
+Left hand sequential finger tapping,unpredictability,0
+Left hand sequential finger tapping,time dilation effect,0
+Left hand sequential finger tapping,episodic retrieval,0
+Left hand sequential finger tapping,gambling task,0
+Left hand sequential finger tapping,language acquisition,0
+Left hand sequential finger tapping,cognition,0
+Left hand sequential finger tapping,judgments,0
+Left hand sequential finger tapping,association learning,0
+Left hand sequential finger tapping,response flexibility,0
+Left hand sequential finger tapping,cognitive load,0
+Left hand sequential finger tapping,prosody,0
+Left hand sequential finger tapping,arithmetic tasks,0
+Left hand sequential finger tapping,memory-guided,0
+Left hand sequential finger tapping,orienting of attention,0
+Left hand sequential finger tapping,acoustic,0
+Left hand sequential finger tapping,haptic object recognition,0
+Left hand sequential finger tapping,auditory processing,0
+Left hand sequential finger tapping,visual non-speech,0
+Left hand sequential finger tapping,associative,0
+Left hand sequential finger tapping,auditory-linguistic,0
+Left hand sequential finger tapping,auditory working memory,0
+Left hand sequential finger tapping,anticipated reward,0
+Left hand sequential finger tapping,spatial intelligence,0
+Left hand sequential finger tapping,no-go,0
+Left hand sequential finger tapping,man-made objects,0
+Left hand sequential finger tapping,stroop,0
+Left hand sequential finger tapping,upper extremity,2
+Left hand sequential finger tapping,olfaction,0
+Left hand sequential finger tapping,autobiographical,0
+Left hand sequential finger tapping,impulsive behavior,0
+Left hand sequential finger tapping,egocentric spatial memory,0
+Left hand sequential finger tapping,motor execution,3
+Left hand sequential finger tapping,eye movements,0
+Left hand sequential finger tapping,naming,0
+Left hand sequential finger tapping,irritability,0
+Left hand sequential finger tapping,interpersonal resource conflicts,0
+Left hand sequential finger tapping,category,0
+Left hand sequential finger tapping,directional cue,0
+Left hand sequential finger tapping,percepts,0
+Left hand sequential finger tapping,second language,0
+Left hand sequential finger tapping,motor function,3
+Left hand sequential finger tapping,apparent motion,0
+Left hand sequential finger tapping,irony,0
+Left hand sequential finger tapping,necker cube,0
+Left hand sequential finger tapping,visual information,0
+Left hand sequential finger tapping,working memory retrieval,0
+Left hand sequential finger tapping,rem,0
+Left hand sequential finger tapping,motor inhibition,0
+Left hand sequential finger tapping,problem-solving,0
+Left hand sequential finger tapping,gustation,0
+Left hand sequential finger tapping,response selection,0
+Left hand sequential finger tapping,visual stimuli,0
+Left hand sequential finger tapping,photic stimulation,0
+Left hand sequential finger tapping,perception,0
+Left hand sequential finger tapping,belief,0
+Left hand sequential finger tapping,category learning,0
+Left hand sequential finger tapping,perceptual differentiation,0
+Left hand sequential finger tapping,phonologically,0
+Left hand sequential finger tapping,positive social feedback,0
+Left hand sequential finger tapping,autobiographical events,0
+Left hand sequential finger tapping,social feedback,0
+Left hand sequential finger tapping,word processing,0
+Left hand sequential finger tapping,small,0
+Left hand sequential finger tapping,affective,0
+Left hand sequential finger tapping,right hand,0
+Left hand sequential finger tapping,phonological buffer,0
+Left hand sequential finger tapping,visuoperceptive,0
+Left hand sequential finger tapping,visual working memory,0
+Left hand sequential finger tapping,self-identification,0
+Left hand sequential finger tapping,visual word,0
+Left hand sequential finger tapping,cognitive demand,0
+Left hand sequential finger tapping,auditory memory,0
+Left hand sequential finger tapping,visual memory,0
+Left hand sequential finger tapping,handgrip,0
+Left hand sequential finger tapping,hedonicity,0
+Left hand sequential finger tapping,visuomotor,0
+Left hand sequential finger tapping,disengage attention,0
+Left hand sequential finger tapping,ultimatum game,0
+Left hand sequential finger tapping,language,0
+Left hand sequential finger tapping,social interactions,0
+Left hand sequential finger tapping,visual percepts,0
+Left hand sequential finger tapping,unfair offers,0
+Left hand sequential finger tapping,viewing,0
+Left hand sequential finger tapping,color perception,0
+Left hand sequential finger tapping,spatial memory,0
+Left hand sequential finger tapping,motion,2
+Left hand sequential finger tapping,hypnosis,0
+Left hand sequential finger tapping,analogical reasoning,0
+Left hand sequential finger tapping,prehension,0
+Left hand sequential finger tapping,threat,0
+Left hand sequential finger tapping,active maintenance,0
+Left hand sequential finger tapping,semantic information,0
+Left hand sequential finger tapping,non-speech vocal,0
+Left hand sequential finger tapping,proprioception,1
+Left hand sequential finger tapping,holding attention,0
+Left hand sequential finger tapping,emotion,0
+Left hand sequential finger tapping,passive listening,0
+Left hand sequential finger tapping,motor skill,2
+Left hand sequential finger tapping,visual field,0
+Left hand sequential finger tapping,encoding,0
+Left hand sequential finger tapping,multimodal perception,0
+Left hand sequential finger tapping,negative social signals,0
+Left hand sequential finger tapping,hearing,0
+Left hand sequential finger tapping,pursuit eye movement,0
+Left hand sequential finger tapping,visual-speech recognition,0
+Left hand sequential finger tapping,reward anticipation,0
+Left hand sequential finger tapping,orthographic,0
+Left hand sequential finger tapping,prehension movement,0
+Left hand sequential finger tapping,sounds,0
+Left hand sequential finger tapping,morphosyntax,0
+Left hand sequential finger tapping,self-concept,0
+Left hand sequential finger tapping,decision making,0
+Left hand sequential finger tapping,hand movement,4
+Left hand sequential finger tapping,pain perception,0
+Left hand sequential finger tapping,pitch sequences,0
+Left hand sequential finger tapping,phonetics,0
+Left hand sequential finger tapping,psycholinguistics,0
+Left hand sequential finger tapping,digit span,0
+Left hand sequential finger tapping,judgements,0
+Left hand sequential finger tapping,auditory encoding,0
+Left hand sequential finger tapping,speech sounds,0
+Left hand sequential finger tapping,ankle,0
+Left hand sequential finger tapping,sexual behavior,0
+Left hand sequential finger tapping,painful,0
+Left hand sequential finger tapping,listen,0
+Left hand sequential finger tapping,multisensory process,0
+Left hand sequential finger tapping,eyes,0
+Left hand sequential finger tapping,rewards,0
+Left hand sequential finger tapping,memory retrieval,0
+Left hand sequential finger tapping,involuntary risk taking,0
+Left hand sequential finger tapping,personality traits,0
+Left hand sequential finger tapping,index finger,3
+Left hand sequential finger tapping,task difficulty,0
+Left hand sequential finger tapping,manipulation,0
+Left hand sequential finger tapping,intonation,0
+Left hand sequential finger tapping,paced finger,2
+Left hand sequential finger tapping,semantics,0
+Left hand sequential finger tapping,imageability,0
+Left hand sequential finger tapping,anxiety,0
+Left hand sequential finger tapping,self-awareness,0
+Left hand sequential finger tapping,odor familiarity,0
+Left hand sequential finger tapping,motor skills,3
+Left hand sequential finger tapping,proprioceptive input,1
+Left hand sequential finger tapping,line-drawing,0
+Left hand sequential finger tapping,phonetic encoding,0
+Left hand sequential finger tapping,fluid intelligence,0
+Left hand sequential finger tapping,eyeblink conditioning,0
+Left hand sequential finger tapping,motor program,2
+Left hand sequential finger tapping,wisconsin card sorting,0
+Left hand sequential finger tapping,guilt,0
+Left hand sequential finger tapping,rock-paper-scissors,0
+Left hand sequential finger tapping,word strings,0
+Left hand sequential finger tapping,writing kanji,0
+Left hand sequential finger tapping,sensory gating,0
+Left hand sequential finger tapping,associative encoding,0
+Left hand sequential finger tapping,social relationship,0
+Left hand sequential finger tapping,stroop task,0
+Left hand sequential finger tapping,single-subtraction,0
+Left hand sequential finger tapping,motivation,0
+Left hand sequential finger tapping,rhyme judgement,0
+Left hand sequential finger tapping,aversive learning,0
+Left hand sequential finger tapping,social anxiety,0
+Left hand sequential finger tapping,sad,0
+Left hand sequential finger tapping,audiovisual perception,0
+Left hand sequential finger tapping,voice perception,0
+Left hand sequential finger tapping,moral intuition,0
+Left hand sequential finger tapping,trace conditioning,0
+Left hand sequential finger tapping,sentences,0
+Left hand sequential finger tapping,arousal,0
+Left hand sequential finger tapping,speech production,0
+Left hand sequential finger tapping,odors,0
+Left hand sequential finger tapping,viewed,0
+Left hand sequential finger tapping,motor sequence learning,1
+Left hand sequential finger tapping,word-generation,0
+Left hand sequential finger tapping,speakers,0
+Left hand sequential finger tapping,visuomotor tracking,0
+Left hand sequential finger tapping,language comprehension,0
+Left hand sequential finger tapping,dual-task,0
+Left hand sequential finger tapping,self,0
+Left hand sequential finger tapping,agency,0
+Left hand sequential finger tapping,olfactory,0
+Left hand sequential finger tapping,silent reading,0
+Left hand sequential finger tapping,video clips,0
+Left hand sequential finger tapping,pseudowords,0
+Left hand sequential finger tapping,social perception,0
+Left hand sequential finger tapping,lip,0
+Left hand sequential finger tapping,visually guided actions,0
+Left hand sequential finger tapping,empathic,0
+Left hand sequential finger tapping,auditory hallucinations,0
+Left hand sequential finger tapping,ego,0
+Left hand sequential finger tapping,object decision,0
+Left hand sequential finger tapping,cutaneous electric shock,0
+Left hand sequential finger tapping,speechreading,0
+Left hand sequential finger tapping,preattentive processing,0
+Left hand sequential finger tapping,executive function,0
+Left hand sequential finger tapping,moral tasks,0
+Left hand sequential finger tapping,pain,0
+Left hand sequential finger tapping,plantarflexion,0
+Left hand sequential finger tapping,self-relevant information,0
+Left hand sequential finger tapping,object,0
+Left hand sequential finger tapping,fear conditioning,0
+Left hand sequential finger tapping,rehearsal,0
+Left hand sequential finger tapping,audition,0
+Left hand sequential finger tapping,set maintenance,0
+Left hand sequential finger tapping,belief reasoning,0
+Left hand sequential finger tapping,motor task,3
+Left hand sequential finger tapping,spoken words,0
+Left hand sequential finger tapping,phonation,0
+Left hand sequential finger tapping,autobiographical memories,0
+Left hand sequential finger tapping,cues,0
+Left hand sequential finger tapping,phonological,0
+Left hand sequential finger tapping,morality,0
+Left hand sequential finger tapping,recognition memory,0
+Left hand sequential finger tapping,short-term memory,0
+Left hand sequential finger tapping,response flexibility paradigm,0
+Left hand sequential finger tapping,repetition priming,0
+Left hand sequential finger tapping,visual pacing,0
+Left hand sequential finger tapping,self monitoring,0
+Left hand sequential finger tapping,attentional modulation,0
+Left hand sequential finger tapping,socioemotional processing,0
+Left hand sequential finger tapping,face,0
+Left hand sequential finger tapping,shifted attention,0
+Left hand sequential finger tapping,auditory spatial location,0
+Left hand sequential finger tapping,memory formation,0
+Left hand sequential finger tapping,visual inputs,0
+Left hand sequential finger tapping,target-discrimination,0
+Left hand sequential finger tapping,space perception,0
+Left hand sequential finger tapping,working memory maintenance,0
+Left hand sequential finger tapping,passive movement,0
+Left hand sequential finger tapping,lexicon,0
+Left hand sequential finger tapping,picture naming,0
+Left hand sequential finger tapping,bodily awareness,0
+Left hand sequential finger tapping,ankle plantarflexion,0
+Left hand sequential finger tapping,gustatory processing,0
+Left hand sequential finger tapping,emotional stimuli,0
+Left hand sequential finger tapping,visuomotor adaptation,0
+Left hand sequential finger tapping,perceptuo-motor,0
+Left hand sequential finger tapping,emotional faces,0
+Left hand sequential finger tapping,planning,0
+Left hand sequential finger tapping,pain-specific,0
+Left hand sequential finger tapping,movie viewing,0
+Left hand sequential finger tapping,fear,0
+Left hand sequential finger tapping,cold pain,0
+Left hand sequential finger tapping,imagined,0
+Left hand sequential finger tapping,iowa gambling task,0
+Left hand sequential finger tapping,nociception,0
+Left hand sequential finger tapping,sentence production,0
+Left hand sequential finger tapping,knowledge,0
+Left hand sequential finger tapping,spatial mnemonic,0
+Left hand sequential finger tapping,justice,0
+Left hand sequential finger tapping,attention shifts,0
+Left hand sequential finger tapping,conscious perception,0
+Left hand sequential finger tapping,rule-based learning,0
+Left hand sequential finger tapping,probabilistic reasoning,0
+Left hand sequential finger tapping,primary taste reward,0
+Left hand sequential finger tapping,sentential,0
+Left hand sequential finger tapping,physical pain,0
+Left hand sequential finger tapping,disgust,0
+Left hand sequential finger tapping,immediate reward,0
+Left hand sequential finger tapping,resting wakefulness,0
+Left hand sequential finger tapping,performance monitoring,0
+Left hand sequential finger tapping,viewing moral pictures,0
+Left hand sequential finger tapping,awareness,0
+Left hand sequential finger tapping,personality,0
+Left hand sequential finger tapping,photographs,0
+Left hand sequential finger tapping,evaluative judgment,0
+Left hand sequential finger tapping,smooth pursuit,0
+Left hand sequential finger tapping,grammar learning,0
+Left hand sequential finger tapping,listened,0
+Left hand sequential finger tapping,familiar,0
+Left hand sequential finger tapping,memory processes,0
+Left hand sequential finger tapping,object categorization,0
+Left hand sequential finger tapping,negative facial cues,0
+Left hand sequential finger tapping,prosody perception,0
+Left hand sequential finger tapping,mirror reading,0
+Left hand sequential finger tapping,trisensory,0
+Left hand sequential finger tapping,words,0
+Left hand sequential finger tapping,visual orientation,0
+Left hand sequential finger tapping,sequence learning,0
+Left hand sequential finger tapping,encoding strategies,0
+Left hand sequential finger tapping,music processing,0
+Left hand sequential finger tapping,distraction,0
+Left hand sequential finger tapping,flanker,0
+Left hand sequential finger tapping,auditory top-down temporal attention,0
+Left hand sequential finger tapping,choice behavior,0
+Left hand sequential finger tapping,cue validity,0
+Left hand sequential finger tapping,reading fluency,0
+Left hand sequential finger tapping,deductive reasoning,0
+Left hand sequential finger tapping,antisaccade,0
+Left hand sequential finger tapping,receptive language,0
+Left hand sequential finger tapping,conscious awareness,0
+Left hand sequential finger tapping,facial expressions,0
+Left hand sequential finger tapping,visual object recognition,0
+Left hand sequential finger tapping,unfamiliar faces,0
+Left hand sequential finger tapping,multisensory interactions,0
+Left hand sequential finger tapping,meditators,0
+Left hand sequential finger tapping,cue-target paradigms,0
+Left hand sequential finger tapping,cognitive task,0
+Left hand sequential finger tapping,vision,0
+Left hand sequential finger tapping,social interaction,0
+Left hand sequential finger tapping,involuntary attention,0
+Left hand sequential finger tapping,associative learning,0
+Left hand sequential finger tapping,impulse control,0
+Left hand sequential finger tapping,word comprehension,0
+Left hand sequential finger tapping,expectancy violation,0
+Left hand sequential finger tapping,goal-directed behavior,0
+Left hand sequential finger tapping,checkerboard,0
+Left hand sequential finger tapping,error/action monitoring,0
+Left hand sequential finger tapping,imitative behavior,0
+Left hand sequential finger tapping,conflict monitoring,0
+Left hand sequential finger tapping,finger-tapping,0
+Left hand sequential finger tapping,natural objects,0
+Left hand sequential finger tapping,smiling,0
+Left hand sequential finger tapping,negative emotion,0
+Left hand sequential finger tapping,stop signal,0
+Left hand sequential finger tapping,sharing behavior,0
+Left hand sequential finger tapping,unconscious,0
+Left hand sequential finger tapping,articulatory rehearsal,0
+Left hand sequential finger tapping,pictures,0
+Left hand sequential finger tapping,lexical,0
+Left hand sequential finger tapping,familiarity,0
+Left hand sequential finger tapping,distractor,0
+Left hand sequential finger tapping,verbal learning,0
+Left hand sequential finger tapping,traumatic memory,0
+Left hand sequential finger tapping,multisensory processing,0
+Left hand sequential finger tapping,finger,4
+Left hand sequential finger tapping,non-mathematical,0
+Left hand sequential finger tapping,retrieval cue,0
+Left hand sequential finger tapping,saccades,0
+Left hand sequential finger tapping,reading,0
+Left hand sequential finger tapping,attended stimulus,0
+Left hand sequential finger tapping,teeth clenching,0
+Left hand sequential finger tapping,spatial working,0
+Left hand sequential finger tapping,working memory updating,0
+Left hand sequential finger tapping,interoceptive representation,0
+Left hand sequential finger tapping,knee extension,0
+Left hand sequential finger tapping,conscious recollection,0
+Left hand sequential finger tapping,sole,0
+Left hand sequential finger tapping,visual word recognition,0
+Left hand sequential finger tapping,linguistics,0
+Left hand sequential finger tapping,social conflicts,0
+Left hand sequential finger tapping,audiovisual,0
+Left hand sequential finger tapping,non-word reading,0
+Left hand sequential finger tapping,attention,0
+Left hand sequential finger tapping,object identification,0
+Left hand sequential finger tapping,sublexical,0
+Left hand sequential finger tapping,embarrassment,0
+Left hand sequential finger tapping,motoric,3
+Left hand sequential finger tapping,avoidance learning,0
+Left hand sequential finger tapping,working memory storage,0
+Left hand sequential finger tapping,taste reward,0
+Left hand sequential finger tapping,paired-associate learning,0
+Left hand sequential finger tapping,go/no-go,0
+Left hand sequential finger tapping,task switching,0
+Left hand sequential finger tapping,visual imagery,0
+Left hand sequential finger tapping,social cognitive,0
+Left hand sequential finger tapping,discrimination task,0
+Left hand sequential finger tapping,empathy,0
+Left hand sequential finger tapping,stationary cue,0
+Left hand sequential finger tapping,social perspective taking,0
+Left hand sequential finger tapping,non-objects,0
+Left hand sequential finger tapping,vibration,0
+Left hand sequential finger tapping,self-agency,0
+Left hand sequential finger tapping,reward dependence,0
+Left hand sequential finger tapping,horizontal lines,0
+Left hand sequential finger tapping,positive emotional,0
+Left hand sequential finger tapping,auditory cues,0
+Left hand sequential finger tapping,dual-task interference,0
+Left hand sequential finger tapping,faces,0
+Left hand sequential finger tapping,visual encoding,0
+Left hand sequential finger tapping,neutral pictures,0
+Left hand sequential finger tapping,dual-serial-arithmetic paradigm,0
+Left hand sequential finger tapping,emotion perception,0
+Left hand sequential finger tapping,somatosensory,1
+Left hand sequential finger tapping,color,0
+Left hand sequential finger tapping,declarative memory,0
+Left hand sequential finger tapping,reinforcement learning,0
+Left hand sequential finger tapping,attention-related,0
+Left hand sequential finger tapping,anticipatory,0
+Left hand sequential finger tapping,lie detection,0
+Left hand sequential finger tapping,attentional effort,0
+Left hand sequential finger tapping,response competition,0
+Left hand sequential finger tapping,comprehension,0
+Left hand sequential finger tapping,learning,0
+Left hand sequential finger tapping,non-visual,0
+Left hand sequential finger tapping,lexical ambiguity,0
+Left hand sequential finger tapping,trust,0
+Left hand sequential finger tapping,monitoring actions,0
+Left hand sequential finger tapping,multisensory perception,0
+Left hand sequential finger tapping,motor behavior,2
+Left hand sequential finger tapping,motor skill learning,1
+Left hand sequential finger tapping,ideograms,0
+Left hand sequential finger tapping,unconsciousness,0
+Left hand sequential finger tapping,semantic knowledge,0
+Left hand sequential finger tapping,retention delays,0
+Left hand sequential finger tapping,semantic category,0
+Left hand sequential finger tapping,gaze,0
+Left hand sequential finger tapping,phonological working memory,0
+Left hand sequential finger tapping,judgment task,0
+Left hand sequential finger tapping,novelty detection,0
+Left hand sequential finger tapping,stimulus-response incompatibility task,0
+Left hand sequential finger tapping,linguistic,0
+Left hand sequential finger tapping,binary odor mixtures,0
+Left hand sequential finger tapping,positive pictures,0
+Left hand sequential finger tapping,target detection,0
+Left hand sequential finger tapping,face processing,0
+Left hand sequential finger tapping,resting,0
+Left hand sequential finger tapping,self-monitoring,0
+Left hand sequential finger tapping,tactile attention,0
+Left hand sequential finger tapping,social norms,0
+Left hand sequential finger tapping,emotion processing,0
+Left hand sequential finger tapping,autobiographical recall,0
+Left hand sequential finger tapping,negative emotions,0
+Left hand sequential finger tapping,inattention,0
+Left hand sequential finger tapping,moral transgressions,0
+Left hand sequential finger tapping,social orienting,0
+Left hand sequential finger tapping,audio-,0
+Left hand sequential finger tapping,wcst,0
+Left hand sequential finger tapping,awake,0
+Left hand sequential finger tapping,social risk perception,0
+Left hand sequential finger tapping,conflict resolution,0
+Left hand sequential finger tapping,response conflict,0
+Left hand sequential finger tapping,self-esteem,0
+Left hand sequential finger tapping,sound,0
+Left hand sequential finger tapping,auditory target,0
+Left hand sequential finger tapping,imagination,0
+Left hand sequential finger tapping,fearful,0
+Left hand sequential finger tapping,emotion-inducing,0
+Left hand sequential finger tapping,default mode,0
+Left hand sequential finger tapping,n-back task,0
+Left hand sequential finger tapping,indignation,0
+Left hand sequential finger tapping,triple-step saccades,0
+Left hand sequential finger tapping,forgetting,0
+Left hand sequential finger tapping,perceptual change,0
+Left hand sequential finger tapping,verbal working memory,0
+Left hand sequential finger tapping,memorizing,0
+Left hand sequential finger tapping,flashed dot sequences,0
+Left hand sequential finger tapping,face-specific,0
+Left hand sequential finger tapping,oral reading,0
+Left hand sequential finger tapping,handwriting,0
+Left hand sequential finger tapping,voice,0
+Left hand sequential finger tapping,coherent body image,0
+Left hand sequential finger tapping,precueing,0
+Left hand sequential finger tapping,auditory change,0
+Left hand sequential finger tapping,functional laterality,0
+Left hand sequential finger tapping,word-color interference,0
+Left hand sequential finger tapping,phonological processing,0
+Left hand sequential finger tapping,orientation,0
+Left hand sequential finger tapping,economic value,0
+Left hand sequential finger tapping,orthography,0
+Left hand sequential finger tapping,kinesthesia,1
+Left hand sequential finger tapping,misattribution,0
+Left hand sequential finger tapping,anger,0
+Left hand sequential finger tapping,auditory feedback,0
+Left hand sequential finger tapping,haptic,0
+Left hand sequential finger tapping,movements,3
+Left hand sequential finger tapping,fearful faces,0
+Left hand sequential finger tapping,reading speed,0
+Left hand sequential finger tapping,saccadic,0
+Left hand sequential finger tapping,reward-learning,0
+Left hand sequential finger tapping,visceral pain,0
+Left hand sequential finger tapping,temporal orienting of attention,0
+Left hand sequential finger tapping,motor performance,1
+Left hand sequential finger tapping,picture encoding,0
+Left hand sequential finger tapping,fluency,0
+Left hand sequential finger tapping,social risk,0
+Left hand sequential finger tapping,body parts,0
+Left hand sequential finger tapping,fearful face recognition,0
+Left hand sequential finger tapping,speech,0
+Left hand sequential finger tapping,jaw,0
+Left hand sequential finger tapping,ankle joint,0
+Left hand sequential finger tapping,facial expression,0
+Left hand sequential finger tapping,visual awareness,0
+Left hand sequential finger tapping,forgiveness,0
+Left hand sequential finger tapping,implicit memory,0
+Left hand sequential finger tapping,conflict,0
+Left hand sequential finger tapping,risk aversion,0
+Left hand sequential finger tapping,visually,0
+Left hand sequential finger tapping,facial affect,0
+Left hand sequential finger tapping,manipulable objects,0
+Left hand sequential finger tapping,motor learning,1
+Left hand sequential finger tapping,perceptually,0
+Left hand sequential finger tapping,decision-making,0
+Left hand sequential finger tapping,hand,3
+Left hand sequential finger tapping,2back,0
+Left hand sequential finger tapping,vestibular,0
+Left hand sequential finger tapping,go/nogo,0
+Left hand sequential finger tapping,spatial cueing,0
+Left hand sequential finger tapping,second language acquisition,0
+Left hand sequential finger tapping,sequential finger tapping,5
+Left hand sequential finger tapping,judgment,0
+Left hand sequential finger tapping,multisensory,0
+Left hand sequential finger tapping,visuospatial processing,0
+Left hand sequential finger tapping,olfactory perception,0
+Left hand sequential finger tapping,episodic,0
+Left hand sequential finger tapping,illusory movement,0
+Left hand sequential finger tapping,retention,0
+Left hand sequential finger tapping,executive functioning,0
+Left hand sequential finger tapping,length processing,0
+Left hand sequential finger tapping,upper limb,2
+Left hand sequential finger tapping,goal-directed,0
+Left hand sequential finger tapping,perceived heaviness,0
+Left hand sequential finger tapping,illusory,0
+Left hand sequential finger tapping,negative mood,0
+Left hand sequential finger tapping,sensory deprivation,0
+Left hand sequential finger tapping,covert attention,0
+Left hand sequential finger tapping,reward,0
+Left hand sequential finger tapping,musical,0
+Left hand sequential finger tapping,detection task,0
+Left hand sequential finger tapping,negative affect,0
+Left hand sequential finger tapping,sustained attention,0
+Left hand sequential finger tapping,morals,0
+Left hand sequential finger tapping,moral deliberation,0
+Left hand sequential finger tapping,listening,0
+Left hand sequential finger tapping,consciousness,0
+Left hand sequential finger tapping,sentence,0
+Left hand sequential finger tapping,motor activity,2
+Left hand sequential finger tapping,pseudoword,0
+Left hand sequential finger tapping,executive,0
+Left hand sequential finger tapping,self-appraisal,0
+Left hand sequential finger tapping,foot,0
+Left hand sequential finger tapping,appetite,0
+Left hand sequential finger tapping,recollection,0
+Left hand sequential finger tapping,delayed reward,0
+Left hand sequential finger tapping,touch,1
+Left hand sequential finger tapping,skill,0
+Left hand sequential finger tapping,internal-external control,0
+Left hand sequential finger tapping,happiness,0
+Left hand sequential finger tapping,color vision,0
+Left hand sequential finger tapping,attentional,0
+Left hand sequential finger tapping,cueing,0
+Left hand sequential finger tapping,social behaviours,0
+Left hand sequential finger tapping,illusions,0
+Left hand sequential finger tapping,harm avoidance,0
+Left hand sequential finger tapping,visual motion,0
+Left hand sequential finger tapping,thinking,0
+Left hand sequential finger tapping,neutral faces,0
+Left hand sequential finger tapping,word identification,0
+Left hand sequential finger tapping,oculomotor,0
+Left hand sequential finger tapping,voluntary movements,2
+Left hand sequential finger tapping,object perception,0
+Left hand sequential finger tapping,emotional recognition,0
+Left hand sequential finger tapping,cue,0
+Left hand sequential finger tapping,lower-limbs,0
+Left hand sequential finger tapping,word production,0
+Left hand sequential finger tapping,auditory sentence comprehension,0
+Left hand sequential finger tapping,long term memory,0
+Left hand sequential finger tapping,kinesthetic,1
+Left hand sequential finger tapping,simultaneously-presented numerosities,0
+Left hand sequential finger tapping,visually guided,0
+Left hand sequential finger tapping,pseudo-words,0
+Left hand sequential finger tapping,intentionality,0
+Left hand sequential finger tapping,working memory,0
+Left hand sequential finger tapping,memory process,0
+Left hand sequential finger tapping,passive viewing,0
+Left hand sequential finger tapping,executive demands,0
+Left hand sequential finger tapping,gestures,0
+Left hand sequential finger tapping,finger movements,4
+Left hand sequential finger tapping,emotional expression,0
+Left hand sequential finger tapping,inhibition,0
+Left hand sequential finger tapping,pitch discrimination,0
+Left hand sequential finger tapping,facial,0
+Left hand sequential finger tapping,mathematics,0
+Left hand sequential finger tapping,hallucinations,0
+Left hand sequential finger tapping,grammar,0
+Left hand sequential finger tapping,visual perception,0
+Left hand sequential finger tapping,desire,0
+Left hand sequential finger tapping,anticipation,0
+Left hand sequential finger tapping,working memory manipulation,0
+Left hand sequential finger tapping,mind wandering,0
+Left hand sequential finger tapping,picture viewing,0
+Left hand sequential finger tapping,cognitive,0
+Left hand sequential finger tapping,akinetic,0
+Left hand sequential finger tapping,wm task,0
+Left hand sequential finger tapping,personally familiar,0
+Left hand sequential finger tapping,active movement,3
+Left hand sequential finger tapping,semantic learning,0
+Left hand sequential finger tapping,illusion,0
+Left hand sequential finger tapping,hedonicity judgments,0
+Left hand sequential finger tapping,verbal behavior,0
+Left hand sequential finger tapping,touch perception,0
+Left hand sequential finger tapping,spatial information,0
+Left hand sequential finger tapping,ethical decision making,0
+Left hand sequential finger tapping,tool use,0
+Left hand sequential finger tapping,autonomic arousal,0
+Left hand sequential finger tapping,mathematical,0
+Left hand sequential finger tapping,concept formation,0
+Left hand sequential finger tapping,mental calculation,0
+Left hand sequential finger tapping,cued,0
+Left hand sequential finger tapping,verbal,0
+Left hand sequential finger tapping,effortful processing,0
+Left hand sequential finger tapping,auditory stimulation,0
+Left hand sequential finger tapping,motor response suppression,0
+Left hand sequential finger tapping,sensation seeking,0
+Left hand sequential finger tapping,reaction time,0
+Left hand sequential finger tapping,signal task,0
+Left hand sequential finger tapping,exploratory behavior,0
+Left hand sequential finger tapping,happy faces,0
+Left hand sequential finger tapping,item learning,0
+Left hand sequential finger tapping,one-back task,0
+Left hand sequential finger tapping,recognition,0
+Left hand sequential finger tapping,hand grip,0
+Left hand sequential finger tapping,sniffing,0
+Left hand sequential finger tapping,humor,0
+Left hand sequential finger tapping,mood,0
+Left hand sequential finger tapping,naming objects,0
+Left hand sequential finger tapping,emotional-cognitive interaction,0
+Left hand sequential finger tapping,memories,0
+Left hand sequential finger tapping,decision,0
+Left hand sequential finger tapping,unisensory,0
+Left hand sequential finger tapping,simultaneous stimuli,0
+Left hand sequential finger tapping,emotional information,0
+Left hand sequential finger tapping,religion,0
+Left hand sequential finger tapping,extraversion,0
+Left hand sequential finger tapping,pseudo-word,0
+Left hand sequential finger tapping,periphery,0
+Left hand sequential finger tapping,moral cognition,0
+Left hand sequential finger tapping,object manipulation,0
+Left hand sequential finger tapping,peripheral attention,0
+Left hand sequential finger tapping,flanker task,0
+Left hand sequential finger tapping,cognitive dissonance,0
+Left hand sequential finger tapping,spatial cognition,0
+Left hand sequential finger tapping,egocentric,0
+Left hand sequential finger tapping,memory tasks,0
+Left hand sequential finger tapping,word,0
+Left hand sequential finger tapping,odor,0
+Left hand sequential finger tapping,affect recognition,0
+Left hand sequential finger tapping,monetary,0
+Left hand sequential finger tapping,mathematical reasoning,0
+Left hand sequential finger tapping,verbal working,0
+Left hand sequential finger tapping,subconscious,0
+Left hand sequential finger tapping,semantic concepts,0
+Left hand sequential finger tapping,error processing,0
+Left hand sequential finger tapping,autobiographical memory retrieval,0
+Left hand sequential finger tapping,prospective memory,0
+Left hand sequential finger tapping,top-down control,0
+Left hand sequential finger tapping,proprioceptive,0
+Left hand sequential finger tapping,metaphor,0
+Left hand sequential finger tapping,speech comprehension,0
+Left hand sequential finger tapping,risk perception,0
+Left hand sequential finger tapping,value-based choices,0
+Left hand sequential finger tapping,self-directedness,0
+Left hand sequential finger tapping,attention shift,0
+Left hand sequential finger tapping,top-down attention,0
+Left hand sequential finger tapping,spatial attention,0
+Left hand sequential finger tapping,semantic processing,0
+Left hand sequential finger tapping,intentions,0
+Left hand sequential finger tapping,illusory percept,0
+Left hand sequential finger tapping,aversive,0
+Left hand sequential finger tapping,word pairs,0
+Left hand sequential finger tapping,auditory perception,0
+Left hand sequential finger tapping,narration,0
+Left hand sequential finger tapping,negative pictures,0
+Left hand sequential finger tapping,spatial navigation,0
+Left hand sequential finger tapping,orthographic familiarity,0
+Left hand sequential finger tapping,associative retrieval,0
+Left hand sequential finger tapping,tongue,0
+Left hand sequential finger tapping,tactile stimulation,0
+Left hand sequential finger tapping,emotional intelligence,0
+Left hand sequential finger tapping,letters,0
+Left hand sequential finger tapping,sleep deprivation,0
+Left hand sequential finger tapping,skill learning,0
+Left hand sequential finger tapping,form perception,0
+Left hand sequential finger tapping,rule learning,0
+Left hand sequential finger tapping,word generation,0
+Left hand sequential finger tapping,egocentric spatial,0
+Left hand sequential finger tapping,false belief,0
+Left hand sequential finger tapping,moral sensitivity,0
+Left hand sequential finger tapping,affective responsiveness,0
+Left hand sequential finger tapping,problem solving,0
+Left hand sequential finger tapping,knee,0
+Left hand sequential finger tapping,complex motor tasks,2
+Left hand sequential finger tapping,positive mood,0
+Left hand sequential finger tapping,mental processes,0
+Left hand sequential finger tapping,story comprehension,0
+Left hand sequential finger tapping,aptitude,0
+Left hand sequential finger tapping,deception,0
+Left hand sequential finger tapping,negative feedback,0
+Left hand sequential finger tapping,tasting,0
+Left hand sequential finger tapping,hip,0
+Left hand sequential finger tapping,finger movement,4
+Left hand sequential finger tapping,action knowledge,0
+Left hand sequential finger tapping,motor imagery,0
+Left hand sequential finger tapping,dreaming,0
+Left hand sequential finger tapping,intention,0
+Left hand sequential finger tapping,grasping,0
+Left hand sequential finger tapping,response inhibition,0
+Left hand sequential finger tapping,frustration,0
+Left hand sequential finger tapping,discourse processing,0
+Left hand sequential finger tapping,cue period,0
+Left hand sequential finger tapping,number comparison task,0
+Left hand sequential finger tapping,interpersonal relations,0
+Left hand sequential finger tapping,happy,0
+Left hand sequential finger tapping,rule representation,0
+Left hand sequential finger tapping,pitch perception,0
+Left hand sequential finger tapping,motivational,0
+Left hand sequential finger tapping,gait,0
+Left hand sequential finger tapping,discrimination learning,0
+Left hand sequential finger tapping,syntactic processing,0
+Left hand sequential finger tapping,deep processing,0
+Left hand sequential finger tapping,slow-wave sleep,0
+Left hand sequential finger tapping,spatial conflict,0
+Left hand sequential finger tapping,lipreading,0
+Left hand sequential finger tapping,positive arousal,0
+Left hand sequential finger tapping,mental imagery,0
+Left hand sequential finger tapping,motor tasks,3
+Left hand sequential finger tapping,moral violation,0
+Left hand sequential finger tapping,romantic,0
+Left hand sequential finger tapping,nonspatial,0
+Left hand sequential finger tapping,chords,0
+Left hand sequential finger tapping,visual attention,0
+Left hand sequential finger tapping,excitement,0
+Left hand sequential finger tapping,sadness,0
+Left hand sequential finger tapping,polysensory,0
+Left hand sequential finger tapping,tones,0
+Left hand sequential finger tapping,emotional,0
+Left hand sequential finger tapping,beliefs,0
+Left hand sequential finger tapping,concrete/abstract,0
+Left hand sequential finger tapping,procedural learning,0
+Left hand sequential finger tapping,word recognition,0
+Left hand sequential finger tapping,forearm,0
+Left hand sequential finger tapping,taste,0
+Left hand sequential finger tapping,kinetics,0
+Left hand sequential finger tapping,interpersonal conflict,0
+Left hand sequential finger tapping,selective attention,0
+Left hand sequential finger tapping,smooth pursuit eye movement,0
+Left hand sequential finger tapping,phoneme,0
+Left hand sequential finger tapping,tendon vibration,0
+Left hand sequential finger tapping,self-representation,0
+Left hand sequential finger tapping,congruency,0
+Left hand sequential finger tapping,temporal orienting,0
+Left hand sequential finger tapping,attention task,0
+Left hand sequential finger tapping,sentence comprehension,0
+Left hand sequential finger tapping,whole-body motion,0
+Left hand sequential finger tapping,monetary rewards,0
+Left hand sequential finger tapping,visuospatial,0
+Left hand sequential finger tapping,temporal cue,0
+Left hand sequential finger tapping,self-referential,0
+Left hand sequential finger tapping,lexical decision,0
+Left hand sequential finger tapping,resting-state,0
+Left hand sequential finger tapping,novel encoding,0
+Left hand sequential finger tapping,visuospatial attention,0
+Left hand sequential finger tapping,verbal fluency,0
+Left hand sequential finger tapping,illusory recognition,0
+Left hand sequential finger tapping,spatial ability,0
+Left hand sequential finger tapping,spatial,0
+Left hand sequential finger tapping,intelligence,0
+Left hand sequential finger tapping,gambling,0
+Left hand sequential finger tapping,non-speech,0
+Left hand sequential finger tapping,intentional stance,0
+Left hand sequential finger tapping,memory load,0
+Left hand sequential finger tapping,negative image viewing,0
+Left hand sequential finger tapping,arithmetic,0
+Left hand sequential finger tapping,gustatory,0
+Left hand sequential finger tapping,picture,0
+Left hand sequential finger tapping,sequential taps,0
+Left hand sequential finger tapping,procedural memory,0
+Left hand sequential finger tapping,vocabulary,0
+Left hand sequential finger tapping,perspective taking,0
+Left hand sequential finger tapping,language production,0
+Left hand sequential finger tapping,back pain,0
+Left hand sequential finger tapping,resource conflicts,0
+Left hand sequential finger tapping,recognition task,0
+Left hand sequential finger tapping,body cooling,0
+Left hand sequential finger tapping,aurally,0
+Left hand sequential finger tapping,matching task,0
+Left hand sequential finger tapping,biological motion,0
+Left hand sequential finger tapping,suppression,0
+Left hand sequential finger tapping,counting stroop,0
+Left hand sequential finger tapping,word-picture,0
+Left hand sequential finger tapping,cognitive control,0
+Left hand sequential finger tapping,auditory imagery,0
+Left hand sequential finger tapping,loss-induced,0
+Left hand sequential finger tapping,face perception,0
+Left hand sequential finger tapping,eye position,0
+Left hand sequential finger tapping,reading comprehension,0
+Left hand sequential finger tapping,allocentric,0
+Left hand sequential finger tapping,executive control,0
+Left hand sequential finger tapping,stress-related body odors,0
+Left hand sequential finger tapping,memory judgments,0
+Left hand sequential finger tapping,saccadic eye,0
+Left hand sequential finger tapping,negatively valenced,0
+Left hand sequential finger tapping,polymodal motion,0
+Left hand sequential finger tapping,phonological loop,0
+Left hand sequential finger tapping,narrative,0
+Left hand sequential finger tapping,prehension movements,0
+Left hand sequential finger tapping,action observation,0
+Left hand sequential finger tapping,facial pain,0
+Left hand sequential finger tapping,social interest,0
+Left hand sequential finger tapping,lower limb,0
