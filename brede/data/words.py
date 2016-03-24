@@ -221,8 +221,8 @@ class NeuroimagingMethodWords(Words):
 class TaskToWords(object):
     """Associate words with tasks.
 
-    Data is read from the comma-separated file called task_to_words.csv 
-    available in the `words_data` subdirectory. 
+    Data is read from the comma-separated file called task_to_words.csv
+    available in the `words_data` subdirectory.
 
     See also
     --------
@@ -244,7 +244,7 @@ class TaskToWords(object):
         -------
         data : pandas.DataFrame
             Dataframe with task, word and scores as columns.
-            
+
         """
         return read_csv(self.filename)
 
