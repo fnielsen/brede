@@ -15,12 +15,13 @@ Options:
 from __future__ import print_function, unicode_literals
 
 import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
 
 from brede.config import config
 
 import requests
+
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 
 URL_BASE_BREDE = "http://neuro.compute.dtu.dk/w/"
