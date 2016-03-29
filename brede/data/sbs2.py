@@ -283,7 +283,7 @@ class SBS2Data(object):
         return surface
 
     def inverse_model(self, hardware='emotiv', method='LORETA',
-                      inv_alpha=0.001, inv_beta=0.3781):
+                      inv_alpha=0.01, inv_beta=0.3781):
         """Compute and return inverse model.
 
         The LORETA method is:
