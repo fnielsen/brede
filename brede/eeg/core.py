@@ -897,11 +897,14 @@ class EEGAuxRun(EEGRun):
         Examples
         --------
         >>> import numpy as np
-        >>> eeg = EEGAuxRun([[1., 2., 'a'], [3., 4., 'b']], dtype=np.float32)
+        >>> eeg = EEGAuxRun([[1., 2., 'a'], [3., 4., 'b']],
+        ...                 columns=['C3', 'C4', 'Label'],
+        ...                 eeg_columns=['C3', 'C4'],
+        ...                 dtype=np.float32)
         >>> a = np.array([[5., 6.], [7., 8.]], dtype=np.float32)
         >>> eeg.set_eeg_columns_from_array(a)
         >>> eeg.iloc[0, 0]
-        5
+        5.0
         >>> eeg.iloc[0, 0].dtype
         dtype('float32')
 
@@ -930,11 +933,14 @@ class EEGAuxRun(EEGRun):
         Examples
         --------
         >>> import numpy as np
-        >>> eeg = EEGAuxRun([[1., 2., 'a'], [3., 4., 'b']], dtype=np.float32)
+        >>> eeg = EEGAuxRun([[1., 2., 'a'], [3., 4., 'b']],
+        ...                 columns=['C3', 'C4', 'Label'],
+        ...                 eeg_columns=['C3', 'C4'],
+        ...                 dtype=np.float32)
         >>> a = np.array([[5., 6.], [7., 8.]], dtype=np.float32)
         >>> eeg.set_eeg_columns_from_array(a)
         >>> eeg.iloc[0, 0]
-        5
+        5.0
         >>> eeg.iloc[0, 0].dtype
         dtype('float32')
 
