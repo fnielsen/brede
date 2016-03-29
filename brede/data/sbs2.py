@@ -122,8 +122,8 @@ class SBS2Data(object):
         If not call then the download method is called.
 
         """
-        if (redownload or not exists(self.sbs2_dir)
-                or not exists(join(self.sbs2_dir, 'sbs2_data'))):
+        if (redownload or not exists(self.sbs2_dir) or
+                not exists(join(self.sbs2_dir, 'sbs2_data'))):
             self.download()
             # no need for extraction
 
