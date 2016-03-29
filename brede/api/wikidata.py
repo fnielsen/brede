@@ -27,7 +27,6 @@ API_URL = "https://www.wikidata.org/w/api.php"
 
 
 class Wikidata(object):
-
     """Interface to wikidata.org."""
 
     def __init__(self):

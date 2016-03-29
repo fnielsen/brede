@@ -35,28 +35,24 @@ import yaml
 
 
 class WatsonException(Exception):
-
     """Any kind of exception from Watson."""
 
     pass
 
 
 class WatsonFailedError(WatsonException):
-
     """Status 'Failed' from API."""
 
     pass
 
 
 class WatsonMissingConfig(WatsonException):
-
     """Exception for missing watson section in config."""
 
     pass
 
 
 class WatsonResponse(dict):
-
     """Represent a response from the IBM Watson API."""
 
     @property
@@ -131,7 +127,6 @@ class WatsonResponse(dict):
 
 
 class Watson(object):
-
     """Interface to IBM Watson.
 
     The use of this class requires credentials to an IBM Watson instance.

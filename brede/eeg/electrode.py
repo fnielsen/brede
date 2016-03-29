@@ -16,6 +16,7 @@ from pandas import read_csv as pandas_read_csv
 
 from .core import EEGAuxRun, EEGRun, EEGRuns, EEGRuns4D, Spectra3D, Spectra4D
 from .csp import CSP
+from .vertex import EEGAuxVertexRun
 from ..core import Matrix
 from ..io import read_edf
 
@@ -134,21 +135,18 @@ def fix_electrode_name(electrode):
 
 
 class UnevenSamplingRateError(Exception):
-
     """Exception for uneven sampling intervals."""
 
     pass
 
 
 class ElectrodeNameError(Exception):
-
     """Exception for wrong electrode name."""
 
     pass
 
 
 class EEGElectrodeRun(EEGRun):
-
     """Represent a EEG data set.
 
     The 'run' should be a temporally contiguous data set with a fixed sampling
@@ -164,45 +162,6 @@ class EEGElectrodeRun(EEGRun):
     @property
     def _constructor(self):
         return type(self)
-
-    def sampling_rate_from_index(self):
-        """Return sampling rate.
-
-        Raises
-        ------
-        UnevenSamplingRateError
-
-        """
-        intervals = np.diff(self.index.values)
-        interval = intervals.mean()
-        interval_variation = max(intervals - interval) / interval
-        if interval_variation > 10 ** -10:
-            raise UnevenSamplingRateError
-        return 1 / interval
-
-    @property
-    def sampling_rate(self):
-        """Return sampling rate.
-
-        Raises
-        ------
-        UnevenSamplingRateError
-
-        """
-        return self._sampling_rate
-
-    @sampling_rate.setter
-    def sampling_rate(self, value):
-        """Set the index from the sampling rate.
-
-        Parameters
-        ----------
-        value : float
-            Sampling rate
-
-        """
-        self._sampling_rate = value
-        # self.index = np.arange(0, len(self) / value, 1 / value)
 
     @classmethod
     def read_csv(cls, filename, sampling_rate=None, *args, **kwargs):
@@ -306,6 +265,28 @@ class EEGElectrodeRun(EEGRun):
         else:
             return self._constructor(self, columns=new_columns, copy=True)
 
+    def inverse_modeling(self, inverse_model):
+        """Inverse modeling.
+
+        Parameters
+        ----------
+        inverse_model : pandas.DataFrame
+            Data fra with inverse model
+
+        Returns
+        -------
+        vertex_run : EEGAuxVertexRun
+            DataFrame-like object with eeg data.
+
+        """
+        assert set(inverse_model.index) == set(self.columns)
+        return EEGAuxVertexRun(
+            self.dot(inverse_model.ix[self.columns, :]),
+            index=self.index,
+            columns=inverse_model.columns,
+            eeg_columns=inverse_model.columns,
+            sampling_rate=self.sampling_rate)
+
     def plot_electrode_spectrogram(self, electrode, nfft=None, noverlap=128):
         """Plot the spectrogram for specified electrode.
 
@@ -327,7 +308,6 @@ class EEGElectrodeRun(EEGRun):
 
 
 class EEGElectrodeRuns(EEGRuns):
-
     """Multiple EEGRuns of the same length."""
 
     _metadata = ['_sampling_rate']
@@ -398,7 +378,6 @@ class EEGElectrodeRuns(EEGRuns):
 
 
 class EEGElectrodeRuns4D(EEGRuns4D):
-
     """Multiple EEGRuns of the same length."""
 
     _metadata = ['_sampling_rate']
@@ -472,7 +451,6 @@ class EEGElectrodeRuns4D(EEGRuns4D):
 
 
 class EEGAuxElectrodeRun(EEGAuxRun):
-
     """Represent a EEG data set with auxilliary data.
 
     The Pandas DataFrame class is reused and extended with, e.g., Fourier
@@ -550,6 +528,20 @@ class EEGAuxElectrodeRun(EEGAuxRun):
             pandas_read_csv(filename, *args, **kwargs),
             sampling_rate=sampling_rate)
 
+    def only_eeg_columns(self):
+        """Extract data for only EEG electrode columns.
+
+        Discard columns that does not contain EEG electrode data.
+
+        Returns
+        -------
+        electrode_run : EEGElectrodeRun
+            DataFrame-like object with columns extracted.
+
+        """
+        return EEGElectrodeRun(
+            self.ix[:, self.eeg_columns])
+
     def csp(self, group_by, n_components=None):
         """Common spatial patterns.
 
@@ -581,11 +573,7 @@ class EEGAuxElectrodeRun(EEGAuxRun):
 
     def plot_electrode_spectrum(self, electrode):
         """Plot the spectrum of an electrode."""
-        self.fft().plot_electrode_spectrum(electrode)
-
-    def plot_mean_spectrum(self):
-        """Plot mean spectrum across electrodes."""
-        self.fft().plot_mean_spectrum()
+        self.fft().plot_column_spectrum(electrode)
 
 
 read_csv = EEGAuxElectrodeRun.read_csv

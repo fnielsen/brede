@@ -7,7 +7,6 @@ from .core import EEGAuxRun
 
 
 class EEGAuxVertexRun(EEGAuxRun):
-
     """Represent EEG data on the vertex level.
 
     The data should be a time series with consecutive time samples equally

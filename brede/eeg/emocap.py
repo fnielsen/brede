@@ -37,7 +37,6 @@ ELECTRODES = [
 
 
 class EmocapElectrodeRun(EEGAuxElectrodeRun):
-
     """Represent a EEG data set recorded from Emocap."""
 
     _metadata = ['_eeg_columns', '_sampling_rate']
@@ -80,13 +79,17 @@ class EmocapElectrodeRun(EEGAuxElectrodeRun):
             pandas_read_csv(filename, *args, **kwargs),
             sampling_rate=sampling_rate)
 
-    def invert(self, method='LORETA'):
+    def invert(self, method='LORETA', inv_alpha=0.001, inv_beta=0.3781):
         """Return inverted EEG electrode data (sources).
 
         Parameters
         ----------
         method : 'LORETA' or 'minimumnorm', optional
             Inversion method.
+        inv_alpha : float, optional
+            Hyperparameter
+        inv_beta : float, optional
+            Hyperparameter
 
         Returns
         -------
@@ -97,7 +100,8 @@ class EmocapElectrodeRun(EEGAuxElectrodeRun):
         sbs2_data = SBS2Data()
 
         inverse_model = sbs2_data.inverse_model(
-            hardware='emocap', method=method)
+            hardware='emocap', method=method,
+            inv_alpha=inv_alpha, inv_beta=inv_beta)
         surface = sbs2_data.surface(model='small')
 
         electrodes = self.eeg_columns[:]
@@ -124,7 +128,6 @@ read_csv = EmocapElectrodeRun.read_csv
 
 
 class EmocapVertexRun(EEGAuxVertexRun):
-
     """Represent a Emocap data set at the vertex level."""
 
     _metadata = ['_eeg_columns', '_sampling_rate', '_surface']

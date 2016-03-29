@@ -18,7 +18,6 @@ from sklearn import base
 
 
 class CSP(base.BaseEstimator, base.TransformerMixin):
-
     """Common spatial patterns.
 
     References

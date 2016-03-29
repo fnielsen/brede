@@ -83,7 +83,6 @@ memory capacity
 auditory
 divided attention
 imagery
-directiona cue
 cue period
 neutral cue
 stationary cue

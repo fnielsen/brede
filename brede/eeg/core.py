@@ -7,6 +7,8 @@ Representing EEG data on the vertex level.
 
 from __future__ import absolute_import, division, print_function
 
+from math import sqrt
+
 # Absolute path here because of circular dependency
 import brede.io
 
@@ -20,12 +22,15 @@ from pandas.core.internals import BlockManager
 
 from scipy.signal import lfilter, welch
 
+from sklearn.decomposition import FastICA
+
 from .csp import CSP
 from .filter import bandpass_filter_coefficients, lowpass_filter_coefficients
 from .plotting import MultiPlot
 from ..core.matrix import Matrix
 from ..core.tensor import Tensor
 from ..core.tensor4d import Tensor4D
+from ..core.vector import Vector
 
 
 ELECTRODES = {
@@ -142,21 +147,18 @@ def fix_electrode_name(electrode):
 
 
 class UnevenSamplingRateError(Exception):
-
     """Exception for uneven sampling intervals."""
 
     pass
 
 
 class ElectrodeNameError(Exception):
-
     """Exception for wrong electrode name."""
 
     pass
 
 
 class EEGRun(Matrix):
-
     """Represent a EEG data set.
 
     The 'run' should be a temporally contiguous data set with a fixed sampling
@@ -480,7 +482,8 @@ class EEGRun(Matrix):
             return new
 
     def bandpass_filter(self, low_cutoff_frequency=1.0,
-                        high_cutoff_frequency=45.0, order=4, inplace=False):
+                        high_cutoff_frequency=45.0, order=4, inplace=False,
+                        dtype=None):
         """Filter electrode data temporally with bandpass filter.
 
         Parameters
@@ -496,7 +499,13 @@ class EEGRun(Matrix):
         b, a = bandpass_filter_coefficients(
             low_cutoff_frequency, high_cutoff_frequency,
             sampling_rate=self.sampling_rate, order=order)
-        Y = lfilter(b, a, self, axis=0)
+
+        if dtype is None:
+            Y = lfilter(b, a, self, axis=0)
+        else:
+            Y = lfilter(np.asarray(b, dtype=dtype),
+                        np.asarray(a, dtype=dtype),
+                        self.astype(dtype), axis=0)
 
         if inplace:
             self.ix[:, :] = Y
@@ -594,7 +603,6 @@ class EEGRun(Matrix):
 
 
 class EEGRuns(Tensor):
-
     """Multiple EEGRuns of the same length."""
 
     _metadata = ['sampling_rate']
@@ -665,7 +673,6 @@ class EEGRuns(Tensor):
 
 
 class EEGRuns4D(Tensor4D):
-
     """Multiple EEGRuns of the same length."""
 
     _metadata = ['sampling_rate']
@@ -739,7 +746,6 @@ class EEGRuns4D(Tensor4D):
 
 
 class EEGAuxRun(EEGRun):
-
     """Represent a EEG data set with auxilliary data.
 
     The Pandas DataFrame class is reused and extended with, e.g., Fourier
@@ -769,11 +775,11 @@ class EEGAuxRun(EEGRun):
 
         if eeg_columns is None:
             if hasattr(data, '_eeg_columns'):
-                self._eeg_columns = data._eeg_columns
+                self.eeg_columns = data._eeg_columns
             else:
-                self._eeg_columns = []
+                self.eeg_columns = []
         else:
-            self._eeg_columns = eeg_columns
+            self.eeg_columns = eeg_columns
 
     def __getitem__(self, key):
         """Get column or columns."""
@@ -781,14 +787,43 @@ class EEGAuxRun(EEGRun):
 
         if isinstance(value, EEGAuxRun):
             new_columns = [column for column in key
-                           if column in self._eeg_columns]
+                           if column in self.eeg_columns]
             value._eeg_columns = new_columns
         return value
 
     @property
     def eeg_columns(self):
-        """Return columns that contain EEG data."""
+        """Return column names that contain EEG data.
+
+        The `eeg_columns` are the columns that are usually used for
+        computational processing while the other columns are left
+        unprocessed.
+
+        `eeg_columns` should be a subset of `columns`.
+
+        Examples
+        --------
+        >>> eeg = EEGAuxRun([[1, 2], [3, 4]], columns=['C3', 'C4'],
+        ...                 eeg_columns=['C3'])
+        >>> eeg.eeg_columns
+        ['C3']
+
+        >>> eeg.eeg_columns = ['C3', 'C4']
+        >>> eeg.eeg_columns
+        ['C3', 'C4']
+
+        """
         return self._eeg_columns
+
+    @eeg_columns.setter
+    def eeg_columns(self, value):
+        """Set column names that contain EEG data."""
+        self._eeg_columns = []
+        for column in value:
+            if column in self.columns:
+                self._eeg_columns.append(column)
+            else:
+                raise ValueError('{} not a column name'.format(column))
 
     @property
     def not_eeg_columns(self):
@@ -804,7 +839,7 @@ class EEGAuxRun(EEGRun):
 
         """
         not_eeg_columns = [column for column in self.columns
-                           if column not in set(self._eeg_columns)]
+                           if column not in set(self.eeg_columns)]
         return not_eeg_columns
 
     @classmethod
@@ -822,7 +857,6 @@ class EEGAuxRun(EEGRun):
             EEGAuxRun dataframe with read data.
 
         """
-        # TODO: This will not instance in derived class.
         return EEGAuxRun(pandas_read_csv(filename, *args, **kwargs),
                          sampling_rate=sampling_rate)
 
@@ -840,11 +874,81 @@ class EEGAuxRun(EEGRun):
         multichannel potential fields
 
         """
-        reference = self.ix[:, self._eeg_columns].mean(axis=1)
-        centered = self.ix[:, self._eeg_columns] - np.tile(
-            reference, (len(self._eeg_columns), 1)).T
+        reference = self.ix[:, self.eeg_columns].mean(axis=1)
+        centered = self.ix[:, self.eeg_columns] - np.tile(
+            reference, (len(self.eeg_columns), 1)).T
         gfp = np.sqrt((centered ** 2).mean(axis=1))
         return gfp
+
+    def set_eeg_columns_from_array(self, a):
+        """Set eeg_columns from array.
+
+        This basically does: `self.ix[:, self._eeg_columns] = a`
+        However, this assignment can have performance and type casting
+        problems, see https://stackoverflow.com/questions/35230388/
+
+        A for-loop implements the assignment instead.
+
+        Parameters
+        ----------
+        a : array-like
+            Input array to assign from.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> eeg = EEGAuxRun([[1., 2., 'a'], [3., 4., 'b']],
+        ...                 columns=['C3', 'C4', 'Label'],
+        ...                 eeg_columns=['C3', 'C4'],
+        ...                 dtype=np.float32)
+        >>> a = np.array([[5., 6.], [7., 8.]], dtype=np.float32)
+        >>> eeg.set_eeg_columns_from_array(a)
+        >>> eeg.iloc[0, 0]
+        5.0
+        >>> eeg.iloc[0, 0].dtype
+        dtype('float32')
+
+        """
+        assert len(self._eeg_columns) == a.shape[1]
+
+        for n, column in enumerate(self._eeg_columns):
+            self.ix[:, column] = a[:, n]
+
+    def set_df_eeg_columns_from_array(self, df, a):
+        """Set eeg_columns from array in new dataframe.
+
+        This basically does: `df.ix[:, df._eeg_columns] = a`
+        However, this assignment can have performance and type casting
+        problems, see https://stackoverflow.com/questions/35230388/
+
+        A for-loop implements the assignment instead.
+
+        Parameters
+        ----------
+        df : pd.DataFrame
+            DataFrame which are assigned to
+        a : array-like
+            Input array to assign from.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> eeg = EEGAuxRun([[1., 2., 'a'], [3., 4., 'b']],
+        ...                 columns=['C3', 'C4', 'Label'],
+        ...                 eeg_columns=['C3', 'C4'],
+        ...                 dtype=np.float32)
+        >>> a = np.array([[5., 6.], [7., 8.]], dtype=np.float32)
+        >>> eeg.set_eeg_columns_from_array(a)
+        >>> eeg.iloc[0, 0]
+        5.0
+        >>> eeg.iloc[0, 0].dtype
+        dtype('float32')
+
+        """
+        assert len(df._eeg_columns) == a.shape[1]
+
+        for n, column in enumerate(df._eeg_columns):
+            df.ix[:, column] = a[:, n]
 
     def abser(self, inplace=False):
         """Compute the absolute value for the electrode data.
@@ -863,11 +967,20 @@ class EEGAuxRun(EEGRun):
             new.ix[:, self._eeg_columns] = new.ix[:, self._eeg_columns].abs()
             return new
 
-    def center(self, inplace=False):
+    def center(self, inplace=False, method='mean'):
         """Center the EEG data.
 
         The mean for each EEG column is computed and subtracted from the
         relevant columns.
+
+        Parameters
+        ----------
+        inplace : bool
+            Whether to copy or replace element values, default False
+        method : mean or first
+            Value to subjects from the column values. 'mean' is the ordinary
+            mean, while 'first' takes the first element in the dataframe and
+            subtract that from the values, default mean.
 
         Returns
         -------
@@ -875,7 +988,11 @@ class EEGAuxRun(EEGRun):
             New DataFrame-like object with centered EEG data.
 
         """
-        means = self.ix[:, self._eeg_columns].mean(axis=0)
+        if method == 'mean':
+            means = self.ix[:, self._eeg_columns].mean(axis=0)
+        elif method == 'first':
+            means = self.loc[:, self._eeg_columns].iloc[0, :]
+
         if inplace:
             self.ix[:, self._eeg_columns] -= means
             return self
@@ -883,6 +1000,66 @@ class EEGAuxRun(EEGRun):
             new = self._constructor(self, copy=True)
             new.ix[:, self._eeg_columns] -= means
             return new
+
+    def ica(self, n_components=None, sources='left'):
+        """Return result from independent component analysis.
+
+        X = SA + m
+
+        Sklearn's FastICA implementation is used.
+
+        When sources=left the sources are returned in the first (left) matrix
+        and the mixing matrix is returned in the second (right) matrix,
+        corresponding to X = SA.
+
+        When sources=right the sources are returned in the second matrix while
+        the mixing matrix is returned in the first, corresponding to X = AS.
+
+        Parameters
+        ----------
+        n_components : int, optional
+            Number of ICA components.
+        sources : left or right, optional
+            Indicates whether the sources should be the left or right matrix.
+
+        Returns
+        -------
+        first : Matrix
+            Estimated source matrix (S) if sources=left.
+        second : Matrix
+            Estimated mixing matrix (A) if sources=right.
+        mean_vector : brede.core.vector.Vector
+            Estimated mean vector
+
+        References
+        ----------
+        http://scikit-learn.org/stable/modules/decomposition.html#ica
+
+        """
+        if n_components is None:
+            min_shape = min(self.shape[0], len(self._eeg_columns))
+            n_components = int(np.ceil(sqrt(float(min_shape) / 2)))
+
+        ica = FastICA(n_components=n_components)
+
+        if sources == 'left':
+            sources = Matrix(ica.fit_transform(
+                self.ix[:, self._eeg_columns].values),
+                index=self.index)
+            mixing_matrix = Matrix(ica.mixing_.T, columns=self._eeg_columns)
+            mean_vector = Vector(ica.mean_, index=self._eeg_columns)
+            return sources, mixing_matrix, mean_vector
+
+        elif sources == 'right':
+            sources = Matrix(ica.fit_transform(
+                self.ix[:, self._eeg_columns].values.T).T,
+                columns=self._eeg_columns)
+            mixing_matrix = Matrix(ica.mixing_, index=self.index)
+            mean_vector = Vector(ica.mean_, index=self.index)
+            return mixing_matrix, sources, mean_vector
+
+        else:
+            raise ValueError('Wrong argument to "sources"')
 
     def rereference(self, mode='mean', column=None, inplace=False):
         """Rereference EEG values.
@@ -975,12 +1152,14 @@ class EEGAuxRun(EEGRun):
                         high_cutoff_frequency=45.0, order=4, inplace=False):
         """Filter EEG data with a temporal bandpass filter.
 
+        Only columns specified in the `eeg_columns` property are filtered.
+
         Parameters
         ----------
         low_cutoff_frequency : float
-            Frequency in Hertz
+            Frequency in Hertz.
         high_cutoff_frequency : float
-            Frequency in Hertz
+            Frequency in Hertz.
         order : int, optional
             Order of filter [default: 4].
 
@@ -995,17 +1174,23 @@ class EEGAuxRun(EEGRun):
             sampling_rate=self.sampling_rate, order=order)
         Y = lfilter(b, a, self.ix[:, self._eeg_columns], axis=0)
 
+        dtype = self.ix[0, self.eeg_columns[0]].dtype
+        if dtype != np.float64:
+            Y = Y.astype(dtype)
+
         if inplace:
-            self.ix[:, self._eeg_columns] = Y
+            self.set_eeg_columns_from_array(Y)
             return self
         else:
             new = self._constructor(self, copy=True)
-            new.ix[:, self._eeg_columns] = Y
+            new.set_eeg_columns_from_array(Y)
             return new
 
     def lowpass_filter(self, cutoff_frequency=1.0,
                        order=4, inplace=False):
         """Filter EEG data temporally with lowpass filter.
+
+        Only columns specified in the `eeg_columns` property are filtered.
 
         Parameters
         ----------
@@ -1027,12 +1212,16 @@ class EEGAuxRun(EEGRun):
             sampling_rate=self.sampling_rate, order=order)
         Y = lfilter(b, a, self.ix[:, self._eeg_columns], axis=0)
 
+        dtype = self.ix[0, self.eeg_columns[0]].dtype
+        if dtype != np.float64:
+            Y = Y.astype(dtype)
+
         if inplace:
-            self.ix[:, self._eeg_columns] = Y
+            self.set_eeg_columns_from_array(Y)
             return self
         else:
             new = self._constructor(self, copy=True)
-            new.ix[:, self._eeg_columns] = Y
+            new.set_eeg_columns_from_array(Y)
             return new
 
     def csp(self, group_by, n_components=None):
@@ -1135,21 +1324,71 @@ class EEGAuxRun(EEGRun):
     def plot_column_spectrum(self, column):
         """Plot the spectrum of an electrode.
 
-        Parameter
-        ---------
+        Parameters
+        ----------
         column : str
             Column in the data frame containing the spectrum
 
         """
         self.fft().plot_column_spectrum(column)
 
-    def plot_mean_spectrum(self):
-        """Plot mean spectrum across electrodes."""
-        self.fft().plot_mean_spectrum()
+    def plot_mean_spectrum(self, method='fft', window='hanning',
+                           nperseg=256, yscale='linear'):
+        """Plot mean spectrum across electrodes.
+
+        The spectrum is computed and then plotted.
+
+        Parameters
+        ----------
+        method : fft or welch, optional
+            Method to compute the spectrum, default fft.
+        window : hannding or other window types, optional
+            Window type
+        nperseg : int, optional
+            Number of spectral components
+        yscale : linear, log, symlog, optional
+            Scaling on y-axis
+
+        """
+        if method == 'fft':
+            spectrum = self.fft()
+        elif method == 'welch':
+            spectrum = self.welch(window=window, nperseg=nperseg)
+
+        spectrum.plot_mean_spectrum(yscale=yscale)
+
+    def plot_spectra(self, method='fft', window='hanning',
+                     nperseg=256, yscale='linear', title=None,
+                     xlim=None, ylim=None):
+        """Plot multiple spectra.
+
+        Parameters
+        ----------
+        method : fft or welch, optional
+            Method to compute the spectrum, default fft.
+        window : hannding or other window types, optional
+            Window type for welch spectrum.
+        nperseg : int, optional
+            Number of spectral components for welch spectrum
+        yscale : linear, log, symlog, optional
+            Scaling on y-axis.
+        title : str, optional
+            Overall title for the plot.
+        xlim : 2-tuple, optional
+            Limits for x-axis.
+        ylim : 2-tuple, optional
+            Limites for y-axis.
+
+        """
+        if method == 'fft':
+            spectrum = self.fft()
+        elif method == 'welch':
+            spectrum = self.welch(window=window, nperseg=nperseg)
+
+        spectrum.plot_spectra(title=title, xlim=xlim, ylim=ylim, yscale=yscale)
 
 
 class Spectra(DataFrame):
-
     """Represent spectra for an EEG signal as a dataframe-like object.
 
     Each frequency is in each row, electrodes in columns
@@ -1172,24 +1411,43 @@ class Spectra(DataFrame):
         plt.ylabel('Magnitude')
         plt.title('Spectrum of {}'.format(column))
 
-    def plot_mean_spectrum(self):
+    def plot_mean_spectrum(self, yscale='linear'):
         """Plot the spectrum of the mean across all electrodes.
 
         Only the positive part of the spectrum is shown.
+
+        Parameters
+        ----------
+        yscale : linear, log or symlog
+            Scaling for the y-axis
 
         """
         positive_frequencies = self.index >= 0
         plt.plot(self.index[positive_frequencies],
                  np.mean(np.abs(self.ix[positive_frequencies, :]), axis=1))
+        plt.yscale(yscale)
         plt.xlabel('Frequency')
         plt.ylabel('Magnitude')
         plt.title('Mean spectrum across {} electrodes'.format(self.shape[1]))
 
-    def plot_spectra(self, title=None, xlim=None, ylim=None):
-        """Plot multiple spectra."""
+    def plot_spectra(self, title=None, xlim=None, ylim=None, yscale='linear'):
+        """Plot multiple spectra.
+
+        Parameters
+        ----------
+        title : str, optional
+            Overall title for the plots
+        xlim : 2-tuple with floats, optional
+            Limits for x-axis
+        ylim : 2-tuple with floats, optional
+            Limites for y-axis
+        yscale : linear, log or symlog, optional
+            Scaling for th y-axis
+
+        """
         positive_frequencies = self.index >= 0
         multi_plot = MultiPlot(self.ix[positive_frequencies, :].abs())
-        multi_plot.draw(title=title, xlim=xlim, ylim=ylim)
+        multi_plot.draw(title=title, xlim=xlim, ylim=ylim, yscale=yscale)
 
     def peak_frequency(self, min_frequency=0.0, max_frequency=None,
                        column=None):
@@ -1236,7 +1494,6 @@ class Spectra(DataFrame):
 
 
 class Spectra3D(Tensor):
-
     """Represent spectra for an EEG signal as a Panel-like object.
 
     Each run is in items, each frequency is in each major_axis, electrodes in
@@ -1328,7 +1585,6 @@ class Spectra3D(Tensor):
 
 
 class Spectra4D(Tensor4D):
-
     """Represent spectra for an EEG signal as a Panel4-like object.
 
     Each run is in items, each frequency is in each major_axis, electrodes in

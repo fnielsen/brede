@@ -115,7 +115,6 @@ ELECTRODES = {
 
 
 class TopoPlot(object):
-
     """Topographic plot."""
 
     def __init__(self, data=None, axes=None):
@@ -254,7 +253,6 @@ class TopoPlot(object):
 
 
 class MultiPlot(TopoPlot):
-
     """Multiple plots organized topographically.
 
     References
@@ -334,7 +332,7 @@ class MultiPlot(TopoPlot):
     def draw_data(self, type='plot', width=None, height=None,
                   xlim=None, ylim=None,
                   vmin=None, vmax=None,
-                  axis=False):
+                  axis=False, yscale='linear'):
         """Draw data.
 
         Parameters
@@ -357,7 +355,7 @@ class MultiPlot(TopoPlot):
 
             if ylim is None:
                 if self.ylim is None and type != 'spectrogram':
-                    ylim = self.auto_ylim(xlim)
+                    ylim = self.auto_ylim(xlim, yscale=yscale)
                 else:
                     ylim = self.ylim
 
@@ -473,8 +471,31 @@ class MultiPlot(TopoPlot):
             ax.set_ylim(bottom, top)
         self.figure.canvas.draw()
 
-    def auto_ylim(self, xlim=None):
-        """Return an estimate for a good ylim."""
+    @property
+    def yscale(self):
+        """Return yscale for subplots."""
+        yscales = [ax.get_yscale() for ax in self._subaxes]
+        return yscales
+
+    @yscale.setter
+    def yscale(self, value='linear'):
+        """Set y-axis limits on all subplots."""
+        for ax in self._subaxes:
+            ax.set_yscale(value)
+        self.figure.canvas.draw()
+
+    def auto_ylim(self, xlim=None, yscale='linear'):
+        """Return an estimate for a good ylim.
+
+        Parameters
+        ----------
+        xlim : 2-tuple, optional
+            Limits in (the index of) the data from where the scaling should be
+            computed.
+        yscale : linear or log, optional
+            Scaling of y-axis.
+
+        """
         electrodes = [col for col in self.data.columns
                       if col in ELECTRODES]
         if xlim is None:
@@ -485,16 +506,25 @@ class MultiPlot(TopoPlot):
             data = self.data.ix[indices, electrodes]
         min_data = data.min().min()
         max_data = data.max().max()
-        if min_data >= 0:
-            ylim = 0, max_data
+        abs_max = max(abs(min_data), max_data)
+        if yscale == 'linear' or yscale == 'symlog':
+            if min_data >= 0:
+                ylim = 0, max_data
+            else:
+                ylim = -abs_max, abs_max
+        elif yscale == 'log':
+            if min_data > 0:
+                ylim = min_data, max_data
+            else:
+                pseudo_zero = abs_max * 10 ** -5
+                ylim = pseudo_zero, abs_max
         else:
-            abs_max = max(abs(min_data), max_data)
-            ylim = -abs_max, abs_max
+            raise ValueError('Wrong value to yscale: {}'.format(yscale))
         return ylim
 
     def draw(self, type='plot', title=None, xlim=None, ylim=None,
              vmin=None, vmax=None,
-             axis=False):
+             axis=False, yscale='linear'):
         """Draw all components in multiplot including the data.
 
         Parameters
@@ -512,9 +542,10 @@ class MultiPlot(TopoPlot):
         self.draw_inner_head()
         self.draw_nose()
         self.draw_data(type=type, xlim=xlim, ylim=ylim, vmin=vmin,
-                       vmax=vmax, axis=axis)
+                       vmax=vmax, axis=axis, yscale=yscale)
         if title is not None:
             self.axes.set_title(title)
+        self.yscale = yscale
 
 
 def topoplot(data=None, axes=None, method='linear', number_of_contours=10,

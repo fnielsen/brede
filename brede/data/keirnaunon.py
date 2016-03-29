@@ -78,7 +78,6 @@ STATES = ['baseline', 'multiplication', 'letter-composing', 'rotation',
 
 
 class KeirnAunon(Data):
-
     """EEG data from a study by Keirn and Aunon.
 
     This class can be viewed as a singleton class. There are no instance

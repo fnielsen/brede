@@ -1,4 +1,3 @@
-
 """brede.data.bredewiki - Interface to Brede Wiki data.
 
 Usage:
@@ -27,7 +26,6 @@ BREDEWIKI_TEMPLATES_URL = ("http://neuro.compute.dtu.dk/services/"
 
 
 class BredeWikiTemplates(db.DB):
-
     """Interface to dump of Brede Wiki Templates.
 
     The data is downloaded from the file bredewiki-templates.sqlite3 in the
@@ -41,6 +39,13 @@ class BredeWikiTemplates(db.DB):
     >>> bwt = BredeWikiTemplates()
     >>> papers = bwt.tables.brede_paper.all()
     >>> 11227136 in set(papers._pmid.dropna().astype(int))
+    True
+
+    >>> # Brain regions from LPBA40 brain atlas
+    >>> brain_regions = bwt.tables.brede_brain_region.all()
+    >>> lpba_regions = brain_regions.ix[brain_regions._lpba.notnull(),
+    ...                                 ['_name', '_lpba']]
+    >>> 'Brain stem' in set(lpba_regions._name)
     True
 
     """

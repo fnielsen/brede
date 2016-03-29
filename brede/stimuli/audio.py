@@ -28,14 +28,12 @@ from scikits.audiolab import Format, Sndfile
 
 
 class WaveWriterException(Exception):
-
     """General exception in the WaveWriter."""
 
     pass
 
 
 class WaveWriter(object):
-
     """Writer for WAV files."""
 
     def __init__(self, filename, channels=1, samplerate=44100):

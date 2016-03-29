@@ -19,7 +19,6 @@ URL_WIKIPEDIA_API = "https://en.wikipedia.org/w/api.php"
 
 
 class WikiPage(object):
-
     """Represent a Wikipedia page.
 
     Examples

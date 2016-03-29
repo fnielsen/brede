@@ -17,7 +17,7 @@ Examples:
   $ python -m brede.data.sbs2 --model=small --coloring=inverse
 
   $ python -m brede.data.sbs2 --model=small --coloring=inverse \
-       --hardware=emocap --electrode=C3
+  .    --hardware=emocap --electrode=C3
 
 """
 
@@ -55,7 +55,6 @@ SBS2_ELECTRODES_EMOCAP = ['TP10', 'Fz', 'P3', 'Cz', 'C4', 'TP9', 'Pz', 'P4',
 
 
 class SBS2Data(object):
-
     """Interface to SBS2 (Smartphone Brain Scanner) data.
 
     Examples
@@ -123,8 +122,8 @@ class SBS2Data(object):
         If not call then the download method is called.
 
         """
-        if (redownload or not exists(self.sbs2_dir)
-                or not exists(join(self.sbs2_dir, 'sbs2_data'))):
+        if (redownload or not exists(self.sbs2_dir) or
+                not exists(join(self.sbs2_dir, 'sbs2_data'))):
             self.download()
             # no need for extraction
 
@@ -283,7 +282,8 @@ class SBS2Data(object):
         surface = read_obj(full_filename)
         return surface
 
-    def inverse_model(self, hardware='emotiv', method='LORETA'):
+    def inverse_model(self, hardware='emotiv', method='LORETA',
+                      inv_alpha=0.01, inv_beta=0.3781):
         """Compute and return inverse model.
 
         The LORETA method is:
@@ -300,6 +300,10 @@ class SBS2Data(object):
             Hardward type for forward model.
         method : 'LORETA' or 'minimumnorm', optional
             Estimation type.
+        inv_alpha : float, optional
+            Hyperparameter
+        inv_beta : float, optional
+            Hyperparameter
 
         Returns
         -------
@@ -325,15 +329,13 @@ class SBS2Data(object):
         blob/master/src/source_reconstruction/loreta/
         sbs2sourcereconstruction_loreta.cpp
 
+        https://github.com/SmartphoneBrainScanner/smartphonebrainscanner2-core/
+        blob/master/src/source_reconstruction/loreta/
+        sbs2sourcereconstruction_loreta.cpp
+        line 62-63!
+
         """
         self.unpack()
-
-        # https://github.com/SmartphoneBrainScanner/smartphonebrainscanner2-core/
-        # blob/master/src/source_reconstruction/loreta/
-        # sbs2sourcereconstruction_loreta.cpp
-        # line 62-63!
-        inv_alpha = 0.0100
-        inv_beta = 0.3781
 
         # Forward model, F matrix
         forward = self.forward_model(hardware).values
