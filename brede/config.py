@@ -27,6 +27,9 @@ CONFIG_FILENAMES = [
 DEFAULTS = """
 [requests]
 user_agent = brede
+
+[data]
+data_dir = ~/brede_data
 """
 
 logger = logging.getLogger(__name__)
