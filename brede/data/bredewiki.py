@@ -2,9 +2,13 @@
 
 Usage:
   brede.data.bredewiki [options]
+  brede.data.bredewiki to-json
 
 Options:
   -h --help     Help
+
+Examples:
+  $ brede.data.bredewiki to-json
 
 """
 
@@ -109,10 +113,14 @@ class BredeWikiTemplates(db.DB):
             # no need for extraction
 
 
-def main(args):
+def main(arguments):
     """Handle command-line interface."""
     bwt = BredeWikiTemplates()
-    print(bwt)
+
+    if 'to-json' in arguments:
+        print(bwt.query('SELECT * FROM brede;').to_json())
+    else:
+        print(bwt)
 
 
 if __name__ == '__main__':
