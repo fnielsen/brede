@@ -156,6 +156,7 @@ def main(args):
     """Handle command-line interface."""
     pass
 
+
 if __name__ == '__main__':
     import docopt
 
