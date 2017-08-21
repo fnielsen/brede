@@ -21,7 +21,7 @@ from os.path import exists, expanduser
 CONFIG_FILENAMES = [
     'brede.cfg',
     '~/etc/brede.cfg',
-    'brede.cfg']
+    '~/brede.cfg']
 
 
 DEFAULTS = """
