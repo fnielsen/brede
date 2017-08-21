@@ -23,6 +23,8 @@ Otherwise outputs the Neurosynth database as comma-separated values
 
 from __future__ import absolute_import, print_function
 
+import logging
+
 import tarfile
 
 from os import chdir, getcwd, makedirs
@@ -60,7 +62,12 @@ class NeurosynthDatabase(Data):
 
     def __init__(self):
         """Setup directories and filenames."""
+        self.logger = logging.getLogger(__name__ + '.Pubmed')
+        self.logger.addHandler(logging.NullHandler())
+
         self.data_dir = expanduser(config.get('data', 'data_dir'))
+        self.logger.info('Data directory: {}'.format(self.data_dir))
+
         self.neurosynth_dir = join(self.data_dir, 'neurosynth')
         self.neurosynth_database_filename = join(self.neurosynth_dir,
                                                  'database.txt')
@@ -124,6 +131,8 @@ class NeurosynthDatabase(Data):
 
         """
         self.unpack()
+        self.logger.info('Reading {}'.format(
+            self.neurosynth_database_filename))
         database = pd.read_csv(self.neurosynth_database_filename,
                                sep='\t', low_memory=False)
         return database
