@@ -1,15 +1,43 @@
-"""Interface to Pubmed information."""
+"""Interface to Pubmed information.
+
+Usage:
+  brede.data.pubmed get-medline <pmid>
+
+Options:
+  -h --help  Help
+
+Description:
+  `get-medline` returns a JSON-formatted representation of a MEDLINE entry.
+
+  Note the guideline (http://www.ncbi.nlm.nih.gov/books/NBK25497/):
+
+  "In order not to overload the E-utility servers, NCBI recommends
+  that users post no more than three URL requests per second and
+  limit large jobs to either weekends or between 9:00 PM and
+  5:00 AM Eastern time during weekdays."
+
+"""
+
+from __future__ import print_function, absolute_import
 
 import errno
+import logging
 import os
 import time
 from datetime import datetime
 from os.path import expanduser, join
 
+
+try:
+    from ConfigParser import NoSectionError
+except ImportError:
+    from configparser import NoSectionError
+
 try:
     import cPickle as pickle
 except ImportError:
     import pickle
+
 
 from Bio import Entrez, Medline
 
@@ -28,12 +56,21 @@ class Pubmed(object):
 
     def __init__(self):
         """Setup directories."""
+        self.logger = logging.getLogger(__name__ + '.Pubmed')
+        self.logger.addHandler(logging.NullHandler())
+
         self.data_dir = expanduser(config.get('data', 'data_dir'))
+        self.logger.info('Data directory: {}'.format(self.data_dir))
         self.pubmed_dir = join(self.data_dir, 'pubmed')
         self.setup_data_dir()
         self.pause_between_downloads = 0.334
 
-        Entrez.email = config.get('bio', 'email')
+        try:
+            Entrez.email = config.get('bio', 'email')
+        except NoSectionError:
+            message = ("Missing 'bio' section "
+                       "in configuration file")
+            raise NoSectionError(message)
         Entrez.tool = 'brede'
 
     @property
@@ -89,6 +126,7 @@ class Pubmed(object):
         time.sleep(pause)
 
         # Actual download
+        self.logger.debug('Downloading item from Pubmed: {}'.format(pmid))
         handle = Entrez.efetch(db="pubmed", id=str(pmid),
                                rettype='medline', retmode='text')
 
@@ -168,3 +206,18 @@ class Pubmed(object):
         filename = self.medline_filename(medline['PMID'])
         with open(filename, 'w') as fid:
             pickle.dump(medline, fid)
+
+
+def main():
+    """Handle command-line interface."""
+    from docopt import docopt
+
+    arguments = docopt(__doc__)
+    if arguments['get-medline']:
+        pubmed = Pubmed()
+        medline = pubmed.get_medline(arguments['<pmid>'])
+        print(medline)
+
+
+if __name__ == '__main__':
+    main()
