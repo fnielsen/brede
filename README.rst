@@ -35,3 +35,8 @@ Load more data:
 
     >>> move_fist = eegmmidb.run(run=3)
     >>> move_fist['state'] = 'Move fist'
+
+Installation
+------------
+Brede has a dependency on Mayavi2 which may be difficult to install on Python3.
+As of 2017, Brede has only been running on Python2.7
