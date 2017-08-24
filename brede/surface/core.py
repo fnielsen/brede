@@ -7,6 +7,8 @@ from nibabel.freesurfer.io import read_geometry
 
 import numpy as np
 
+from scipy.io.matlab.mio import loadmat
+
 
 class Surface(object):
     """Representation of a surface with faces and vertices."""
@@ -134,6 +136,32 @@ class TriSurface(Surface):
         return cls(vertices=vertices, faces=faces)
 
     @classmethod
+    def read_mat(cls, filename, scale=1.0):
+        """Read matlab mat file.
+
+        Only faces and vertices are read from the Matlab file.
+
+        Parameters
+        ----------
+        filename : str
+            Filename for mat file. It is expected that the vertices is
+            an a variable called 'vert' and the faces in a variable
+            called 'face'.
+        scale : float
+            Scale vertices
+
+        Returns
+        -------
+        surface : Surface
+            Surface object with the read surface.
+
+        """
+        data = loadmat(filename)
+        vertices = data['vert'] * scale
+        faces = data['face'] - 1
+        return cls(vertices, faces)
+
+    @classmethod
     def read_obj(cls, filename):
         """Read Wavefront obj file.
 
@@ -244,5 +272,22 @@ class TriSurface(Surface):
         from mayavi.mlab import show
         show()
 
+    def write_obj(self, filename):
+        """Write obj file.
+
+        Parameters
+        ----------
+        filename : str
+            Filename of obj to be written.
+
+        """
+        with open(filename, 'w') as f:
+            for n in range(self.vertices.shape[0]):
+                f.write('v {} {} {}\n'.format(*self.vertices[n, :]))
+            for n in range(self.faces.shape[0]):
+                f.write('f {} {} {}\n'.format(*(self.faces[n, :] + 1)))
+
+
+read_mat = TriSurface.read_mat
 
 read_obj = TriSurface.read_obj
