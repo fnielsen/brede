@@ -12,6 +12,7 @@ pandas
 requests
 scikits.audiolab
 scikit-learn
+scikit-video
 scipy
 PyYAML
 
