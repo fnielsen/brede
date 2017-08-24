@@ -149,7 +149,7 @@ class NeurosynthDatabase(Data):
         --------
         >>> nd = NeurosynthDatabase()
         >>> features = nd.features()
-        >>> 9106283 in features.index
+        >>> 23400116 in features.index
         True
 
         """
