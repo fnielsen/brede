@@ -32,4 +32,4 @@ def test_neurosynth_database_description(neurosynth_database):
 
 def test_pmid(neurosynth_database_frame):
     """Test whether a specific PMID is in the data."""
-    assert 9106283 in set(neurosynth_database_frame.id)
+    assert 23400116 in set(neurosynth_database_frame.id)
