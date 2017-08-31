@@ -33,6 +33,11 @@ class Surface(object):
         """Return vertices."""
         return self._vertices
 
+    @vertices.setter
+    def vertices(self, values):
+        """Set vertices."""
+        self._vertices
+
     @property
     def faces(self):
         """Return faces."""
@@ -272,20 +277,31 @@ class TriSurface(Surface):
         from mayavi.mlab import show
         show()
 
-    def write_obj(self, filename):
+    def write_obj(self, filename, scale=1.0, mirror_triangles=False):
         """Write obj file.
 
         Parameters
         ----------
         filename : str
             Filename of obj to be written.
+        mirror_triangles : bool, optional
+            Determines whether triangles should be mirrored, i.e.,
+            counter-clockwise triangles should be converted to clockwise
+            triangles.
+        scale : float
+            Scale for vertices: multiply the vertice with the scale value.
 
         """
+        step = 1
+        if mirror_triangles:
+            step = -1
+
         with open(filename, 'w') as f:
             for n in range(self.vertices.shape[0]):
-                f.write('v {} {} {}\n'.format(*self.vertices[n, :]))
+                f.write('v {} {} {}\n'.format(*(
+                    self.vertices[n, :] * scale)))
             for n in range(self.faces.shape[0]):
-                f.write('f {} {} {}\n'.format(*(self.faces[n, :] + 1)))
+                f.write('f {} {} {}\n'.format(*(self.faces[n, ::step] + 1)))
 
 
 read_mat = TriSurface.read_mat
