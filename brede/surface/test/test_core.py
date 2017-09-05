@@ -1,7 +1,25 @@
-"""Test of core module in surface."""
+"""Test of core module in surface.
 
+Description
+-----------
+These test functions can be run with
+
+    python -m py.test brede/surface/test/test_core.py
+
+"""
+
+
+from __future__ import absolute_import
 
 from .. import core
+
+
+def test_vertex_values_to_colors():
+    """Test vertex values transformation."""
+    vertex_values = [0.03, 0, 4, 0.3]
+    colors = core.vertex_values_to_colors(vertex_values)
+    assert colors.max() == 1.0
+    assert colors.min() == 0.0
 
 
 def test_surface():
