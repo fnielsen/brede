@@ -3,11 +3,37 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 from nibabel.freesurfer.io import read_geometry
 
 import numpy as np
 
 from scipy.io.matlab.mio import loadmat
+
+
+def vertex_values_to_colors(vertex_values):
+    """Convert vertex values to RGB representation.
+
+    Parameters
+    ----------
+    vertex_values : array_like
+        List of scalar vertex values
+
+    Returns
+    -------
+    colors : array_like
+        Array of size number of vertices times 3 with values between 0 and 1.
+
+    """
+    values_max = max(vertex_values)
+    values_min = min(vertex_values)
+    if values_max == values_min:
+        return np.ones((vertex_values.shape[0], 3))
+    colors = np.tile(
+        (np.asarray(vertex_values)[:, np.newaxis] - values_min) /
+        (values_max - values_min),
+        (1, 3))
+    return colors
 
 
 class Surface(object):
@@ -296,10 +322,17 @@ class TriSurface(Surface):
         if mirror_triangles:
             step = -1
 
+        if self.vertex_values is not None:
+            vertex_colors = vertex_values_to_colors(self.vertex_values)
+
         with open(filename, 'w') as f:
             for n in range(self.vertices.shape[0]):
-                f.write('v {} {} {}\n'.format(*(
+                f.write('v {} {} {}'.format(*(
                     self.vertices[n, :] * scale)))
+                if self.vertex_values is not None:
+                    f.write(' {} {} {}\n'.format(*vertex_colors[n, :]))
+                f.write('\n')
+
             for n in range(self.faces.shape[0]):
                 f.write('f {} {} {}\n'.format(*(self.faces[n, ::step] + 1)))
 
