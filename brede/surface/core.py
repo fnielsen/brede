@@ -167,7 +167,8 @@ class TriSurface(Surface):
         return cls(vertices=vertices, faces=faces)
 
     @classmethod
-    def read_mat(cls, filename, scale=1.0):
+    def read_mat(cls, filename, vertices_name='vert', faces_name='face',
+                 scale=1.0):
         """Read matlab mat file.
 
         Only faces and vertices are read from the Matlab file.
@@ -188,8 +189,8 @@ class TriSurface(Surface):
 
         """
         data = loadmat(filename)
-        vertices = data['vert'] * scale
-        faces = data['face'] - 1
+        vertices = data[vertices_name] * scale
+        faces = data[faces_name] - 1
         return cls(vertices, faces)
 
     @classmethod
