@@ -32,6 +32,8 @@ from os.path import exists, expanduser, join
 
 from urllib import urlretrieve
 
+from nltk.tokenize.punkt import PunktSentenceTokenizer
+
 import pandas as pd
 
 from .core import Data
@@ -202,6 +204,23 @@ class NeurosynthDatabase(Data):
         medlines = pubmed.get_medlines(set(nd_database.id))
         return medlines
 
+    def sentences(self):
+        """Yield sentences from abstract.
+
+        Yields
+        ------
+        sentences : str
+            Yields sentences from abstract.
+
+        """
+        tokenizer = PunktSentenceTokenizer()
+
+        for medline in self.medlines():
+            abstract = medline['AB']
+            sentences = tokenizer.tokenize(abstract)
+            for sentence in sentences:
+                yield sentence
+
 
 def main(args):
     """Handle command-line interface."""
@@ -213,6 +232,10 @@ def main(args):
     elif command == 'featurenames':
         nd = NeurosynthDatabase()
         print(",".join(nd.feature_names()))
+    elif command == 'sentences':
+        nd = NeurosynthDatabase()
+        for sentence in nd.sentences():
+            print(sentence)
 
     else:
         nd = NeurosynthDatabase()
