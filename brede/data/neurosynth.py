@@ -205,7 +205,7 @@ class NeurosynthDatabase(Data):
         return medlines
 
     def sentences(self):
-        """Yield sentences from abstract.
+        """Yield sentences from abstracts.
 
         Yields
         ------
@@ -216,6 +216,8 @@ class NeurosynthDatabase(Data):
         tokenizer = PunktSentenceTokenizer()
 
         for medline in self.medlines():
+            if 'AB' not in medline:
+                continue
             abstract = medline['AB']
             sentences = tokenizer.tokenize(abstract)
             for sentence in sentences:
